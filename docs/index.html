@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <!--
+  Copyright 2023 Alexander Herzog
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+  <title>Mini Warteschlangensimulator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Simulator for queueing models">
+  <meta name="keywords" content="Queueing simulaton, Simulation, Queueing theory">
+  <!-- Begin of language independent part -->
+  <meta name="author" content="Alexander Herzog">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link href="./libs/bootstrap.min.css" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" rel="stylesheet" media="none" onload="if(media!='all')media='all'">
+  <link href="./libs/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" rel="stylesheet" media="none" onload="if(media!='all')media='all'">
+  <link href="./css/index.css" rel="stylesheet" media="none" onload="if(media!='all')media='all'">
+  <script defer src="./libs/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"></script>
+  <script src="./libs/chart.umd.js" integrity="sha384-7zIFx9pXOq80OxAYxdxvWejv1TYHNbgwokiYvZi8PvGY/MDxa56nZFcULjBwXVsk"></script>
+  <script src="./libs/neutralino.js"></script>
+  <script src="./js/Language.js"></script>
+  <script src="./js/Tools.js"></script>
+  <script src="./js/DistCore.js"></script>
+  <script src="./js/SimCore.js"></script>
+  <script src="./js/StatCore.js"></script>
+  <script src="./js/Simulator.js"></script>
+  <script src="./js/SimulatorBuilder.js"></script>
+  <script src="./js/SimulatorStations.js"></script>
+  <script src="./js/Events.js"></script>
+  <script>
+    selectLanguage([{name: "default", file: "index.html"}, {name: "de", file: "index_de.html"}]);
+    const isDesktopApp=(typeof(NL_OS)!='undefined');
+    if (isDesktopApp) Neutralino.init();
+  </script>
+  <script type="module">
+    import {zoomIn, zoomOut, fileNew, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick, elements, edges} from "./js/Editor.js";
+    window.zoomIn=zoomIn;
+    window.zoomOut=zoomOut;
+    window.fileNew=fileNew;
+    window.fileLoadDrag=fileLoadDrag;
+    window.fileLoadDragEnter=fileLoadDragEnter;
+    window.fileLoadDragLeave=fileLoadDragLeave;
+    window.fileLoadDrop=fileLoadDrop;
+    window.fileSave=fileSave;
+    window.showFileSidebar=showFileSidebar;
+    window.showTemplatesSidebar=showTemplatesSidebar;
+    window.showMoreSidebar=showMoreSidebar;
+    window.allowDrop=allowDrop;
+    window.canvasDrop=canvasDrop;
+    window.addEdgeClick=addEdgeClick;
+    window.canvasClick=canvasClick;
+    window.elements=elements;
+    window.edges=edges;
+
+    import {templates} from './js/Templates.js';
+    window.templates=templates;
+
+    import {loadExample} from "./js/Example.js";
+    window.loadExample=loadExample;
+
+    import {startAnimation, animationPlayPause, animationFastForward} from "./js/Animator.js";
+    window.startAnimation=startAnimation;
+    window.animationPlayPause=animationPlayPause;
+    window.animationFastForward=animationFastForward;
+
+    import {processSeries} from "./js/Series.js";
+    window.processSeries=processSeries;
+  </script>
+</head>
+
+<body><div id="infoLoading">Loading...</div><div class="wrapper" id="mainContent" style="display: none;">
+
+<div class="modal fade" id="modalMessage" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalMessageTitle"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalMessageBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary bi-check" data-bs-dismiss="modal"> <script>document.write(language.dialog.Ok);</script></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalConfirmation" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalConfirmationTitle"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalConfirmationBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success bi-check" data-bs-dismiss="modal" id="modalConfirmationYesButton"> <script>document.write(language.dialog.Yes);</script></button>
+        <button type="button" class="btn btn-danger bi-x-circle" data-bs-dismiss="modal"> <script>document.write(language.dialog.No);</script></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" data-bs-backdrop="static" id="modalArea" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title" id="modalAreaTitle"></h5></div>
+      <div class="modal-body" id="modalAreaBody"></div>
+      <div class="modal-footer" id="modalAreaFooter"></div>
+    </div>
+  </div>
+</div>
+
+<nav id="sidebar" class="bg-success" style="overflow-x: hidden; overflow-y: auto;">
+  <h1 class="rounded" onclick="showMoreSidebar()" style="cursor: pointer;"><img src="./favicon.ico" width="24" alt=""> Mini Warte&shy;schlangen&shy;simu&shy;lator</h1>
+
+  <span id="sidebar-file" style="display: none;">
+    <div style="padding: 5px 20px 20px 20px; color: white;">
+      <h4><i class="bi bi-house-door" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.title);</script></h4>
+      <hr>
+      <ul class="sidebarmenu">
+        <li onclick="fileNew()"><i class="bi bi-file" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.modelNew);</script></li>
+        <li id="fileLoadDropTarget" ondragover="fileLoadDrag(event)" ondragenter="fileLoadDragEnter(event)" ondragleave="fileLoadDragLeave(event)" ondrop="fileLoadDrop(event)"><i class="bi bi-file-arrow-up" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.modelLoad);</script></li>
+        <li onclick="fileSave()"><i class="bi bi-file-arrow-down" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.modelSave);</script></li>
+      </ul>
+      <h5 style="margin-top: 30px;"><script>document.write(language.tabFile.examples);</script></h5>
+      <ul class="sidebarmenu">
+        <li tabindex="0" onclick="loadExample(0)"><i class="bi bi-boxes" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.exampleSimple);</script></li>
+        <li tabindex="0" onclick="loadExample(1)"><i class="bi bi-boxes" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.exampleControl);</script></li>
+        <li tabindex="0" onclick="loadExample(2)"><i class="bi bi-boxes" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.exampleImpatienceRetry);</script></li>
+        <li tabindex="0" onclick="loadExample(3)"><i class="bi bi-boxes" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.examplePolicy);</script></li>
+      </ul>
+      <h5 style="margin-top: 30px;"><script>document.write(language.tabFile.extended);</script></h5>
+      <ul class="sidebarmenu">
+        <li onclick="processSeries()"><i class="bi bi-graph-up" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.extendedParameterSeries);</script></li>
+      </ul>
+      <h5 style="margin-top: 30px;"><script>document.write(language.tabFile.help);</script></h5>
+      <script>const infoPageUrl='info'+((document.documentElement.lang=='de')?'_de':'')+'.html';</script>
+      <ul class="sidebarmenu">
+        <li tabindex="0" onclick="showMoreSidebar()"><i class="bi bi-question-circle" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.helpInfo);</script></li>
+        <li tabindex="0" onclick="if (isDesktopApp) Neutralino.window.create('/'+infoPageUrl+'?qt'); else window.open(infoPageUrl+'?qt');"><i class="bi bi-question-circle" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.helpQueueingTheory);</script></li>
+        <li tabindex="0" onclick="if (isDesktopApp) Neutralino.window.create('/'+infoPageUrl+'?glossary'); else window.open(infoPageUrl+'?glossary')"><i class="bi bi-question-circle" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.helpGlossary);</script></li>
+      </ul>
+    </div>
+  </span>
+
+  <span id="sidebar-templates" style="display: inline;">
+    <div style="padding: 5px 20px 20px 20px; color: white;" id="sidebar-templates-header">
+      <h4><i class="bi bi-plus-square" role="img" aria-hidden="true"></i> <script>document.write(language.tabStation.title);</script></h4>
+      <hr>
+      <script>document.write(language.tabStation.info);</script>
+      <script>if (window.Touch) document.write('<div style="font-size: 75%; margin-top: 10px;">('+language.tabStation.infoTouch+')</div>');</script>
+    </div>
+    <div style="position: relative; overflow-x: hidden; overflow-y: auto; margin: 5px 20px 5px 20px; border-radius: 5px;" id="template_outer">
+      <div id="templates_area" class="canvas_area" style="width: 100%; height: calc(max(685px,100%));"></div>
+    </div>
+  </span>
+
+  <span id="sidebar-edges" style="display: none;">
+    <div style="padding: 5px 20px 20px 20px; color: white;">
+      <h4><i class="bi bi-share-fill" role="img" aria-hidden="true"></i> <script>document.write(language.tabEdge.title);</script></h4>
+      <hr>
+      <script>document.write(language.tabEdge.info);</script>
+      <hr>
+      <img id="sidebar-edges-info-img" width="100">
+      <br>
+      <span id="sidebar-edges-info"></span>
+      <hr>
+      <ul class="sidebarmenu">
+        <li tabindex="0" onclick="addEdgeClick()"><i class="bi-x-circle"></i> <script>document.write(language.tabEdge.stop);</script></li>
+      </ul>
+    </div>
+  </span>
+
+  <span id="sidebar-editor" style="display: none;">
+    <div style="padding: 5px 20px 20px 20px; color: white;" id="sidebar-editor-inner"> </div>
+  </span>
+
+  <span id="sidebar-animation" style="display: none;">
+    <div style="padding: 5px 20px 20px 20px; color: white;" id="sidebar-animation-inner">
+      <h4><i class="bi bi-play-circle" role="img" aria-hidden="true"></i> <script>document.write(language.tabAnimation.title);</script></h4>
+      <hr>
+      <label for="animationSpeed" class="form-label"><script>document.write(language.tabAnimation.speed);</script></label><br>
+      <input type="range" class="form-range" min="1" max="5" id="animationSpeed">
+      <button type="button" class="btn btn-sm btn-outline-light" onclick="animationPlayPause()"><i class="bi bi-pause" id="animationPlayPauseButton"></i></button>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-sm btn-outline-light" onclick="animationFastForward(5)" style="margin-left: 10px;"><i class="bi bi-chevron-double-right" id="animationFastForwardButton"></i> <script>document.write(language.tabAnimation.simulation);</script></button>
+        <button type="button" class="btn btn-sm btn-outline-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false"><span class="visually-hidden">Toggle Dropdown</span></button>
+        <ul class="dropdown-menu">
+          <li><span class="dropdown-item-text small"><script>document.write(language.tabAnimation.simulationDropDown);</script></span></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><button type="button" class="dropdown-item" onclick="animationFastForward(1)"><script>document.write(language.tabAnimation.simulationDropDown1Mio);</script></a></li>
+          <li><button type="button" class="dropdown-item" onclick="animationFastForward(5)"><b><script>document.write(language.tabAnimation.simulationDropDown5Mio);</script></b></a></li>
+          <li><button type="button" class="dropdown-item" onclick="animationFastForward(10)"><script>document.write(language.tabAnimation.simulationDropDown10Mio);</script></a></li>
+          <li><button type="button" class="dropdown-item" onclick="animationFastForward(25)"><script>document.write(language.tabAnimation.simulationDropDown25Mio);</script></a></li>
+        </ul>
+      </div>
+      <hr>
+      <span id="sidebar-animation-info"></span>
+    </div>
+  </span>
+
+  <span id="sidebar-more" style="display: none;">
+    <div style="padding: 5px 20px 20px 20px; color: white;">
+      &copy; <a href="https://github.com/A-Herzog" target="_blank" style="color: white;">Alexander Herzog</a>
+      <hr>
+      <p style="font-size: 90%;"><script>document.write(language.tabFile.helpInfoText1);</script></p>
+      <p style="font-size: 90%;"><script>document.write(language.tabFile.helpInfoText2);</script></p>
+      <hr>
+      <ul class="sidebarmenu">
+        <li tabindex="0" onclick="if (isDesktopApp) Neutralino.os.open(language.tabFile.helpGitHubURL); else window.open(language.tabFile.helpGitHubURL);"><i class="bi bi-github" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.helpGitHub);</script></li>
+        <li tabindex="0" onclick="if (isDesktopApp) Neutralino.os.open(language.tabFile.helpHomeURL); else window.open(language.tabFile.helpHomeURL);"><script>document.write(language.tabFile.helpHome);</script></li>
+      </ul>
+      <hr>
+      <p style="font-size: 80%;"><script>if (!isDesktopApp) document.write(language.tabFile.helpInfoText3);</script></p>
+    </div>
+  </span>
+
+</nav>
+
+<div id="content" class="bg-success">
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-success" id="navbar">
+    <div class="container-fluid d-flex justify-content-start gap-1">
+      <button tabindex="0" type="button" class="btn btn-sm btn-outline-light border-0" id='file_button' onclick="showFileSidebar()"><i class="bi bi-house-door" role="img" aria-hidden="true"></i><span class="menuButtonTitle"></span></button>
+      <button tabindex="0" type="button" class="btn btn-sm btn-outline-light border-0" id='add_station' onclick="showTemplatesSidebar()"><i class="bi bi-plus-square" role="img" aria-hidden="true"></i><span class="menuButtonTitle"></span></button>
+      <button tabindex="0" type="button" class="btn btn-sm btn-outline-light border-0" id="add_edge" onclick="addEdgeClick()"><i class="bi bi-share-fill" role="img" aria-hidden="true"></i><span class="menuButtonTitle"></span></button>
+      <button tabindex="0" type="button" class="btn btn-sm btn-outline-light border-0" id="animation_button" onclick="startAnimation()"><i class="bi bi-play-circle" role="img" aria-hidden="true"></i><span class="menuButtonTitle"></span></button>
+      <button tabindex="0" type="button" class="btn btn-sm btn-outline-light border-0" id="zoom_button_in" onclick="zoomIn()"><i class="bi bi-zoom-in" role="img" aria-hidden="true"></i></button>
+      <button tabindex="0" type="button" class="btn btn-sm btn-outline-light border-0" id="zoom_button_out" onclick="zoomOut()"><i class="bi bi-zoom-out" role="img" aria-hidden="true"></i></button>
+    </div>
+  </nav>
+
+  <div style="position: relative; overflow: scroll; border-radius: 5px;" id="canvas_outer">
+    <div id="canvas_area" class="canvas_area" style="width: 4000px; height: 3000px;" ondrop="canvasDrop(event)" ondragover="allowDrop(event)" onclick="canvasClick(event)" tabindex="0"></div>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+  function initMenuButton(id, title, tooltip) {
+    if (title!=null && title!="") document.querySelector("#"+id+" .menuButtonTitle").innerHTML=" "+title;
+    document.querySelector("#"+id).title=tooltip;
+  }
+
+  initMenuButton('file_button',language.tabFile.button,language.tabFile.buttonHint);
+  initMenuButton('add_station',language.tabStation.button,language.tabStation.buttonHint);
+  initMenuButton('add_edge',language.tabEdge.button,language.tabEdge.buttonHint);
+  initMenuButton('animation_button',language.tabAnimation.button,language.tabAnimation.buttonHint);
+  initMenuButton('zoom_button_in',null,language.tabAnimation.buttonHintZoomIn);
+  initMenuButton('zoom_button_out',null,language.tabAnimation.buttonHintZoomOut);
+
+  document.addEventListener('readystatechange',event=>{if (event.target.readyState=="complete") {
+    if (isDesktopApp) document.querySelector("nav h1").style.display="none";
+    mainContent.style.display="";
+    infoLoading.style.display="none";
+  }});
+</script>
+
+</body></html>

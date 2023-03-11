@@ -1,0 +1,5 @@
+.vscode
+.tmp
+bin
+dist
+MiniWarteschlangensimulator.exe

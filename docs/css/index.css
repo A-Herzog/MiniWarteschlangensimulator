@@ -1,0 +1,124 @@
+.btn-outline-light {
+  color: #FFF;
+}
+
+.modal-header {
+  cursor: default;
+}
+
+#modalMessageBody {
+  cursor: default;
+}
+
+#modalConfirmationBody {
+  cursor: default;
+}
+
+.progress-bar {
+  transition: none !important;
+}
+
+.wrapper {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+}
+
+#content {
+  width: 100%;
+  padding: 0px;
+  min-height: 100vh;
+}
+
+.canvas_area {
+  background-color: #F0F0F0;
+  position: relative;
+  transform-origin: left top;
+  transition: all .25s ease-in-out;
+}
+
+#sidebar {
+  min-width: 250px;
+  max-width: 250px;
+}
+
+#sidebar h1 {
+  color: #007000;
+  background-color: #F0F0F0;
+  font-size: 115%;
+  font-weight: 500;
+  margin: 10px 20px;
+  padding: 5px;
+}
+
+#sidebar  ul.sidebarmenu {
+  padding: 0;
+}
+
+#sidebar ul.sidebarmenu li {
+  display: block;
+  padding: 10px 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#sidebar ul.sidebarmenu li:hover {
+  background-color: rgba(var(--bs-info-rgb),var(--bs-bg-opacity));
+  transition: all 0.15s ease-in-out;
+}
+
+#sidebar form .input-group {
+  margin: 5px 0px;
+}
+
+#sidebar {
+  cursor: default;
+}
+
+#sidebar-animation-info {
+  cursor: text;
+}
+
+.box {
+  border: 1px solid gray;
+  border-radius: 4px;
+  color: white;
+  position: absolute;
+  width: 100px;
+  height: 50px;
+  text-align: center;
+  display: block;
+  box-shadow: 3px 3px 8px #777;
+  cursor: pointer;
+}
+
+.edge {
+  position: absolute;
+  cursor: pointer;
+}
+
+.client {
+  position: absolute;
+  z-index: 5;
+  font-size: 28pt;
+  color: #99F;
+}
+
+.menuButtonTitleShort {
+  display: none;
+}
+
+@media only screen and (max-width: 775px) {
+  .menuButtonTitle {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .menuButtonTitleLong {
+    display: none;
+  }
+  .menuButtonTitleShort {
+    display: inline;
+  }
+}
