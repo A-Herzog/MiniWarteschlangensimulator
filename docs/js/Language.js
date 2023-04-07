@@ -36,8 +36,10 @@ lang.tabFile={};
 lang.tabFile.title="Datei";
 lang.tabFile.button="Datei";
 lang.tabFile.buttonHint="Bietet Funktionen zum Laden und Speichern von Modellen an.";
+lang.tabFile.modelFiles="Modelldateien";
 lang.tabFile.modelNew="Neues leeres Modell";
-lang.tabFile.modelLoad="Modell laden<br><small>Dateien hierhin ziehen</small>";
+lang.tabFile.modelLoad="Modell laden";
+lang.tabFile.modelLoadDragDrop="Dateien hierhin ziehen";
 lang.tabFile.modelSave="Modell speichern";
 lang.tabFile.modelDiscardTitle="Aktuelles Modell verwerfen";
 lang.tabFile.modelDiscardText="Soll das aktuelle Modell wirklich verworfen werden?";
@@ -48,6 +50,8 @@ lang.tabFile.exampleImpatienceRetry="Ungeduld &amp; Wiederholer";
 lang.tabFile.examplePolicy="Bedienreihenfolge";
 lang.tabFile.extended="Erweiterte Funktionen";
 lang.tabFile.extendedParameterSeries="Parameterstudie";
+lang.tabFile.extendedDownloadApp="App herunterladen";
+lang.tabFile.extendedDownloadAppInfo="Mini Warteschlangensimulator als Windows App zur Offline-Nutzung herunterladen";
 lang.tabFile.help="Hilfe &amp; Info";
 lang.tabFile.helpQueueingTheory="Warteschlangentheorie";
 lang.tabFile.helpGlossary="Glossar";
@@ -59,6 +63,10 @@ lang.tabFile.helpHome="warteschlangensimulation.de";
 lang.tabFile.helpHomeURL="https://warteschlangensimulation.de";
 lang.tabFile.helpGitHub="GitHub";
 lang.tabFile.helpGitHubURL="https://github.com/A-Herzog/MiniWarteschlangensimulator";
+lang.tabFile.helpGitHubImprint="GitHub Impressum";
+lang.tabFile.helpGitHubImprintURL="https://aka.ms/impressum";
+lang.tabFile.helpGitHubPrivacy="GitHub Datenschutz";
+lang.tabFile.helpGitHubPrivacyURL="https://docs.github.com/site-policy/privacy-policies/github-privacy-statement";
 
 lang.tabStation={};
 lang.tabStation.title="Stationen hinzufügen";
@@ -113,7 +121,7 @@ lang.tabAnimation.count="Anzahl";
 lang.tabAnimation.threads="Genutzte CPU-Kerne";
 lang.tabAnimation.resultsFile="Ergebnisse.txt";
 
-lang.canvasInfoLang="An <a href=\"index.html\" onclick=\"localStorage.setItem('selectedLanguage','default')\">English version</a> of this simulator is also available.";
+lang.canvasInfoLang="An <a href=\"index.html\" onclick=\"localStorage.setItem('selectedLanguage','default')\" style=\"color: blue;\">English version</a> of this simulator is also available.";
 lang.canvasInfo=`
 Das Modell ist momentan leer.<br><br><small>
 <u>Möglichkeit 1:</u><br>
@@ -278,8 +286,10 @@ lang.tabFile={};
 lang.tabFile.title="File";
 lang.tabFile.button="File";
 lang.tabFile.buttonHint="Offers functions for loading and saving models.";
+lang.tabFile.modelFiles="Model files";
 lang.tabFile.modelNew="New empty model";
-lang.tabFile.modelLoad="Load model<br><small>Drop files here</small>";
+lang.tabFile.modelLoad="Load model";
+lang.tabFile.modelLoadDragDrop="Drop files here";
 lang.tabFile.modelSave="Save model";
 lang.tabFile.modelDiscardTitle="Discard current model";
 lang.tabFile.modelDiscardText="Do you really want to discard the current model?";
@@ -290,6 +300,8 @@ lang.tabFile.exampleImpatienceRetry="Impatience &amp; Retry";
 lang.tabFile.examplePolicy="Operating sequence";
 lang.tabFile.extended="Extended features";
 lang.tabFile.extendedParameterSeries="Parameter studies";
+lang.tabFile.extendedDownloadApp="Download app";
+lang.tabFile.extendedDownloadAppInfo="Download Mini Warteschlangensimulator as Windows app for offline usage";
 lang.tabFile.help="Help &amp; info";
 lang.tabFile.helpQueueingTheory="Queueing theory";
 lang.tabFile.helpGlossary="Glossary";
@@ -301,6 +313,10 @@ lang.tabFile.helpHome="queueingsimulation.de";
 lang.tabFile.helpHomeURL="https://queueingsimulation.de";
 lang.tabFile.helpGitHub="GitHub";
 lang.tabFile.helpGitHubURL="https://github.com/A-Herzog/MiniWarteschlangensimulator";
+lang.tabFile.helpGitHubImprint="GitHub imprint";
+lang.tabFile.helpGitHubImprintURL="https://aka.ms/impressum";
+lang.tabFile.helpGitHubPrivacy="GitHub privacy";
+lang.tabFile.helpGitHubPrivacyURL="https://docs.github.com/site-policy/privacy-policies/github-privacy-statement";
 
 lang.tabStation={};
 lang.tabStation.title="Add stations";
@@ -355,7 +371,7 @@ lang.tabAnimation.count="Count";
 lang.tabAnimation.threads="Used CPU cores";
 lang.tabAnimation.resultsFile="Results.txt";
 
-lang.canvasInfoLang="Eine <a href=\"index_de.html\" onclick=\"localStorage.setItem('selectedLanguage','de')\">deutsche Version</a> dieses Simulators stehen ebenfalls zur Verfügung.";
+lang.canvasInfoLang="Eine <a href=\"index_de.html\" onclick=\"localStorage.setItem('selectedLanguage','de')\" style=\"color: blue;\">deutsche Version</a> dieses Simulators stehen ebenfalls zur Verfügung.";
 lang.canvasInfo=`
 The model is currently empty.<br><br><small>
 <u>Option 1:</u><br>

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas};
+export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas};
 
 import {templates, getRecordByType} from "./Templates.js";
 import {animationActive} from "./Animator.js";
@@ -150,6 +150,18 @@ function fileLoadDragLeave(event) {
   element.style.backgroundColor="";
 }
 
+function fileLodeJSON(text) {
+  const model=JSON.parse(text);
+  discardModel(function() {
+    elements.length=0;
+    edges.length=0;
+    for (let i=0;i<model.elements.length;i++) elements.push(model.elements[i]);
+    for (let i=0;i<model.edges.length;i++) edges.push(model.edges[i]);
+    updateModelOnCanvas();
+    showTemplatesSidebar();
+  });
+}
+
 function fileLoadDrop(event) {
   const element=document.getElementById('fileLoadDropTarget');
   element.style.fontWeight="";
@@ -160,32 +172,46 @@ function fileLoadDrop(event) {
   if (typeof(event.dataTransfer.files)=='undefined' || event.dataTransfer.files.length!=1) return;
   event.dataTransfer.files[0]
 
-  event.dataTransfer.files[0].text().then(function(response){
-    const model=JSON.parse(response);
-    discardModel(function(){
-      elements.length=0;
-      edges.length=0;
-      for (let i=0;i<model.elements.length;i++) elements.push(model.elements[i]);
-      for (let i=0;i<model.edges.length;i++) edges.push(model.edges[i]);
-      updateModelOnCanvas();
-      showTemplatesSidebar();
-    });
-  });
+  event.dataTransfer.files[0].text().then(response=>fileLodeJSON(response));
 
   event.preventDefault();
+}
+
+function fileLoad() {
+  if (!isDesktopApp) return;
+
+  Neutralino.os.showOpenDialog(language.tabFile.modelLoad,{filters: [
+      {name: language.tabFile.modelFiles+' (*.json)', extensions: ['json']}
+    ]}).then(file=>{
+      if (file==null || file.length!=1) return;
+      file=file[0].trim();
+      if (file=='') return;
+      Neutralino.filesystem.readFile(file).then(text=>fileLodeJSON(text));
+    });
 }
 
 function fileSave() {
   const model={elements: elements, edges: edges};
   const json=JSON.stringify(model);
 
-  const element=document.createElement('a');
-  element.setAttribute('href','data:text/plain;charset=utf-8,'+encodeURIComponent(json));
-  element.setAttribute('download','Model.json');
-  element.style.display='none';
-  document.body.appendChild(element);
-  element.click();
-  document.body.removeChild(element);
+  if (isDesktopApp) {
+    Neutralino.os.showSaveDialog(language.tabFile.modelSave, {defaultPath: 'model.json', filters: [
+      {name: language.tabFile.modelFiles+' (*.json)', extensions: ['json']}
+    ]}).then(file=>{
+      file=file.trim();
+      if (file=='') return;
+      if (!file.toLocaleLowerCase().endsWith(".json")) file+=".json";
+      Neutralino.filesystem.writeFile(file,json);
+    });
+  } else {
+    const element=document.createElement('a');
+    element.setAttribute('href','data:text/plain;charset=utf-8,'+encodeURIComponent(json));
+    element.setAttribute('download','Model.json');
+    element.style.display='none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
 }
 
 
@@ -308,7 +334,7 @@ function handle_touch_down(e) {
   dragStartElementX=e.target.offsetLeft;
   dragStartElementY=e.target.offsetTop;
   dragStartX=e.targetTouches[0].clientX;
-	dragStartY=e.targetTouches[0].clientY;
+  dragStartY=e.targetTouches[0].clientY;
 }
 
 function handle_touch_move(e) {
@@ -316,7 +342,7 @@ function handle_touch_move(e) {
 
   /* Verschiebung relativ zur Startposition */
   const posx=e.targetTouches[0].clientX;
-	const posy=e.targetTouches[0].clientY;
+  const posy=e.targetTouches[0].clientY;
   const deltaX=posx-dragStartX;
   const deltaY=posy-dragStartY;
   e.target.style.left=(dragStartElementX+deltaX)+"px";

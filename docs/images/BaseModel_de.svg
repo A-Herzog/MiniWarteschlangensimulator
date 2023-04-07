@@ -88,7 +88,7 @@
   <g class="TextShape">
    <g id="id4">
     <rect class="BoundingBox" stroke="none" fill="none" x="1000" y="4721" width="4501" height="1459"/>
-    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Calibri, sans-serif" font-size="564px" font-weight="400"><tspan class="TextPosition" x="2209" y="5327"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">Ankünfte </tspan></tspan><tspan class="TextPosition" x="1851" y="6001"><tspan font-size="423px" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">(Ankunftsrate </tspan><tspan font-family="Symbol" font-size="423px" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">l</tspan><tspan font-size="423px" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">)</tspan></tspan></tspan></text>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Calibri, sans-serif" font-size="564px" font-weight="400"><tspan class="TextPosition" x="2209" y="5324"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">Ankünfte</tspan></tspan></tspan><tspan class="TextParagraph" font-family="Calibri, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="1851" y="5892"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">(Ankunftsrate </tspan><tspan font-family="Symbol" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">l</tspan><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">)</tspan></tspan></tspan></text>
    </g>
   </g>
   <g class="Group">
@@ -191,7 +191,7 @@
    <g class="TextShape">
     <g id="id14">
      <rect class="BoundingBox" stroke="none" fill="none" x="11000" y="4000" width="4701" height="4701"/>
-     <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Calibri, sans-serif" font-size="564px" font-weight="400"><tspan class="TextPosition" x="11407" y="5890"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">Bedienung durch </tspan></tspan><tspan class="TextPosition" x="12137" y="6565"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">c Bediener </tspan></tspan><tspan class="TextPosition" x="12110" y="7239"><tspan font-size="423px" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">(Bedienrate </tspan><tspan font-family="Symbol" font-size="423px" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">m</tspan><tspan font-size="423px" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">)</tspan></tspan></tspan></text>
+     <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Calibri, sans-serif" font-size="564px" font-weight="400"><tspan class="TextPosition" x="11407" y="5943"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">Bedienung durch</tspan></tspan></tspan><tspan class="TextParagraph" font-family="Calibri, sans-serif" font-size="564px" font-weight="400"><tspan class="TextPosition" x="12137" y="6506"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">c Bediener</tspan></tspan></tspan><tspan class="TextParagraph" font-family="Calibri, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="12110" y="7074"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">(Bedienrate </tspan><tspan font-family="Symbol" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">m</tspan><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">)</tspan></tspan></tspan></text>
     </g>
    </g>
   </g>
@@ -205,7 +205,7 @@
   <g class="TextShape">
    <g id="id16">
     <rect class="BoundingBox" stroke="none" fill="none" x="18300" y="4929" width="3701" height="2844"/>
-    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Calibri, sans-serif" font-size="564px" font-weight="400"><tspan class="TextPosition" x="18371" y="5535"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">Kunde wurde </tspan></tspan><tspan class="TextPosition" x="18371" y="6210"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">bedient und </tspan></tspan><tspan class="TextPosition" x="18371" y="6885"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">verlässt das </tspan></tspan><tspan class="TextPosition" x="18371" y="7560"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">System</tspan></tspan></tspan></text>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Calibri, sans-serif" font-size="564px" font-weight="400"><tspan class="TextPosition" x="18371" y="5647"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">Kunde wurde </tspan></tspan><tspan class="TextPosition" x="18371" y="6210"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">bedient und </tspan></tspan><tspan class="TextPosition" x="18371" y="6773"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">verlässt das </tspan></tspan><tspan class="TextPosition" x="18371" y="7336"><tspan fill="rgb(0,0,0)" stroke="none" style="white-space: pre">System</tspan></tspan></tspan></text>
    </g>
   </g>
  </g>

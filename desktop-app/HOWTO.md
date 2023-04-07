@@ -1,7 +1,7 @@
 # How to build a desktop app of MiniWarteschlangensimulator
 
 MiniWarteschlangensimulator can be used as a web service.
-To use simulator just go to
+To use the simulator just go to
 
 **[a-herzog.github.io/MiniWarteschlangensimulator](https://a-herzog.github.io/MiniWarteschlangensimulator)**
 
