@@ -32,6 +32,7 @@ function loadExample(nr, discardOkChecked=false) {
   if (nr==1) loadExampleStrategies();
   if (nr==2) loadExampleRetry();
   if (nr==3) loadExamplePolicy();
+  if (nr==4) loadPushPull();
 
   showTemplatesSidebar();
 }
@@ -163,4 +164,39 @@ function loadExamplePolicy() {
 
   addTextToModel(400,100,language.examples.examplePolicyInfo1,12);
   addTextToModel(420,100,language.examples.examplePolicyInfo2,12);
+}
+
+function loadPushPull() {
+  addTextToModel(50,100,language.examples.examplePushPull,16);
+
+  const sourceBoxId=addElementToModel("Source",220,100);
+  const duplicateBoxId=addElementToModel("Duplicate",220,250);
+
+  const processBoxId1=addElementToModel("Process",120,450);
+  const processBoxId2=addElementToModel("Process",120,600);
+  const disposeBoxId1=addElementToModel("Dispose",120,1050);
+
+  const barrierBoxId=addElementToModel("Barrier",320,450);
+  const processBoxId3=addElementToModel("Process",320,600);
+  const processBoxId4=addElementToModel("Process",320,750);
+  const signalBoxId=addElementToModel("Signal",320,900);
+  const disposeBoxId2=addElementToModel("Dispose",320,1050);
+  const setup=getElementByBoxId(barrierBoxId).setup;
+  setup.release=3;
+  setup.signal='1';
+
+  addEdgeToModel(sourceBoxId,duplicateBoxId);
+
+  addEdgeToModel(duplicateBoxId,processBoxId1);
+  addEdgeToModel(processBoxId1,processBoxId2);
+  addEdgeToModel(processBoxId2,disposeBoxId1);
+
+  addEdgeToModel(duplicateBoxId,barrierBoxId);
+  addEdgeToModel(barrierBoxId,processBoxId3);
+  addEdgeToModel(processBoxId3,processBoxId4);
+  addEdgeToModel(processBoxId4,signalBoxId);
+  addEdgeToModel(signalBoxId,disposeBoxId2);
+
+  addTextToModel(450,100,language.examples.examplePushPullInfo1,12);
+  addTextToModel(470,100,language.examples.examplePushPullInfo2,12);
 }

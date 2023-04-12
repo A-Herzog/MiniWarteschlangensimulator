@@ -151,6 +151,23 @@ templates.push({
   addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Separate",id,language.templates.separate+"<br>"+nr,"#F0F","#FAF",top,left,isTemplate);}
 });
 templates.push({
+  type: 'Signal',
+  color: "#FB3",
+  name: language.templates.signal,
+  maxEdgesIn: 999,
+  maxEdgesOut: 1,
+  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Signal",id,language.templates.signal+"<br>"+nr,"#FB3","#FD7",top,left,isTemplate);}
+});
+templates.push({
+  type: 'Barrier',
+  color: "#FB3",
+  name: language.templates.barrier,
+  maxEdgesIn: 999,
+  maxEdgesOut: 1,
+  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Barrier",id,language.templates.barrier+"<br>"+nr,"#FB3","#FD7",top,left,isTemplate);},
+  setup: {release: 1, signal: ''}
+});
+templates.push({
   type: 'Text',
   name: language.templates.text,
   maxEdgesIn: 0,

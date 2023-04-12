@@ -147,6 +147,7 @@
         <li tabindex="0" onclick="loadExample(1)"><i class="bi bi-boxes" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.exampleControl);</script></li>
         <li tabindex="0" onclick="loadExample(2)"><i class="bi bi-boxes" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.exampleImpatienceRetry);</script></li>
         <li tabindex="0" onclick="loadExample(3)"><i class="bi bi-boxes" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.examplePolicy);</script></li>
+        <li tabindex="0" onclick="loadExample(4)"><i class="bi bi-boxes" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.examplePushPull);</script></li>
       </ul>
       <h5 style="margin-top: 30px;"><script>document.write(language.tabFile.extended);</script></h5>
       <ul class="sidebarmenu">
@@ -172,7 +173,7 @@
       <script>if (window.Touch) document.write('<div style="font-size: 75%; margin-top: 10px;">('+language.tabStation.infoTouch+')</div>');</script>
     </div>
     <div style="position: relative; overflow-x: hidden; overflow-y: auto; margin: 5px 20px 5px 20px; border-radius: 5px;" id="template_outer">
-      <div id="templates_area" class="canvas_area" style="width: 100%; height: calc(max(685px,100%));"></div>
+      <div id="templates_area" class="canvas_area" style="width: 100%; height: calc(max(835px,100%));"></div>
     </div>
   </span>
 
@@ -231,8 +232,8 @@
         <li tabindex="0" onclick="if (isDesktopApp) Neutralino.os.open(language.tabFile.helpGitHubURL); else window.open(language.tabFile.helpGitHubURL);"><i class="bi bi-github" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.helpGitHub);</script></li>
         <script>
         if (!isDesktopApp) {
-          document.write('<li tabindex="0" onclick="window.open(\''+language.tabFile.helpGitHubImprintURL+'\');" target="_blank">'+language.tabFile.helpGitHubImprint);
-          document.write('<li tabindex="0" onclick="window.open(\''+language.tabFile.helpGitHubPrivacyURL+'\');" target="_blank">'+language.tabFile.helpGitHubPrivacy);
+          document.write('<li tabindex="0" onclick="window.open(\''+language.tabFile.helpGitHubImprintURL+'\');" target="_blank">'+language.tabFile.helpGitHubImprint+"</li>");
+          document.write('<li tabindex="0" onclick="window.open(\''+language.tabFile.helpGitHubPrivacyURL+'\');" target="_blank">'+language.tabFile.helpGitHubPrivacy+"</li>");
         }
         </script>
         <li tabindex="0" onclick="if (isDesktopApp) Neutralino.os.open(language.tabFile.helpHomeURL); else window.open(language.tabFile.helpHomeURL);"><script>document.write(language.tabFile.helpHome);</script></li>

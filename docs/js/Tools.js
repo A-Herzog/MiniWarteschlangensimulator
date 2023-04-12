@@ -82,7 +82,7 @@ function getPositiveInt(value) {
   return result;
 }
 
-function getNotNegativeInt(id) {
+function getNotNegativeInt(value) {
   const result=getInt(value);
   if (result==null) return null;
   if (result<0) return null;

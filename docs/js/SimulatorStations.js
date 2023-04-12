@@ -69,6 +69,9 @@ class SimElement {
   sendClient(simulator, client, destination, delta=0) {
     SendEvent.sendClient(simulator, this, destination, client, delta);
   }
+
+  signal(simulator, nr) {
+  }
 }
 
 
@@ -601,7 +604,7 @@ class SimSeparate extends SimElement {
   processArrival(simulator, client) {
     /* Handelt es sich überhaupt um einen Batch-Kunden? */
     if (typeof(client.sub)=='undefined') {
-      this.sendClient(simulator,client,this.nextSimElements[i],0);
+      this.sendClient(simulator,client,this.nextSimElements[0],0);
       return;
     }
 
@@ -618,5 +621,107 @@ class SimSeparate extends SimElement {
     for (let i=0;i<client.sub.length;i++) {
       this.sendClient(simulator,client.sub[i],this.nextSimElements[0],0);
     }
+  }
+}
+
+
+
+class SimSignal extends SimElement {
+  constructor(editElement) {
+    super(editElement);
+    this.nr=editElement.nr;
+  }
+
+  build(globalStatistics) {
+    const superError=super.build(globalStatistics);
+    if (superError!=null) return superError;
+
+    if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderSeparate.edge;
+
+    return null;
+  }
+
+  processArrival(simulator, client) {
+    simulator.fireSignal(this.nr);
+    this.sendClient(simulator,client,this.nextSimElements[0],0);
+  }
+}
+
+
+
+class SimBarrier extends SimElement {
+  constructor(editElement) {
+    super(editElement);
+    this.queue=[];
+    this.nq=0;
+  }
+
+  build(globalStatistics) {
+    const superError=super.build(globalStatistics);
+    if (superError!=null) return superError;
+
+    if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderSeparate.edge;
+
+    const setup=this.editElement.setup;
+
+    this.release=getNotNegativeInt(setup.release);
+    if (this.release==null) return language.builderProcess.release;
+
+    this.signalNr=getPositiveInt(setup.signal);
+    if (this.signalNr==null) return language.builderProcess.signal;
+
+    this.initStatistics(globalStatistics,2,{W: new statcore.Values(), NQ: new statcore.States(), n: new statcore.Counter()});
+
+    return null;
+  }
+
+  doneStatistics(simulator) {
+    this.statistics.NQ.set(simulator.time,this.nq);
+  }
+
+  processArrival(simulator, client) {
+    const time=simulator.time;
+    const statistics=this.statistics;
+    statistics.n.add();
+
+    /* Kunde an Warteschlange anstellen */
+    this.queue.push(client);
+    this.nq++;
+    statistics.NQ.set(time,this.nq);
+    client.startWaiting=time;
+
+    /* Prüfen, ob eine Freigabe erfolgen kann */
+    this.testRelease(simulator);
+  }
+
+  signal(simulator, nr) {
+    if (nr!=this.signalNr) return;
+    this.release++; /* Freigabezähler erhöhen */
+    console.log("Release!");
+    this.testRelease(simulator);
+  }
+
+  testRelease(simulator) {
+    /* Freigabe möglich? */
+    if (this.queue.length==0 || this.release==0) return;
+    this.release--; /* Freigabezähler verringern */
+
+    const statistics=this.statistics;
+    const time=simulator.time;
+
+    /* Kunden Warteschlange entnehmen */
+    const client=this.queue.shift();
+
+    /* Statistik für Station und Kunde erfassen */
+    const W=time-client.startWaiting;
+    statistics.W.add(W);
+    client.w+=W;
+
+    /* Weiterleitung konfigurieren */
+    this.sendClient(simulator,client,this.nextSimElements[0],0);
+
+    /* Warteschlangenlänge erfassen */
+    this.nq--;
+    statistics.NQ.set(time,this.nq);
   }
 }

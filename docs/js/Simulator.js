@@ -82,6 +82,10 @@ class WebSimulator extends simcore.Simulator {
     return status;
   }
 
+  fireSignal(nr) {
+    for (let station of this.simStations) if (typeof(station.signal)=='function') station.signal(this,nr);
+  }
+
   get info() {
     let status="";
     status+="<p><small>"+language.tabAnimation.time+": "+simcore.formatTime(this.time)+"</small></p>";

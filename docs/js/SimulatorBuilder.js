@@ -52,6 +52,9 @@ class SimModelBuilder {
       if (simElement==null && type=='Dispose') simElement=new SimDispose(editElement);
       if (simElement==null && type=='Batch') simElement=new SimBatch(editElement);
       if (simElement==null && type=='Separate') simElement=new SimSeparate(editElement);
+      if (simElement==null && type=='Signal') simElement=new SimSignal(editElement);
+      if (simElement==null && type=='Barrier') simElement=new SimBarrier(editElement);
+
       if (type=='Text') continue;
       if (simElement==null) return language.builder.unknownStationType+": "+editElement.type;
       this.stationsList.push(simElement);

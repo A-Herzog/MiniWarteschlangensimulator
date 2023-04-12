@@ -48,6 +48,7 @@ lang.tabFile.exampleSimple="Einfaches Beispielmodell";
 lang.tabFile.exampleControl="Steuerungsstrategien";
 lang.tabFile.exampleImpatienceRetry="Ungeduld &amp; Wiederholer";
 lang.tabFile.examplePolicy="Bedienreihenfolge";
+lang.tabFile.examplePushPull="Push und Pull";
 lang.tabFile.extended="Erweiterte Funktionen";
 lang.tabFile.extendedParameterSeries="Parameterstudie";
 lang.tabFile.extendedDownloadApp="App herunterladen";
@@ -143,6 +144,8 @@ lang.templates.counter="Zähler";
 lang.templates.dispose="Ausgang";
 lang.templates.batch="Batch";
 lang.templates.separate="Trennen";
+lang.templates.signal="Signal";
+lang.templates.barrier="Schranke";
 lang.templates.text="Text";
 
 lang.editor={};
@@ -171,6 +174,10 @@ lang.editor.text="Anzuzeigender Text";
 lang.editor.fontSize="Schriftgröße (in pt)";
 lang.editor.fontSizeLabel="Größe";
 lang.editor.SuccessNextBox="Folgestation für erfolgreiche Kunden";
+lang.editor.release="Initial freigeben";
+lang.editor.releaseLabel="Anzahl";
+lang.editor.signal="Auf Signal reagieren";
+lang.editor.signalLabel="Signal";
 lang.editor.noSettings="Die Station besitzt keine Einstellungen.";
 lang.editor.deleteStation="Station löschen";
 
@@ -200,6 +207,8 @@ lang.builderProcess.b="Die angegebene Batch-Größe <b>b</b> ist ungültig.<br>E
 lang.builderProcess.c="Die angegebene Anzahl an Bedienern <b>c</b> ist ungültig.<br>Es muss eine <b>positive Ganzzahl</b> angegeben werden.";
 lang.builderProcess.EWT="Die angegebene mittlere Wartezeittolerant <b>E[WT]</b> ist ungültig.<br>Es muss eine <b>positive Zahl</b> angegeben werden.";
 lang.builderProcess.CVWT="Der angegebene Variationskoeffizient der Wartezeittoleranzen <b>CV[WT]</b> ist ungültig.<br>Es muss eine <b>nichtnegative Zahl</b> angegeben werden.";
+lang.builderProcess.release="Die Anzahl an initial freizugebenden Kunden ist ungültig.<br>Es muss eine <b>nichtnegative Ganzzahl</b> angegeben werden.";
+lang.builderProcess.signal="Das angegebene Signal, welches Freigaben auslösen soll, existiert nicht.";
 
 lang.builderDecide={};
 lang.builderDecide.edge="Die Verzweigen-Station muss eine oder mehrere auslaufende Kanten besitzen.<br>Klicken Sie auf <b><i class='bi bi-share-fill'></i> Kanten hinzufügen</b>, um die Station mit einer weiteren Station zu verbinden.";
@@ -241,7 +250,9 @@ lang.examples.examplePolicyRandom="Zufällig";
 lang.examples.examplePolicyLIFO="LIFO";
 lang.examples.examplePolicyInfo1="Die Bedienreihenfolge hat keinen Einfluss auf die mittleren Wartezeiten,";
 lang.examples.examplePolicyInfo2="aber die Streuung der Wartezeiten variiert sehr deutlich.";
-
+lang.examples.examplePushPull="Push- und Pull-Produktion";
+lang.examples.examplePushPullInfo1="In dem oberen Strang werden die Kunden ohne Restriktionen zu den beiden Bedienstationen geleitet (Push-Produktion).";
+lang.examples.examplePushPullInfo2="In dem unteren Strang sorgt die Schranke dafür, dass sich stets nur maximal drei Kunden an den beiden Bedienstationen befinden (Pull-Produktion).";
 
 lang.series={};
 lang.series.noParameter="Das Modell enthält keine Stationen mit variierbaren Parametern.";
@@ -298,6 +309,7 @@ lang.tabFile.exampleSimple="Simple example model";
 lang.tabFile.exampleControl="Control strategies";
 lang.tabFile.exampleImpatienceRetry="Impatience &amp; Retry";
 lang.tabFile.examplePolicy="Operating sequence";
+lang.tabFile.examplePushPull="Push and pull";
 lang.tabFile.extended="Extended features";
 lang.tabFile.extendedParameterSeries="Parameter studies";
 lang.tabFile.extendedDownloadApp="Download app";
@@ -393,6 +405,8 @@ lang.templates.counter="Counter";
 lang.templates.dispose="Exit";
 lang.templates.batch="Batch";
 lang.templates.separate="Separate";
+lang.templates.signal="Signal";
+lang.templates.barrier="Barrier";
 lang.templates.text="Text";
 
 lang.editor={};
@@ -421,6 +435,10 @@ lang.editor.text="Text to be displayed";
 lang.editor.fontSize="Font size (in pt)";
 lang.editor.fontSizeLabel="Size";
 lang.editor.SuccessNextBox="Next station for successful clients";
+lang.editor.release="Release initial";
+lang.editor.releaseLabel="Count";
+lang.editor.signal="Respond to signal";
+lang.editor.signalLabel="Signal";
 lang.editor.noSettings="The station does not have any settings.";
 lang.editor.deleteStation="Delete station";
 
@@ -450,6 +468,8 @@ lang.builderProcess.b="The specified batch size <b>b</b> is invalid.<br>A <b>pos
 lang.builderProcess.c="The specified number of operators <b>c</b> is invalid.<br>A <b>positive integer number</b> has to be entered.";
 lang.builderProcess.EWT="The specified average waiting time tolerance <b>E[WT]</b> is invalid.<br>A <b>positive number</b> has to be entered.";
 lang.builderProcess.CVWT="The specified coefficient of variation of the waiting time tolerances <b>CV[WT]</b> is invalid.<br>A <b>non-negative number</b> has to be entered.";
+lang.builderProcess.release="The number of clients to be released initially is invalid.<br>A <b>non-negative integer number</b> has to be entered.";
+lang.builderProcess.signal="The specified signal, which should trigger releases, does not exist.";
 
 lang.builderDecide={};
 lang.builderDecide.edge="The decide station has to have one or more outgoing edges.<br>Click on <b><i class='bi bi-share-fill'></i> Add edge</b> to connect the station to another station.";
@@ -492,6 +512,9 @@ lang.examples.examplePolicyRandom="Random";
 lang.examples.examplePolicyLIFO="LIFO";
 lang.examples.examplePolicyInfo1="The operating order has no influence on the mean waiting times,";
 lang.examples.examplePolicyInfo2="but the variance of the waiting times varies very significantly.";
+lang.examples.examplePushPull="Push and pull production";
+lang.examples.examplePushPullInfo1="In the upper line, clients are directed to the two process stations without restrictions (push production).";
+lang.examples.examplePushPullInfo2="In the lower line, the barrier ensures that there are always only a maximum of three clients at the two process stations (pull production).";
 
 lang.series={};
 lang.series.noParameter="The model does not contain stations with variable parameters.";

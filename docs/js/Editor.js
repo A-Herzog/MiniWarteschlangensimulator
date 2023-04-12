@@ -463,7 +463,7 @@ function canvasClick(event) {
 
   /* Element anklicken */
   if (typeof(target.dataset.elementIndex)!='undefined') {
-    showElementEditor(elements[target.dataset.elementIndex],target.dataset.elementIndex);
+    showElementEditor(elements[target.dataset.elementIndex],target.dataset.elementIndex,elements);
     return;
   }
 
@@ -491,6 +491,7 @@ function showEdgeEditor(edge, index) {
   editor.appendChild(document.createElement("hr"));
 
   const menu=document.createElement("ul");
+  menu.className="sidebarmenu";
   editor.appendChild(menu);
 
   const item=document.createElement("li");
@@ -499,7 +500,7 @@ function showEdgeEditor(edge, index) {
   item.onclick=function() {edges.splice(index,1); updateModelOnCanvas(); showTemplatesSidebar();}
 }
 
-function showElementEditor(element, index) {
+function showElementEditor(element, index, allElements) {
   const name=getRecordByType(element.type).name+" "+element.nr;
 
   showEditorSidebar();
@@ -511,7 +512,7 @@ function showElementEditor(element, index) {
 
   editor.appendChild(document.createElement("hr"));
 
-  addEditorElements(element,editor);
+  addEditorElements(element,editor,allElements);
 
   editor.appendChild(document.createElement("hr"));
 
@@ -545,6 +546,8 @@ function descriptionForParameter(parameter) {
   if (parameter=="text") return language.editor.text;
   if (parameter=="fontSize") return language.editor.fontSize;
   if (parameter=="SuccessNextBox") return language.editor.SuccessNextBox;
+  if (parameter=='release') return language.editor.release;
+  if (parameter=='signal') return language.editor.signal;
   return "";
 }
 
@@ -561,6 +564,8 @@ function nameForParameter(parameter) {
   if (parameter=="text") return "";
   if (parameter=="fontSize") return language.editor.fontSizeLabel;
   if (parameter=="SuccessNextBox") return "";
+  if (parameter=='release') return language.editor.releaseLabel;
+  if (parameter=='signal') return language.editor.signalLabel;
   return parameter;
 }
 
@@ -572,7 +577,7 @@ function getNextStations(element) {
   return nextElements;
 }
 
-function addEditorElements(element, parent) {
+function addEditorElements(element, parent, allElements) {
   if (typeof(element.setup)=='undefined' || element.setup.length==0) {
     const info=document.createElement("div");
     parent.appendChild(info);
@@ -647,6 +652,19 @@ function addEditorElements(element, parent) {
       let options="";
       options+="<option value='"+nextElements[0].id+"'"+((val==nextElements[0].id)?' selected':'')+'>'+nextElements[0].name+'</option>';
       options+="<option value='"+nextElements[1].id+"'"+((val==nextElements[1].id)?' selected':'')+'>'+nextElements[1].name+'</option>';
+      select.innerHTML=options;
+      select.onchange=function(){element.setup[name]=select.value;}
+      continue;
+    }
+
+    if (name=="signal") {
+      const select=document.createElement("select");
+      div.appendChild(select);
+      select.className="form-select";
+      let options="";
+      for (let nr of allElements.filter(element=>element.type=='Signal').map(element=>element.nr)) {
+        options+="<option value='"+nr+"'"+((value==nr)?' selected':'')+'>'+language.templates.signal+" "+nr+'</option>';
+      }
       select.innerHTML=options;
       select.onchange=function(){element.setup[name]=select.value;}
       continue;
