@@ -70,8 +70,9 @@
     window.elements=elements;
     window.edges=edges;
 
-    import {templates} from './js/Templates.js';
+    import {templates, getRecordByType} from './js/Templates.js';
     window.templates=templates;
+    window.getRecordByType=getRecordByType;
 
     import {loadExample} from "./js/Example.js";
     window.loadExample=loadExample;
@@ -173,7 +174,7 @@
       <script>if (window.Touch) document.write('<div style="font-size: 75%; margin-top: 10px;">('+language.tabStation.infoTouch+')</div>');</script>
     </div>
     <div style="position: relative; overflow-x: hidden; overflow-y: auto; margin: 5px 20px 5px 20px; border-radius: 5px;" id="template_outer">
-      <div id="templates_area" class="canvas_area" style="width: 100%; height: calc(max(835px,100%));"></div>
+      <div id="templates_area" class="canvas_area" style="width: 100%;"></div>
     </div>
   </span>
 

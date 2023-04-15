@@ -92,6 +92,25 @@
   cursor: pointer;
 }
 
+.box_diagram {
+  border: 1px solid lightgray;
+  color: white;
+  position: absolute;
+  width: 650px;
+  height: 250px;
+  text-align: left;
+  font-size: 80%;
+  padding: 2px;
+  display: block;
+  box-shadow: 1px 1px 4px #777;
+  cursor: pointer;
+}
+
+.box_diagram_template {
+  width: 150px;
+  height: 100px;
+}
+
 .edge {
   position: absolute;
   cursor: pointer;

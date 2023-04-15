@@ -67,6 +67,115 @@ function addText(type, id, text, fontSize, top, left, isTemplate) {
   return box;
 }
 
+function addDiagram(type, id, top, left, sourceName, isTemplate) {
+  const box=document.createElement("div");
+  box.className="box_diagram draggable";
+  if (isTemplate) {
+    box.classList.add("box_diagram_template");
+    box.innerHTML=language.templates.diagram;
+  } else {
+    box.innerHTML=language.templates.diagram+((sourceName!='')?(", "+language.templates.diagramSource+"=<b>"+sourceName+"</b>, "+"aktuelle Anzahl an Kunden an der Station"):"");
+  }
+  box.id=id;
+  box.style.zIndex=1;
+  box.style.top=top+"px";
+  box.style.left=left+"px";
+  box.style.color="blue";
+  box.style.background="#EEF linear-gradient(to right, #EEF, #F2F2FF)";
+  box.draggable=true;
+  box.dataset.type=type;
+  if (isTemplate) {
+    document.getElementById("templates_area").appendChild(box);
+    box.ondragstart=dragTemplate;
+  } else {
+    document.getElementById("canvas_area").appendChild(box);
+    box.ondragstart=dragElement;
+  }
+  return box;
+}
+
+function animateDiagram(time, simStation, simData, simStations) {
+  /* Zugehörige Quelle beim ersten Aufruf ermitteln */
+  if (typeof(simData.simStationIndex)=='undefined') {
+    simData.simStationIndex=-1;
+    for (let i=0;i<simStations.length;i++) {
+      const editElement=simStations[i].editElement;
+      if (editElement.type+"-"+editElement.nr==simStation.setup.source) {
+        simData.simStationIndex=i;
+        break;
+      }
+    }
+    const hours=getPositiveFloat(simStation.setup.xrange);
+    if (hours==null) simData.storeSize=2*3600; else simData.storeSize=hours*3600;
+  }
+  if (simData.simStationIndex<0) return;
+
+  /* Aktuellen Wert auslesen */
+  const currentYValue=simStations[simData.simStationIndex].n;
+
+  /* Alte Werte wenn nötig löschen, neuen Wert hinzufügen */
+  if (typeof(simData.values)=='undefined') {
+    simData.values=[];
+    simData.values.push({x: 0, y: 0});
+  }
+  const values=simData.values;
+  if (values.length>0) {
+    let deleteCount=0;
+    const limit=time-simData.storeSize;
+    for (let i=0;i<values.length;i++) if (values[i].x<limit) deleteCount=i+1; else break;
+    if (deleteCount>0) values.splice(0,deleteCount);
+  }
+  if (values.length>0 && values[values.length-1].x==time) {
+    values[values.length-1].y=currentYValue;
+  } else {
+    values.push({x: time, y: currentYValue});
+  }
+
+  /* Zeichenfläche beim ersten Aufruf vorbereiten */
+  if (typeof(simData.canvas)=='undefined') {
+    const outerElement=document.getElementById(simStation.boxId);
+    const canvas=document.createElement("canvas");
+    outerElement.appendChild(canvas);
+    canvas.style.width ='100%';
+    canvas.style.height='100%';
+    canvas.width=canvas.offsetWidth;
+    canvas.height=canvas.offsetHeight;
+    simData.canvas=canvas;
+    simData.canvasMaxX=canvas.width-canvas.offsetLeft;
+    simData.canvasMaxY=canvas.height-canvas.offsetTop;
+  }
+
+  /* Diagramm zeichnen */
+  let maxYValue=values.map(value=>value.y).reduce((a,b)=>Math.max(a,b));
+  maxYValue=Math.max(10,maxYValue);
+  if (maxYValue>10) maxYValue=Math.max(maxYValue,20);
+  if (maxYValue>20) maxYValue=Math.max(maxYValue,50);
+  if (maxYValue>50) maxYValue=Math.max(maxYValue,100);
+  if (maxYValue>100) maxYValue=Math.max(maxYValue,200);
+  if (maxYValue>200) maxYValue=500;
+
+  const canvas=simData.canvas;
+  const ctx=canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  ctx.font="10px";
+  ctx.fillText("0",0,simData.canvasMaxY);
+  ctx.fillText(maxYValue,0,10);
+
+  ctx.beginPath();
+  let first=true;
+  for (let value of values) {
+    const x=(1-(time-value.x)/simData.storeSize)*simData.canvasMaxX;
+    const y=(1-Math.min(1,value.y/maxYValue))*simData.canvasMaxY;
+    if (first) {ctx.moveTo(x,y); first=false;} else ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+}
+
+function animateDiagramClean(simStation, simData) {
+  if (typeof(simData.canvas)!='undefined') simData.canvas.parentElement.removeChild(simData.canvas);
+}
+
 
 
 /* Vorlagen */
@@ -79,7 +188,7 @@ templates.push({
   name: language.templates.source,
   maxEdgesIn: 0,
   maxEdgesOut: 1,
-  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Source",id,language.templates.source+"<br>"+nr,"green","#1C1",top,left,isTemplate);},
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Source",id,language.templates.source+"<br>"+nr,"green","#1C1",top,left,isTemplate),
   setup: {EI: 100, CVI: 1, b: 1}
 });
 templates.push({
@@ -88,7 +197,7 @@ templates.push({
   name: language.templates.delay,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Delay",id,language.templates.delay+"<br>"+nr,"#55F","#99F",top,left,isTemplate);},
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Delay",id,language.templates.delay+"<br>"+nr,"#55F","#99F",top,left,isTemplate),
   setup: {ES: 80, CVS: 1}
 });
 templates.push({
@@ -97,7 +206,7 @@ templates.push({
   name: language.templates.process,
   maxEdgesIn: 999,
   maxEdgesOut: 2,
-  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Process",id,language.templates.process+"<br>"+nr,"#00C","#33F",top,left,isTemplate);},
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Process",id,language.templates.process+"<br>"+nr,"#00C","#33F",top,left,isTemplate),
   setup: {ES: 80, CVS: 1, c: 1, b: 1, EWT: 300, CVWT: 1, policy: 1, SuccessNextBox: ''}
 });
 templates.push({
@@ -106,7 +215,7 @@ templates.push({
   name: language.templates.decide,
   maxEdgesIn: 999,
   maxEdgesOut: 999,
-  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Decide",id,language.templates.decide+"<br>"+nr,"#DD0","#DD7",top,left,isTemplate);},
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Decide",id,language.templates.decide+"<br>"+nr,"#DD0","#DD7",top,left,isTemplate),
   setup: {mode: 0, rates: "1;1"}
 });
 templates.push({
@@ -115,7 +224,7 @@ templates.push({
   name: language.templates.duplicate,
   maxEdgesIn: 999,
   maxEdgesOut: 999,
-  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Duplicate",id,language.templates.duplicate+"<br>"+nr,"#900","#955",top,left,isTemplate);}
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Duplicate",id,language.templates.duplicate+"<br>"+nr,"#900","#955",top,left,isTemplate)
 });
 templates.push({
   type: 'Counter',
@@ -123,7 +232,7 @@ templates.push({
   name: language.templates.counter,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Counter",id,language.templates.counter+"<br>"+nr,"#BBB","#DDD",top,left,isTemplate);}
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Counter",id,language.templates.counter+"<br>"+nr,"#BBB","#DDD",top,left,isTemplate)
 });
 templates.push({
   type: 'Dispose',
@@ -131,7 +240,7 @@ templates.push({
   name: language.templates.dispose,
   maxEdgesIn: 999,
   maxEdgesOut: 0,
-  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Dispose",id,language.templates.dispose+"<br>"+nr,"red","#F33",top,left,isTemplate);}
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Dispose",id,language.templates.dispose+"<br>"+nr,"red","#F33",top,left,isTemplate)
 });
 templates.push({
   type: 'Batch',
@@ -139,7 +248,7 @@ templates.push({
   name: language.templates.batch,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Batch",id,language.templates.batch+"<br>"+nr,"#F0F","#FAF",top,left,isTemplate);},
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Batch",id,language.templates.batch+"<br>"+nr,"#F0F","#FAF",top,left,isTemplate),
   setup: {b: 2}
 });
 templates.push({
@@ -148,7 +257,7 @@ templates.push({
   name: language.templates.separate,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Separate",id,language.templates.separate+"<br>"+nr,"#F0F","#FAF",top,left,isTemplate);}
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Separate",id,language.templates.separate+"<br>"+nr,"#F0F","#FAF",top,left,isTemplate)
 });
 templates.push({
   type: 'Signal',
@@ -156,7 +265,7 @@ templates.push({
   name: language.templates.signal,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Signal",id,language.templates.signal+"<br>"+nr,"#FB3","#FD7",top,left,isTemplate);}
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Signal",id,language.templates.signal+"<br>"+nr,"#FB3","#FD7",top,left,isTemplate)
 });
 templates.push({
   type: 'Barrier',
@@ -164,7 +273,7 @@ templates.push({
   name: language.templates.barrier,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: function(id, nr, top, left, setup, isTemplate) {return addBox("Barrier",id,language.templates.barrier+"<br>"+nr,"#FB3","#FD7",top,left,isTemplate);},
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Barrier",id,language.templates.barrier+"<br>"+nr,"#FB3","#FD7",top,left,isTemplate),
   setup: {release: 1, signal: ''}
 });
 templates.push({
@@ -172,12 +281,29 @@ templates.push({
   name: language.templates.text,
   maxEdgesIn: 0,
   maxEdgesOut: 0,
-  addFunc: function(id, nr, top, left, setup, isTemplate) {return addText("Text",id,setup.text,setup.fontSize,top,left,isTemplate);},
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addText("Text",id,setup.text,setup.fontSize,top,left,isTemplate),
   setup: {text: language.templates.text, fontSize: 12},
   visibleSetup: true,
+  visualOnly: true
+});
+templates.push({
+  type: 'Diagram',
+  name: language.templates.diagram,
+  maxEdgesIn: 0,
+  maxEdgesOut: 0,
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>{
+    const sourceList=elements.filter(element=>element.type+"-"+element.nr==setup.source);
+    const source=(sourceList.length==1)?sourceList[0].name:"";
+    return addDiagram("Diagram",id,top,left,source,isTemplate);
+  },
+  animateFunc: animateDiagram,
+  animateCleanFunc: animateDiagramClean,
+  setup: {source: '', xrange: 2},
+  visibleSetup: true,
+  visualOnly: true
 });
 
 function getRecordByType(type) {
-  for (let i=0;i<templates.length;i++) if (templates[i].type==type) return templates[i];
+  for (let template of templates) if (template.type==type) return template;
   return null;
 }

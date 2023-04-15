@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas};
+export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas};
 
 import {templates, getRecordByType} from "./Templates.js";
 import {animationActive} from "./Animator.js";
@@ -52,11 +52,13 @@ window.addEventListener('load', (event) => {
   resizeObserver.observe(document.body);
   resizeCanvas();
 
-  let top=20;
+  const margin=20;
+  let top=margin;
   for (let i=0;i<templates.length;i++) {
-    templates[i].addFunc("template"+(i+1),"",top,10,{},true);
-    top+=70;
+    const template=templates[i].addFunc("template"+(i+1),"",top,10,{},true,[]);
+    top+=template.offsetHeight+margin;
   }
+  document.getElementById("templates_area").style.height="calc(max("+top+"px,100%))";
 
   updateModelOnCanvas();
 });
@@ -548,6 +550,8 @@ function descriptionForParameter(parameter) {
   if (parameter=="SuccessNextBox") return language.editor.SuccessNextBox;
   if (parameter=='release') return language.editor.release;
   if (parameter=='signal') return language.editor.signal;
+  if (parameter=='source') return language.editor.source;
+  if (parameter=='xrange') return language.editor.xrange;
   return "";
 }
 
@@ -566,6 +570,8 @@ function nameForParameter(parameter) {
   if (parameter=="SuccessNextBox") return "";
   if (parameter=='release') return language.editor.releaseLabel;
   if (parameter=='signal') return language.editor.signalLabel;
+  if (parameter=='source') return language.editor.sourceLabel;
+  if (parameter=='xrange') return language.editor.xrangeLabel;
   return parameter;
 }
 
@@ -670,6 +676,26 @@ function addEditorElements(element, parent, allElements) {
       continue;
     }
 
+    if (name=="source") {
+      const sourceTypes=["Process","Delay","Batch","Barrier"];
+      const select=document.createElement("select");
+      div.appendChild(select);
+      select.className="form-select";
+      let options="";
+      for (let source of allElements.filter(element=>sourceTypes.indexOf(element.type)>=0)) {
+        const listId=source.type+"-"+source.nr;
+        options+="<option value='"+listId+"'"+((value==listId)?' selected':'')+'>'+source.name+'</option>';
+      }
+      select.innerHTML=options;
+      select.onchange=()=>{
+        element.setup[name]=select.value;
+        if (element.visibleSetup) updateModelOnCanvas();
+      }
+      element.setup[name]=select.value;
+        if (element.visibleSetup) updateModelOnCanvas();
+      continue;
+    }
+
     const input=document.createElement("input");
     div.appendChild(input);
     input.type="text";
@@ -739,7 +765,18 @@ function addElementToModel(type, top, left) {
 
   const template=getRecordByType(type);
 
-  elements.push({id: id, boxId: boxId, type: type, name: template.name+" "+nr, nr: nr, top: top, left: left, setup: structuredClone(template.setup), visibleSetup: ((typeof(template.visibleSetup)=='undefined')?false:template.visibleSetup)});
+  elements.push({
+    id: id,
+    boxId: boxId,
+    type: type,
+    name: template.name+" "+nr,
+    nr: nr,
+    top: top,
+    left: left,
+    setup: structuredClone(template.setup),
+    visibleSetup: ((typeof(template.visibleSetup)=='undefined')?false:template.visibleSetup),
+    visualOnly: ((typeof(template.visualOnly)=='undefined')?false:template.visualOnly)
+  });
   updateModelOnCanvas();
 
   return boxId;
@@ -750,6 +787,13 @@ function addTextToModel(top, left, text, fontSize=12) {
   const element=getElementByBoxId(boxId);
   element.setup.text=text;
   element.setup.fontSize=fontSize;
+  updateModelOnCanvas();
+}
+
+function addDiagramToModel(top, left, source) {
+  const boxId=addElementToModel("Diagram",top,left);
+  const element=getElementByBoxId(boxId);
+  element.setup.source=source;
   updateModelOnCanvas();
 }
 
@@ -799,9 +843,9 @@ function addEdgeToModel(boxId1, boxId2) {
   updateModelOnCanvas();
 }
 
-function addElementToCanvas(element, index) {
+function addElementToCanvas(element, index, elements) {
   const template=getRecordByType(element.type);
-  const elementNode=template.addFunc("Box"+element.id,element.nr,element.top,element.left,element.setup,false);
+  const elementNode=template.addFunc("Box"+element.id,element.nr,element.top,element.left,element.setup,false,elements);
   elementNode.dataset.elementIndex=index;
 }
 
@@ -922,6 +966,6 @@ function updateModelOnCanvas() {
     return;
   }
 
-  for (let i=0;i<elements.length;i++) addElementToCanvas(elements[i],i);
+  for (let i=0;i<elements.length;i++) addElementToCanvas(elements[i],i,elements);
   for (let i=0;i<edges.length;i++) addEdgeToCanvas(edges[i],i);
 }

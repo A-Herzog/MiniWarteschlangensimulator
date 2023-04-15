@@ -147,6 +147,8 @@ lang.templates.separate="Trennen";
 lang.templates.signal="Signal";
 lang.templates.barrier="Schranke";
 lang.templates.text="Text";
+lang.templates.diagram="Diagramm";
+lang.templates.diagramSource="Datenquelle";
 
 lang.editor={};
 lang.editor.EI="Mittlere Zwichenankunftszeit";
@@ -177,9 +179,13 @@ lang.editor.SuccessNextBox="Folgestation für erfolgreiche Kunden";
 lang.editor.release="Initial freigeben";
 lang.editor.releaseLabel="Anzahl";
 lang.editor.signal="Auf Signal reagieren";
-lang.editor.signalLabel="Signal";
+lang.editor.signalLabel=""; /* soll leer sein */
+lang.editor.source="Datenquelle";
+lang.editor.sourceLabel=""; /* soll leer sein */
 lang.editor.noSettings="Die Station besitzt keine Einstellungen.";
 lang.editor.deleteStation="Station löschen";
+lang.editor.xrange="Darzustellender Zeitbereich (in Stunden)";
+lang.editor.xrangeLabel=""; /* soll leer sein */
 
 lang.builder={};
 lang.builder.unknownStationType="Unbekannter Stationstyp";
@@ -408,6 +414,8 @@ lang.templates.separate="Separate";
 lang.templates.signal="Signal";
 lang.templates.barrier="Barrier";
 lang.templates.text="Text";
+lang.templates.diagram="Diagram";
+lang.templates.diagramSource="data source";
 
 lang.editor={};
 lang.editor.EI="Average inter-arrival time";
@@ -438,9 +446,13 @@ lang.editor.SuccessNextBox="Next station for successful clients";
 lang.editor.release="Release initial";
 lang.editor.releaseLabel="Count";
 lang.editor.signal="Respond to signal";
-lang.editor.signalLabel="Signal";
+lang.editor.signalLabel=""; /* soll leer sein */
+lang.editor.source="Data source";
+lang.editor.sourceLabel=""; /* soll leer sein */
 lang.editor.noSettings="The station does not have any settings.";
 lang.editor.deleteStation="Delete station";
+lang.editor.xrange="Time range to be displayed (in hours)";
+lang.editor.xrangeLabel=""; /* soll leer sein */
 
 lang.builder={};
 lang.builder.unknownStationType="Unknown station type";

@@ -697,7 +697,6 @@ class SimBarrier extends SimElement {
   signal(simulator, nr) {
     if (nr!=this.signalNr) return;
     this.release++; /* Freigabezähler erhöhen */
-    console.log("Release!");
     this.testRelease(simulator);
   }
 

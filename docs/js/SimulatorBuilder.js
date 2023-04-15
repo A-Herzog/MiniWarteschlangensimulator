@@ -37,10 +37,18 @@ class SimModelBuilder {
 
   build(globalStatistics) {
     this.stationsList=[];
+    this.animationStationsList=[];
     let hasSource=false;
 
     /* Stationen anlegen */
     for (let editElement of this.editElements) {
+
+      if (editElement.visualOnly) {
+        const template=getRecordByType(editElement.type);
+        if (template!=null && typeof(template.animateFunc)=='function') this.animationStationsList.push({element: editElement, template: template, data: {}});
+        continue;
+      }
+
       let simElement=null;
       const type=editElement.type;
       if (type=='Source') {simElement=new SimSource(editElement); hasSource=true;}
@@ -55,10 +63,10 @@ class SimModelBuilder {
       if (simElement==null && type=='Signal') simElement=new SimSignal(editElement);
       if (simElement==null && type=='Barrier') simElement=new SimBarrier(editElement);
 
-      if (type=='Text') continue;
       if (simElement==null) return language.builder.unknownStationType+": "+editElement.type;
       this.stationsList.push(simElement);
     }
+
     if (!hasSource) {
       return language.builder.noSource;
     }
@@ -93,6 +101,10 @@ class SimModelBuilder {
 
   get stations() {
     return this.stationsList;
+  }
+
+  get animationStations() {
+    return this.animationStationsList;
   }
 }
 

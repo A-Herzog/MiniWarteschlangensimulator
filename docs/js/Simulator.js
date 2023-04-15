@@ -34,6 +34,7 @@ class WebSimulator extends simcore.Simulator {
     if (buildResult!=null) return buildResult;
 
     this.simStations=builder.stations;
+    this.animationStationsList=builder.animationStations;
     for (let simStation of this.simStations) simStation.generateInitialEvents(this);
 
     return null;
@@ -43,8 +44,13 @@ class WebSimulator extends simcore.Simulator {
     return this.simStations;
   }
 
+  get animationStations() {
+    return this.animationStationsList;
+  }
+
   done() {
     for (let station of this.simStations) station.doneStatistics(this);
+    for (let animationStation of this.animationStationsList) animationStation.template.animateCleanFunc(animationStation.element,animationStation.data);
   }
 
   executeNext() {

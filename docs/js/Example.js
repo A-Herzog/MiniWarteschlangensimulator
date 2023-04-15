@@ -16,7 +16,7 @@ limitations under the License.
 
 export {loadExample};
 
-import {discardModel, addElementToModel, addTextToModel, addEdgeToModel, updateModelOnCanvas, getElementByBoxId} from './Editor.js';
+import {discardModel, addElementToModel, addTextToModel, addDiagramToModel, addEdgeToModel, updateModelOnCanvas, getElementByBoxId} from './Editor.js';
 
 function loadExample(nr, discardOkChecked=false) {
   if (!discardOkChecked) {
@@ -51,6 +51,7 @@ function loadExampleSimple() {
   addTextToModel(y+=18,100,language.examples.exampleSimpleEV+": E[V]=400");
   addTextToModel(y+=18,100,language.examples.exampleSimpleENQ+": E[NQ]="+(3.2).toLocaleString());
   addTextToModel(y+=18,100,language.examples.exampleSimpleEN+": E[N]=4");
+  addDiagramToModel(y+=18+50,100,"Process-1");
 }
 
 function loadExampleStrategies() {
@@ -199,4 +200,6 @@ function loadPushPull() {
 
   addTextToModel(450,100,language.examples.examplePushPullInfo1,12);
   addTextToModel(470,100,language.examples.examplePushPullInfo2,12);
+
+  addDiagramToModel(540,100,"Barrier-1");
 }

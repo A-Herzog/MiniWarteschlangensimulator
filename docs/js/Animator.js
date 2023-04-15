@@ -25,6 +25,12 @@ function startAnimation() {
     return;
   }
 
+  /* Falls die letzte Animation im Pause-Modus beendet wurde, diesen visuell zurücksetzen */
+  animationPause=false;
+  const button=document.getElementById('animationPlayPauseButton');
+  button.classList.remove('bi-play');
+  button.classList.add('bi-pause');
+
   /* Ggf. Funktion zum Hinzufügen von Kanten beenden */
   if (addEdgeActive) addEdgeClick();
 
@@ -55,6 +61,7 @@ function startAnimation() {
 
 function stopAnimation() {
   setAnimationMode(false);
+  simulator.done();
   simulator=null;
 
   const canvas=document.getElementById("canvas_area");
@@ -136,6 +143,9 @@ function animationStep() {
 
   /* Anzeige aktualisieren */
   animationInfo.innerHTML=simulator.info;
+
+  /* Visuelle Elemente aktualisieren */
+  updateVisualElements();
 
   /* Nächsten Schritt planen */
   if (!animationPause) {
@@ -262,6 +272,10 @@ function showMoveClients(animationTime) {
     };
     requestAnimationFrame(()=>animationFrame(moveInfo));
   }
+}
+
+function updateVisualElements() {
+  for (let animationStation of simulator.animationStations) animationStation.template.animateFunc(simulator.time,animationStation.element,animationStation.data,simulator.stations);
 }
 
 function animationFrame(moveInfo) {
