@@ -555,6 +555,9 @@ lang.series.saveAsTable="Save as table";
 
 /* Activate language */
 
-document.getElementsByTagName('html')[0]
-
-const language=(document.documentElement.lang=='de')?languageDE:languageEN;
+let language;
+if (typeof(useLanguage)=='string') {
+  language=(useLanguage=='de')?languageDE:languageEN;
+} else {
+  language=(document.documentElement.lang=='de')?languageDE:languageEN;
+}

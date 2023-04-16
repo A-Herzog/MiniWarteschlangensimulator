@@ -39,6 +39,7 @@
   <script src="./js/Tools.js"></script>
   <script defer src="./js/DistCore.js"></script>
   <script defer src="./js/SimCore.js"></script>
+  <script defer src="./js/Templates.js"></script>
   <script defer src="./js/StatCore.js"></script>
   <script defer src="./js/Simulator.js"></script>
   <script defer src="./js/SimulatorBuilder.js"></script>
@@ -50,7 +51,7 @@
     if (isDesktopApp) Neutralino.init();
   </script>
   <script type="module">
-    import {zoomIn, zoomOut, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick, elements, edges} from "./js/Editor.js";
+    import {zoomIn, zoomOut, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick, elements, edges, dragElement, dragTemplate} from "./js/Editor.js";
     window.zoomIn=zoomIn;
     window.zoomOut=zoomOut;
     window.fileNew=fileNew;
@@ -69,10 +70,8 @@
     window.canvasClick=canvasClick;
     window.elements=elements;
     window.edges=edges;
-
-    import {templates, getRecordByType} from './js/Templates.js';
-    window.templates=templates;
-    window.getRecordByType=getRecordByType;
+    window.dragElement=dragElement;
+    window.dragTemplate=dragTemplate;
 
     import {loadExample} from "./js/Example.js";
     window.loadExample=loadExample;

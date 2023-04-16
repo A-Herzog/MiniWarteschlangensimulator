@@ -160,7 +160,8 @@ class WebSimulator extends simcore.Simulator {
 
 
 function getWebWorker() {
-  return new Worker('./js/Worker.js');
+  const workerFile=(document.documentElement.lang=='de')?'Worker_de.js':'Worker.js';
+  return new Worker('./js/'+workerFile);
 }
 
 

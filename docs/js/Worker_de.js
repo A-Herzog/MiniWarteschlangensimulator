@@ -16,7 +16,7 @@ limitations under the License.
 
 'use strict';
 
-const useLanguage='en';
+const useLanguage='de';
 /* Begin of language independent part */
 
 importScripts("./Language.js");

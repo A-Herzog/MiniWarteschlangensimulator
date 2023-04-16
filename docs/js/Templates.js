@@ -14,9 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {templates, getRecordByType};
-
-import {dragElement, dragTemplate} from "./Editor.js";
+'use strict';
 
 /* Darstellung der Boxen */
 
