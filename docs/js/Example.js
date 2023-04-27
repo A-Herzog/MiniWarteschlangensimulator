@@ -128,6 +128,9 @@ function loadExampleRetry() {
   getElementByBoxId(delayBoxId).setup.ES="300";
   const disposeBoxId1=addElementToModel("Dispose",100,500);
   const disposeBoxId2=addElementToModel("Dispose",300,500);
+
+  getElementByBoxId(processBoxId).setup.SuccessNextBox=getElementByBoxId(disposeBoxId1).name;
+
   addEdgeToModel(sourceBoxId,processBoxId);
   addEdgeToModel(processBoxId,disposeBoxId1);
   addEdgeToModel(processBoxId,decideBoxId);
@@ -171,6 +174,7 @@ function loadPushPull() {
   addTextToModel(50,100,language.examples.examplePushPull,16);
 
   const sourceBoxId=addElementToModel("Source",220,100);
+  getElementByBoxId(sourceBoxId).setup.EI=110;
   const duplicateBoxId=addElementToModel("Duplicate",220,250);
 
   const processBoxId1=addElementToModel("Process",120,450);

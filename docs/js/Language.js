@@ -285,6 +285,42 @@ lang.series.arrivalCount25M="Sehr viele (25 Mio.)";
 lang.series.arrivalCountInfo="Je mehr Kundenankünfte pro Schritt simuliert werden, desto weniger schwanken am Ende die Ergebnisse, aber auch desto länger dauert die gesamte Simulation.";
 lang.series.saveAsTable="Als Tabelle speichern";
 
+lang.statisticsInfo={};
+lang.statisticsInfo.EW='Mittlere Wartezeit';
+lang.statisticsInfo.ES='Mittlere Bediendauer';
+lang.statisticsInfo.EV='Mittlere Verweilzeit';
+lang.statisticsInfo.EN='Mittlere Anzahl an Kunden an der Station';
+lang.statisticsInfo.ENQ='Mittlere Anzahl an Kunden in der Warteschlange an der Station';
+lang.statisticsInfo.EcBusy='Mittlere Anzahl an belegten Bedienern';
+lang.statisticsInfo.SDW='Standardabweichung der Wartezeiten';
+lang.statisticsInfo.SDS='Standardabweichung der Bediendauern';
+lang.statisticsInfo.SDV='Standardabweichung der Verweilzeiten';
+lang.statisticsInfo.SDN='Standardabweichung der Anzahl an Kunden an der Station';
+lang.statisticsInfo.SDNQ='Standardabweichung der Anzahl an Kunden in der Warteschlange an der Station';
+lang.statisticsInfo.SDcBusy='Standardabweichung der Anzahlen an belegten Bedienern';
+lang.statisticsInfo.CVW='Variationskoeffizient der Wartezeiten';
+lang.statisticsInfo.CVS='Variationskoeffizient der Bediendauern';
+lang.statisticsInfo.CVV='Variationskoeffizient der Verweilzeiten';
+lang.statisticsInfo.CVN='Variationskoeffizient der Anzahl an Kunden an der Station';
+lang.statisticsInfo.CVNQ='Variationskoeffizient der Anzahl an Kunden in der Warteschlange an der Station';
+lang.statisticsInfo.CVcBusy='Variationskoeffizient der Anzahlen an belegten Bedienern';
+lang.statisticsInfo.MinW='Minimale Wartezeit';
+lang.statisticsInfo.MinS='Minimale Bediendauer';
+lang.statisticsInfo.MinV='Minimale Verweilzeit';
+lang.statisticsInfo.MinN='Minimale Anzahl an Kunden an der Station';
+lang.statisticsInfo.MinNQ='Minimale Anzahl an Kunden in der Warteschlange an der Station';
+lang.statisticsInfo.MincBusy='Minimale Anzahl an belegten Bedienern';
+lang.statisticsInfo.MaxW='Maximale Wartezeit';
+lang.statisticsInfo.MaxS='Maximale Bediendauer';
+lang.statisticsInfo.MaxV='Maximale Verweilzeit';
+lang.statisticsInfo.MaxN='Maximale Anzahl an Kunden an der Station';
+lang.statisticsInfo.MaxNQ='Maximale Anzahl an Kunden in der Warteschlange an der Station';
+lang.statisticsInfo.MaxcBusy='Maximale Anzahl an belegten Bedienern';
+lang.statisticsInfo.N='Aktuelle Anzahl an Kunden an der Station';
+lang.statisticsInfo.NQ='Aktuelle Anzahl an Kunden in der Warteschlange an der Station';
+lang.statisticsInfo.cBusy='Aktuelle Anzahl an belegten Bedienern';
+lang.statisticsInfo.n='Anzahl an Ankünften an der Station';
+
 /* English */
 
 const languageEN={};
@@ -502,7 +538,6 @@ lang.builderBatch.b="The specified batch size <b>b</b> is invalid.<br>A <b>posit
 lang.builderSeparate={};
 lang.builderSeparate.edge="The batch station has to have an outgoing edge.<br>Click on <b><i class='bi bi-share-fill'></i> Add edge</b> to connect the station to another station.";
 
-
 lang.examples={};
 lang.examples.exampleSimple="Erlang C example model";
 lang.examples.exampleSimpleInfo="This is a simple example model which can be described analytically exactly by the Erlang C formula.";
@@ -553,6 +588,42 @@ lang.series.arrivalCount25M="Very many (25 mio.)";
 lang.series.arrivalCountInfo="The more client arrivals are simulated per step, the less the results fluctuate in the end, but also the longer the entire simulation takes.";
 lang.series.saveAsTable="Save as table";
 
+lang.statisticsInfo={};
+lang.statisticsInfo.EW='Mean waiting time';
+lang.statisticsInfo.ES='Mean service time';
+lang.statisticsInfo.EV='Mean residence time';
+lang.statisticsInfo.EN='Mean number of clients at the station';
+lang.statisticsInfo.ENQ='Mean number of clients in the queue at the station';
+lang.statisticsInfo.EcBusy='Mean number of busy operators';
+lang.statisticsInfo.SDW='Standard deviation of the waiting times';
+lang.statisticsInfo.SDS='Standard deviation of the service times';
+lang.statisticsInfo.SDV='Standard deviation of the residence times';
+lang.statisticsInfo.SDN='Standard deviation of the number of clients at the station';
+lang.statisticsInfo.SDNQ='Standard deviation of the number of clients in the queue at the station';
+lang.statisticsInfo.SDcBusy='Standard deviation of the number of busy operators';
+lang.statisticsInfo.CVW='Coefficient of variation of the waiting times';
+lang.statisticsInfo.CVS='Coefficient of variation of the service times';
+lang.statisticsInfo.CVV='Coefficient of variation of the residence times';
+lang.statisticsInfo.CVN='Coefficient of variation of the number of clients at the station';
+lang.statisticsInfo.CVNQ='Coefficient of variation of the number of clients in the queue at the station';
+lang.statisticsInfo.CVcBusy='Coefficient of variation of number of busy operators';
+lang.statisticsInfo.MinW='Minimum waiting time';
+lang.statisticsInfo.MinS='Minimum service time';
+lang.statisticsInfo.MinV='Minimum residence time';
+lang.statisticsInfo.MinN='Minimum number of clients at the station';
+lang.statisticsInfo.MinNQ='Minimum number of clients in the queue at the station';
+lang.statisticsInfo.MincBusy='Minimum number of busy operators';
+lang.statisticsInfo.MaxW='Maximum waiting time';
+lang.statisticsInfo.MaxS='Maximum service time';
+lang.statisticsInfo.MaxV='Maximum residence time';
+lang.statisticsInfo.MaxN='Maximum number of clients at the station';
+lang.statisticsInfo.MaxNQ='Maximum number of clients in the queue at the station';
+lang.statisticsInfo.MaxcBusy='Maximum number of busy operators';
+lang.statisticsInfo.N='Current number of clients at the station';
+lang.statisticsInfo.NQ='Current number of clients in the queue at the station';
+lang.statisticsInfo.cBusy='Current number of busy operators';
+lang.statisticsInfo.n='Number of arrivals at the station';
+
 /* Activate language */
 
 let language;
@@ -560,4 +631,48 @@ if (typeof(useLanguage)=='string') {
   language=(useLanguage=='de')?languageDE:languageEN;
 } else {
   language=(document.documentElement.lang=='de')?languageDE:languageEN;
+}
+
+/* Kenngrößen-Info */
+
+function buildAbbr(str,info) {
+  return "<abbr title='"+info+"'>"+str+"</abbr>";
+}
+
+function getCharacteristicsInfo(str) {
+  if (str=='E[W]') return buildAbbr(str,language.statisticsInfo.EW);
+  if (str=='E[S]') return buildAbbr(str,language.statisticsInfo.ES);
+  if (str=='E[V]') return buildAbbr(str,language.statisticsInfo.EV);
+  if (str=='E[N]') return buildAbbr(str,language.statisticsInfo.EN);
+  if (str=='E[NQ]') return buildAbbr(str,language.statisticsInfo.ENQ);
+  if (str=='E[cBusy]') return buildAbbr(str,language.statisticsInfo.EcBusy);
+  if (str=='SD[W]') return buildAbbr(str,language.statisticsInfo.SDW);
+  if (str=='SD[S]') return buildAbbr(str,language.statisticsInfo.SDS);
+  if (str=='SD[V]') return buildAbbr(str,language.statisticsInfo.SDV);
+  if (str=='SD[N]') return buildAbbr(str,language.statisticsInfo.SDN);
+  if (str=='SD[NQ]') return buildAbbr(str,language.statisticsInfo.SDNQ);
+  if (str=='SD[cBusy]') return buildAbbr(str,language.statisticsInfo.SDeBusy);
+  if (str=='CV[W]') return buildAbbr(str,language.statisticsInfo.CVW);
+  if (str=='CV[S]') return buildAbbr(str,language.statisticsInfo.CVS);
+  if (str=='CV[V]') return buildAbbr(str,language.statisticsInfo.CVV);
+  if (str=='CV[N]') return buildAbbr(str,language.statisticsInfo.CVN);
+  if (str=='CV[NQ]') return buildAbbr(str,language.statisticsInfo.CVNQ);
+  if (str=='CV[cBusy]') return buildAbbr(str,language.statisticsInfo.CVcBusy);
+  if (str=='Min[W]') return buildAbbr(str,language.statisticsInfo.MinW);
+  if (str=='Min[S]') return buildAbbr(str,language.statisticsInfo.MinS);
+  if (str=='Min[V]') return buildAbbr(str,language.statisticsInfo.MinV);
+  if (str=='Min[N]') return buildAbbr(str,language.statisticsInfo.MinN);
+  if (str=='Min[NQ]') return buildAbbr(str,language.statisticsInfo.MinNQ);
+  if (str=='Min[cBusy]') return buildAbbr(str,language.statisticsInfo.MincBusy);
+  if (str=='Max[W]') return buildAbbr(str,language.statisticsInfo.MaxW);
+  if (str=='Max[S]') return buildAbbr(str,language.statisticsInfo.MaxS);
+  if (str=='Max[V]') return buildAbbr(str,language.statisticsInfo.MaxV);
+  if (str=='Max[N]') return buildAbbr(str,language.statisticsInfo.MaxN);
+  if (str=='Max[NQ]') return buildAbbr(str,language.statisticsInfo.MaxNQ);
+  if (str=='Max[cBusy]') return buildAbbr(str,language.statisticsInfo.MaxcBusy);
+  if (str=='N') return buildAbbr(str,language.statisticsInfo.N);
+  if (str=='NQ') return buildAbbr(str,language.statisticsInfo.NQ);
+  if (str=='cBusy') return buildAbbr(str,language.statisticsInfo.cBusy);
+  if (str=='n') return buildAbbr(str,language.statisticsInfo.n);
+  return str;
 }

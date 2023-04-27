@@ -370,7 +370,7 @@ function animationFastForwardShowFullData() {
   content+='</head>';
   content+='<body style="background-color: #E7E7E7;">';
 
-  content+='<nav class="navbar navbar-expand-lg navbar-light bg-success" style="padding: 10px 20px; cursor: default;"><h3 class="text-light">'+language.tabAnimation.simulationResults+'</h3></nav>';
+  content+='<nav class="navbar navbar-expand-lg navbar-light bg-success" style="padding: 10px 20px; cursor: default; user-select: none;"><h3 class="text-light">'+language.tabAnimation.simulationResults+'</h3></nav>';
   content+='<div class="wrapper" style="padding: 20px;">';
 
   content+="<p>";
@@ -387,20 +387,20 @@ function animationFastForwardShowFullData() {
         content+="<li>";
         const recordData=stationData.records[recordName];
         if (typeof(recordData.mean)!='undefined') {
-          content+="E["+recordData.name+"]="+recordData.mean.toLocaleString();
+          content+=getCharacteristicsInfo("E["+recordData.name+"]")+"="+recordData.mean.toLocaleString();
           if (typeof(recordData.sd)!='undefined') {
-            content+=", SD["+recordData.name+"]="+recordData.sd.toLocaleString();
-            content+=", CV["+recordData.name+"]="+recordData.cv.toLocaleString();
+            content+=", "+getCharacteristicsInfo("SD["+recordData.name+"]")+"="+recordData.sd.toLocaleString();
+            content+=", "+getCharacteristicsInfo("CV["+recordData.name+"]")+"="+recordData.cv.toLocaleString();
           }
           if (typeof(recordData.max)!='undefined') {
-            content+=", Min["+recordData.name+"]="+recordData.min.toLocaleString();
-            content+=", Max["+recordData.name+"]="+recordData.max.toLocaleString();
+            content+=", "+getCharacteristicsInfo("Min["+recordData.name+"]")+"="+recordData.min.toLocaleString();
+            content+=", "+getCharacteristicsInfo("Max["+recordData.name+"]")+"="+recordData.max.toLocaleString();
           }
           if (typeof(recordData.sd)!='undefined') {
-            content+=", n="+recordData.count.toLocaleString();
+            content+=", "+getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
           }
         } else {
-          content+="n="+recordData.count.toLocaleString();
+          content+=getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
         }
         content+="</li>";
       }

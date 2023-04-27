@@ -4,6 +4,7 @@
 
 .modal-header {
   cursor: default;
+  user-select: none;
 }
 
 #modalMessageBody {
@@ -35,11 +36,13 @@
   position: relative;
   transform-origin: left top;
   transition: all .25s ease-in-out;
+  user-select: none;
 }
 
 #sidebar {
   min-width: 250px;
   max-width: 250px;
+  user-select: none;
 }
 
 #sidebar h1 {
