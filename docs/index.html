@@ -151,12 +151,11 @@
       <h5 style="margin-top: 30px;"><script>document.write(language.tabFile.extended);</script></h5>
       <ul class="sidebarmenu">
         <li onclick="processSeries()"><i class="bi bi-graph-up" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.extendedParameterSeries);</script></li>
-        <!-- TODO: Activate download option -->
-        <script>if (!isDesktopApp && false) document.write("<li onclick='downloadApp()' title='"+language.tabFile.extendedDownloadAppInfo+"'><i class='bi bi-windows' role='img' aria-hidden='true'></i> "+language.tabFile.extendedDownloadApp+"</li>");</script>
       </ul>
       <h5 style="margin-top: 30px;"><script>document.write(language.tabFile.help);</script></h5>
       <script>const infoPageUrl='info'+((document.documentElement.lang=='de')?'_de':'')+'.html';</script>
       <ul class="sidebarmenu">
+        <script>if (!isDesktopApp) document.write("<li tabindex='0' onclick='downloadApp()' title='"+language.tabFile.extendedDownloadAppInfo+"'><i class='bi bi-windows' role='img' aria-hidden='true'></i> "+language.tabFile.extendedDownloadApp+"</li>");</script>
         <li tabindex="0" onclick="showMoreSidebar()"><i class="bi bi-question-circle" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.helpInfo);</script></li>
         <li tabindex="0" onclick="if (isDesktopApp) Neutralino.window.create('/'+infoPageUrl+'?qt'); else window.open(infoPageUrl+'?qt');"><i class="bi bi-question-circle" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.helpQueueingTheory);</script></li>
         <li tabindex="0" onclick="if (isDesktopApp) Neutralino.window.create('/'+infoPageUrl+'?glossary'); else window.open(infoPageUrl+'?glossary')"><i class="bi bi-question-circle" role="img" aria-hidden="true"></i> <script>document.write(language.tabFile.helpGlossary);</script></li>
