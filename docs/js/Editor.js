@@ -950,7 +950,7 @@ function updateModelOnCanvas() {
   if (elements.length==0) {
     let infoText="";
     if (language.canvasInfoLang!=null && language.canvasInfoLang!="") {
-      infoText+="<span style='font-size: 90%; border: 1px solid #CCC; background-color: #FAFAFA; padding: 5px 10px; border-radius: 3px; cursor: default;'>"+language.canvasInfoLang+"</span><br><br><br>";
+      infoText+="<span style='font-size: 90%; border: 1px solid #CCC; color: #111; background-color: #FAFAFA; padding: 5px 10px; border-radius: 3px; cursor: default;'>"+language.canvasInfoLang+"</span><br><br><br>";
     }
     infoText+='<span style="cursor: default;">'+language.canvasInfo+"</span>";
 

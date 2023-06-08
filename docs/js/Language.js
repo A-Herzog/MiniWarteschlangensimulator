@@ -127,7 +127,7 @@ lang.canvasInfo=`
 Das Modell ist momentan leer.<br><br><small>
 <u>Möglichkeit 1:</u><br>
 Ziehen Sie Stationen aus der Seitenleiste links auf diese Zeichenfläche.<br>
-Beginnen Sie mit einer <b style='color: green;'>Quelle</b>, einer <b style='color: blue;'>Bedienstation</b> und einem <b style='color: red;'>Ausgang</b>.<br>
+Beginnen Sie mit einer <b style='color: green;'>Quelle</b>, einer <b style='color: blue;'>Bedienstation</b> und einem <b style='color: #C00;'>Ausgang</b>.<br>
 Dann verknüpfen Sie diese über <b><i class='bi bi-share-fill' role='img' aria-hidden='true'></i> Kanten</b>.<br><br>
 <u>Möglichkeit 2:</u><br>
 Klicken Sie auf <b><i class='bi bi-house-door' role='img' aria-hidden='true'></i> Datei</b> und wählen Sie dort ein Beispielmodell aus.<br><br>
@@ -430,7 +430,7 @@ lang.canvasInfo=`
 The model is currently empty.<br><br><small>
 <u>Option 1:</u><br>
 Drag stations from the sidebar on the left to this drawing surface.<br>
-Start with a <b style='color: green;'>Source</b>, a <b style='color: blue;'>Process</b> station and an <b style='color: red;'>Exit</b>.<br>
+Start with a <b style='color: green;'>Source</b>, a <b style='color: blue;'>Process</b> station and an <b style='color: #C00;'>Exit</b>.<br>
 Then link them using <b><i class='bi bi-share-fill' role='img' aria-hidden='true'></i> Edges</b>.<br><br>
 <u>Option 2:</u><br>
 Click on <b><i class='bi bi-house-door' role='img' aria-hidden='true'></i> File</b> and select an example model there.<br><br>
