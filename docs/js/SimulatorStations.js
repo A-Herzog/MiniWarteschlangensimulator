@@ -214,7 +214,15 @@ class SimProcess extends SimElement {
       this.nextCancel=null;
     }
 
-    this.initStatistics(globalStatistics,2,{W: new statcore.Values(), S: new statcore.Values(), NQ: new statcore.States(), N: new statcore.States(), cBusy: new statcore.States(), n: new statcore.Counter()});
+    this.initStatistics(globalStatistics,2,{
+      W: new statcore.Values(),
+      S: new statcore.Values(),
+      V: new statcore.Values(),
+      NQ: new statcore.States(),
+      N: new statcore.States(),
+      cBusy: new statcore.States(),
+      n: new statcore.Counter()
+    });
 
     return null;
   }
@@ -300,6 +308,7 @@ class SimProcess extends SimElement {
       const W=time-client.startWaiting;
       statistics.W.add(W);
       statistics.S.add(delta);
+      statistics.V.add(W+delta);
       client.w+=W;
       client.s+=delta;
 
