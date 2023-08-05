@@ -30,7 +30,7 @@ Section ""
   
   File "..\dist\MiniWarteschlangensimulator\MiniWarteschlangensimulator-win_x64.exe"
   File "..\dist\MiniWarteschlangensimulator\resources.neu"
-  File "..\dist\MiniWarteschlangensimulator\WebView2Loader.dll"
+  ; File "..\dist\MiniWarteschlangensimulator\WebView2Loader.dll"
   
   ExecWait "$TEMP\${PrgName}\MiniWarteschlangensimulator-win_x64.exe"
   

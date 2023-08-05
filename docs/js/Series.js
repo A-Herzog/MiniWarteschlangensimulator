@@ -422,7 +422,7 @@ function download(content, filename) {
         var a = document.createElement('a');
         var blob = new Blob([content], {type: 'text/plain'});
         a.href = window.URL.createObjectURL(blob);
-        a.download = filename;
+        a.download=filename;
         a.click();
 }
 
@@ -440,12 +440,80 @@ function seriesParameterResults() {
   /* Dialog erstellen */
   const dialog=addModalDialog(language.tabFile.extendedParameterSeries,'<canvas id="parameterSeries_plot" style="width: 100%;"></canvas>',()=>{},false,true);
   dialog.html.addEventListener('hidden.bs.modal',()=>document.getElementsByClassName('wrapper')[0].removeChild(dialog.html));
-  const tableButton=document.createElement('button');
-  tableButton.type="button";
-  tableButton.className="btn btn-success";
-  tableButton.onclick=()=>download(table,language.tabAnimation.resultsFile);
-  tableButton.innerHTML="<i class='bi bi-table'></i> "+language.series.saveAsTable;
-  dialog.html.getElementsByClassName('modal-footer')[0].appendChild(tableButton);
+
+  /* Kopieren- und Speichern-Buttons im Fußbereich */
+  const footer=dialog.html.getElementsByClassName('modal-footer')[0];
+  let div, button, ul, li, a;
+
+  /* Kopieren */
+  footer.appendChild(div=document.createElement('div'));
+  div.className='dropdown';
+  div.style.display='inline-block';
+
+  div.appendChild(button=document.createElement('button'));
+  button.type="button";
+  button.className="btn btn-primary bi-clipboard dropdown-toggle";
+  button.dataset.bsToggle='dropdown';
+  button.ariaExpanded='false';
+  button.innerHTML="&nbsp;"+language.series.copyDiagram;
+
+  div.appendChild(ul=document.createElement('ul'));
+  ul.className='dropdown-menu';
+
+  ul.appendChild(li=document.createElement('li'));
+  li.appendChild(a=document.createElement('a'));
+  a.className='dropdown-item';
+  a.style.cursor='pointer';
+  a.innerHTML=language.series.copyDiagramTable;
+  a.onclick=()=>navigator.clipboard.writeText(table);
+
+  ul.appendChild(li=document.createElement('li'));
+  li.appendChild(a=document.createElement('a'));
+  a.className='dropdown-item';
+  a.style.cursor='pointer';
+  a.innerHTML=language.series.copyDiagramImage;
+  a.onclick=()=>{
+    if (typeof(ClipboardItem)!="undefined") {
+      document.getElementById("parameterSeries_plot").toBlob(blob=>navigator.clipboard.write([new ClipboardItem({"image/png": blob})]));
+    } else {
+      alert(language.series.copyDiagramImageError);
+    }
+  };
+
+  /* Speichern */
+  footer.appendChild(div=document.createElement('div'));
+  div.className='dropdown';
+  div.style.display='inline-block';
+
+  div.appendChild(button=document.createElement('button'));
+  button.type="button";
+  button.className="btn btn-primary bi-download dropdown-toggle";
+  button.dataset.bsToggle='dropdown';
+  button.ariaExpanded='false';
+  button.innerHTML="&nbsp;"+language.series.saveDiagram;
+
+  div.appendChild(ul=document.createElement('ul'));
+  ul.className='dropdown-menu';
+
+  ul.appendChild(li=document.createElement('li'));
+  li.appendChild(a=document.createElement('a'));
+  a.className='dropdown-item';
+  a.style.cursor='pointer';
+  a.innerHTML=language.series.saveDiagramTable;
+  a.onclick=()=>download(table,language.tabAnimation.resultsFile);
+
+  ul.appendChild(li=document.createElement('li'));
+  li.appendChild(a=document.createElement('a'));
+  a.className='dropdown-item';
+  a.style.cursor='pointer';
+  a.innerHTML=language.series.saveDiagramImage;
+  a.onclick=()=>{
+    const element=document.createElement("a");
+    element.href=document.getElementById("parameterSeries_plot").toDataURL("image/png");
+    element.download="diagram.png";
+    element.click();
+  };
+
   dialog.object.show();
 
   /* Diagramm anzeigen */
