@@ -30,14 +30,9 @@
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
   <link href="./libs/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD">
   <link href="./libs/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" rel="stylesheet">
-  <style>math {font-size: 125%;}</style>
+  <link href="./css/index.css" rel="stylesheet">
   <script src="./libs/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"></script>
   <script src="./libs/neutralino.js"></script>
-  <script src="./js/Language.js"></script>
-  <script>
-    const isDesktopApp=(typeof(NL_OS)!='undefined');
-    if (isDesktopApp) Neutralino.init();
-  </script>
 </head>
 
 <body>
@@ -48,30 +43,14 @@
       <span style="background-color: white; padding: 1px 10px 5px 10px; border-radius: 2px;"><img src="./favicon.ico" width="24" alt=""></span>
       Mini Warteschlangensimulator
     </span>
-    <button type="button" class="btn btn-outline-light bi-x-circle" onclick="if (isDesktopApp) Neutralino.window.hide(); else window.close();"> <script>document.write(language.dialog.CloseWindow);</script></button>
+    <button type="button" class="btn btn-outline-light bi-x-circle" id="closeButton"></button>
   </div>
 </nav>
 
 <div class="container mt-4" id="content"></div>
 
-<script>
-const pages={
-  "qt": "info_qt",
-  "glossary" : "info_glossary"
-};
-
-const id=window.location.search;
-if (id.startsWith('?')) {
-  const page=pages[id.substring(1)];
-  if (typeof(page)!='undefined') fetch('./js/'+page+'_'+document.documentElement.lang+'.html').then(response=>response.text().then(text=>{
-    content.innerHTML=text;
-    if (isDesktopApp) for (let link of document.querySelectorAll("a")) {
-      const href=link.href;
-      link.onclick=()=>{Neutralino.os.open(href); return false;}
-    }
-  }));
-}
-</script>
-
 </body>
+
+<script type="module" src="./js/info.js"></script>
+
 </html>

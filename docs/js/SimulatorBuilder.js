@@ -14,7 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-'use strict';
+export {SimModelBuilder, distributionBuilder};
+
+import {getRecordByType} from "./Templates.js";
+import {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimDispose, SimBatch, SimSeparate, SimSignal, SimBarrier} from './SimulatorStations.js';
+import {distcore} from "./DistCore.js";
+import {language} from "./Language.js";
+
 
 class SimModelBuilder {
   constructor(editElements, editEdges) {

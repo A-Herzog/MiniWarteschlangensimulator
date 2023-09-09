@@ -14,7 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-'use strict';
+export {templates, getRecordByType};
+
+import {language} from "./Language.js";
+import {getPositiveFloat} from './Tools.js';
+import {dragElement, dragTemplate} from "./Editor.js";
 
 /* Darstellung der Boxen */
 

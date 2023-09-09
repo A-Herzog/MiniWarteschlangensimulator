@@ -14,24 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-'use strict';
-
-const useLanguage='en';
-/* Begin of language independent part */
-
-importScripts("./Language.js");
-importScripts("./Tools.js");
-importScripts("./DistCore.js");
-importScripts("./StatCore.js");
-importScripts("./SimCore.js");
-importScripts("./Templates.js");
-importScripts("./Simulator.js");
-importScripts("./SimulatorBuilder.js");
-importScripts("./SimulatorStations.js");
-importScripts("./Events.js");
+import {setLanguage} from './Language.js';
+import {WebSimulator} from './Simulator.js';
 
 onmessage = function(e) {
   const request=JSON.parse(e.data.model);
+  const useLanguage=e.data.useLanguage;
+
+  setLanguage(useLanguage);
 
   const simulator=new WebSimulator(false);
   simulator.build(request.elements,request.edges);
@@ -41,7 +31,7 @@ onmessage = function(e) {
     simulator.executeNext();
     const arrivalCount=simulator.arrivalCount;
     if (arrivalCount%20000==0) postMessage(JSON.stringify({progress: arrivalCount/targetArrivalCount}));
-    if (arrivalCount>=targetArrivalCount) break;
+    if (arrivalCount>targetArrivalCount) break;
   }
   simulator.done();
 

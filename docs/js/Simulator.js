@@ -14,7 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-'use strict';
+export {WebSimulator, SimulatorWorker};
+
+import {SimModelBuilder} from "./SimulatorBuilder.js";
+import {simcore} from "./SimCore.js";
+import {language, getCharacteristicsInfo} from "./Language.js";
+
+
 
 class WebSimulator extends simcore.Simulator {
   constructor(withAnimation) {
@@ -160,8 +166,8 @@ class WebSimulator extends simcore.Simulator {
 
 
 function getWebWorker() {
-  const workerFile=(document.documentElement.lang=='de')?'Worker_de.js':'Worker.js';
-  return new Worker('./js/'+workerFile);
+  const workerFile='Worker.js';
+  return new Worker('./js/'+workerFile,{type: "module"});
 }
 
 
@@ -194,7 +200,7 @@ class SimulatorWorker {
     if (!path.endsWith("/")) path+="/";
 
     for (let i=0;i<this.models.length;i++) {
-	    this.worker[i].postMessage({path: path, model: JSON.stringify(this.models[i])});
+	    this.worker[i].postMessage({path: path, model: JSON.stringify(this.models[i]), useLanguage: ((document.documentElement.lang=='de')?'de':'en')});
     }
   }
 

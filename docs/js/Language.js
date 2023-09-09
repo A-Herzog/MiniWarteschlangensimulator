@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-'use strict';
+export {language, setLanguage, getCharacteristicsInfo}
 
 let lang;
 
@@ -58,7 +58,7 @@ lang.tabFile.helpQueueingTheory="Warteschlangentheorie";
 lang.tabFile.helpGlossary="Glossar";
 lang.tabFile.helpInfo="Info &amp; Mehr";
 lang.tabFile.helpInfoText1="Diese WebApp ist auf die Animation einfacher Warteschlangenmodelle beschränkt.";
-lang.tabFile.helpInfoText2="Für die Simulation komplexerer Modelle inkl. einer detaillierten Statistikerfassung steht das Opensource Desktopprogramm <a href=\"https://a-herzog.github.io/Warteschlangensimulator\" target=\"_blank\" style=\"color: white; font-weight: bold;\">Warteschlangensimulator</a> zur Verfügung. <a href=\"https://a-herzog.github.io/Warteschlangensimulator\" target=\"_blank\"><img src=\"./images/Screenshot_QS_de.png\" loading=\"lazy\" width=\"200\" style=\"margin: 10px 0px;\"></a> Der Warteschlangensimulator kann die Modelle, die mit dieser Webapp erstellt wurden, zur Weiterverwendung importieren.";
+lang.tabFile.helpInfoText2="Für die Simulation komplexerer Modelle inkl. einer detaillierten Statistikerfassung steht das Opensource Desktopprogramm <a href=\"https://a-herzog.github.io/Warteschlangensimulator\" target=\"_blank\" style=\"color: white; font-weight: bold;\">Warteschlangensimulator</a> zur Verfügung. <a href=\"https://a-herzog.github.io/Warteschlangensimulator\" target=\"_blank\"><img src=\"./images/Screenshot_QS_de.png\" title=\"Screenshot Warteschlangensimulator\" alt=\"Screenshot Warteschlangensimulator\" title=\"Screenshot Warteschlangensimulator\" alt=\"Screenshot Warteschlangensimulator\" loading=\"lazy\" width=\"200\" style=\"margin: 10px 0px;\"></a> Der Warteschlangensimulator kann die Modelle, die mit dieser Webapp erstellt wurden, zur Weiterverwendung importieren.";
 lang.tabFile.helpInfoText3="Alle Simulationen laufen vollständig im Browser ab.<br>Diese WebApp führt nach dem Laden des HTML- und Skriptcodes keine weitere Kommunikation mit dem Server durch.";
 lang.tabFile.helpHome="warteschlangensimulation.de";
 lang.tabFile.helpHomeURL="https://warteschlangensimulation.de";
@@ -99,6 +99,7 @@ lang.tabAnimation.buttonHint="Startet oder beendet die Animation des Modell.";
 lang.tabAnimation.buttonHintZoomIn="Vergrößert die Darstellung auf der Zeichenfläche.";
 lang.tabAnimation.buttonHintZoomOut="Verkleinert die Darstellung auf der Zeichenfläche.";
 lang.tabAnimation.speed="Geschwindigkeit";
+lang.tabAnimation.playPauseInfo="Start/Pause";
 lang.tabAnimation.simulation="Simulation";
 lang.tabAnimation.simulationTitle="Modell ohne Animation simulieren";
 lang.tabAnimation.simulationText="Soll die Animation abgebrochen und stattdessen eine schnelle Simulation zur Generierung von Statistikdaten durchgeführt werden?";
@@ -120,6 +121,7 @@ lang.tabAnimation.allData="Details anzeigen";
 lang.tabAnimation.time="Zeit";
 lang.tabAnimation.count="Anzahl";
 lang.tabAnimation.threads="Genutzte CPU-Kerne";
+lang.tabAnimation.copy="In Zwischenablage kopieren";
 lang.tabAnimation.resultsFile="Ergebnisse.txt";
 
 lang.canvasInfoLang="An <a href=\"index.html\" onclick=\"localStorage.setItem('selectedLanguage','default')\" style=\"color: blue;\">English version</a> of this simulator is also available.";
@@ -408,6 +410,7 @@ lang.tabAnimation.buttonHint="Starts or stops the animation of the model.";
 lang.tabAnimation.buttonHintZoomIn="Increases the size of the elements on the drawing surface.";
 lang.tabAnimation.buttonHintZoomOut="Decreases the size of the elements on the drawing surface.";
 lang.tabAnimation.speed="Speed";
+lang.tabAnimation.playPauseInfo="Play/Pause";
 lang.tabAnimation.simulation="Simulation";
 lang.tabAnimation.simulationTitle="Simulate model without animation";
 lang.tabAnimation.simulationText="Do you want to cancel the animation and run a fast simulation to generate statistical data instead?";
@@ -429,6 +432,7 @@ lang.tabAnimation.allData="Show details";
 lang.tabAnimation.time="Time";
 lang.tabAnimation.count="Count";
 lang.tabAnimation.threads="Used CPU cores";
+lang.tabAnimation.copy="Copy to clipboard";
 lang.tabAnimation.resultsFile="Results.txt";
 
 lang.canvasInfoLang="Eine <a href=\"index_de.html\" onclick=\"localStorage.setItem('selectedLanguage','de')\" style=\"color: blue;\">deutsche Version</a> dieses Simulators stehen ebenfalls zur Verfügung.";
@@ -639,11 +643,22 @@ lang.statisticsInfo.n='Number of arrivals at the station';
 /* Activate language */
 
 let language;
-if (typeof(useLanguage)=='string') {
-  language=(useLanguage=='de')?languageDE:languageEN;
-} else {
-  language=(document.documentElement.lang=='de')?languageDE:languageEN;
+
+function setLanguage(useLanguage=null) {
+  if (useLanguage!=null) {
+    language=(useLanguage=='de')?languageDE:languageEN;
+    return;
+  }
+
+  if (typeof(document)!='undefined') {
+    language=(document.documentElement.lang=='de')?languageDE:languageEN;
+    return;
+  }
+
+  language=languageEN;
 }
+
+setLanguage();
 
 /* Kenngrößen-Info */
 

@@ -16,7 +16,10 @@ limitations under the License.
 
 export {startAnimation, animationPlayPause, animationActive, animationFastForward};
 
-import {showMessage, showConfirmationMessage, showAnimationSidebar, addEdgeActive} from './Editor.js';
+import {showMessage, showConfirmationMessage, showAnimationSidebar, addEdgeActive, showTemplatesSidebar, elements, edges} from './Editor.js';
+import {SimulatorWorker, WebSimulator} from './Simulator.js';
+import {language, getCharacteristicsInfo} from "./Language.js";
+import {simcore} from './SimCore.js';
 
 function startAnimation() {
   /* Laufende Animation abbrechen */
@@ -358,6 +361,7 @@ function animationFastForwardStep2(arrivalMio) {
 function animationFastForwardShowFullData() {
   const statistics=worker.full;
   let content="";
+  const contentPlain=[];
 
   content+='<!DOCTYPE html>';
   content+='<head>';
@@ -378,37 +382,56 @@ function animationFastForwardShowFullData() {
   content+=language.tabAnimation.threads+": "+statistics.threads;
   content+="</p>"
 
+  contentPlain.push(language.tabAnimation.time+": "+simcore.formatTime(statistics.time));
+  contentPlain.push(language.tabAnimation.threads+": "+statistics.threads);
+  contentPlain.push("");
+
   for (let priority=3;priority>=1;priority--) for (let stationName in statistics.stations) {
     const stationData=statistics.stations[stationName];
     if (stationData.priority==priority) {
       content+="<h4>"+stationName+"</h4>";
       content+="<ul>";
+      contentPlain.push(stationName);
       for (let recordName in stationData.records) {
         content+="<li>";
+        let plainLine="";
         const recordData=stationData.records[recordName];
         if (typeof(recordData.mean)!='undefined') {
           content+=getCharacteristicsInfo("E["+recordData.name+"]")+"="+recordData.mean.toLocaleString();
+          plainLine+="E["+recordData.name+"]="+recordData.mean.toLocaleString();
           if (typeof(recordData.sd)!='undefined') {
             content+=", "+getCharacteristicsInfo("SD["+recordData.name+"]")+"="+recordData.sd.toLocaleString();
             content+=", "+getCharacteristicsInfo("CV["+recordData.name+"]")+"="+recordData.cv.toLocaleString();
+            plainLine+=", SD["+recordData.name+"]="+recordData.sd.toLocaleString();
+            plainLine+=", CV["+recordData.name+"]="+recordData.cv.toLocaleString();
           }
           if (typeof(recordData.max)!='undefined') {
             content+=", "+getCharacteristicsInfo("Min["+recordData.name+"]")+"="+recordData.min.toLocaleString();
             content+=", "+getCharacteristicsInfo("Max["+recordData.name+"]")+"="+recordData.max.toLocaleString();
+            plainLine+=", Min["+recordData.name+"]="+recordData.min.toLocaleString();
+            plainLine+=", Max["+recordData.name+"]="+recordData.max.toLocaleString();
           }
           if (typeof(recordData.sd)!='undefined') {
             content+=", "+getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
+            plainLine+=", n="+recordData.count.toLocaleString();
           }
         } else {
           content+=getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
+          plainLine+="n="+recordData.count.toLocaleString();
         }
+        contentPlain.push(plainLine);
         content+="</li>";
       }
       content+="</ul>";
+      contentPlain.push("");
     }
   }
 
-  content+='<p><button type="button" class="btn btn-primary bi-x-circle" style="margin-top: 25px;" onclick="window.close()"> '+language.dialog.CloseWindow+'</button></p>';
+  content+='<p style="margin-top: 20px;">';
+  content+='<button type="button" class="btn btn-primary bi-x-circle" onclick="window.close()"> '+language.dialog.CloseWindow+'</button>';
+  content+='<button type="button" class="btn btn-primary bi-clipboard" style="margin-left: 10px;" onclick="navigator.clipboard.writeText(atob(\''+btoa(contentPlain.join("\n"))+'\'));"> '+language.tabAnimation.copy+'</button>';
+  content+='</p>';
+
   content+='</div>';
 
   content+='</body>';

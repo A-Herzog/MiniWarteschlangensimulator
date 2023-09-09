@@ -16,7 +16,11 @@ limitations under the License.
 
 export {processSeries};
 
-import {showMessage} from './Editor.js';
+import {showMessage, showTemplatesSidebar, elements, edges} from './Editor.js';
+import {WebSimulator} from './Simulator.js';
+import {language} from './Language.js';
+import {getPositiveFloat, getPositiveInt} from './Tools.js';
+import {SimulatorWorker} from './Simulator.js';
 
 let seriesParameters;
 let parameterNr;

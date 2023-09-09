@@ -16,7 +16,9 @@ limitations under the License.
 
 export {loadExample};
 
-import {discardModel, addElementToModel, addTextToModel, addDiagramToModel, addEdgeToModel, updateModelOnCanvas, getElementByBoxId} from './Editor.js';
+import {discardModel, addElementToModel, addTextToModel, addDiagramToModel, addEdgeToModel, updateModelOnCanvas, getElementByBoxId, elements, edges} from './Editor.js';
+import {language} from "./Language.js";
+import {showTemplatesSidebar} from './Editor.js';
 
 function loadExample(nr, discardOkChecked=false) {
   if (!discardOkChecked) {

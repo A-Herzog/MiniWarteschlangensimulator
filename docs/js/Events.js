@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-'use strict';
+export {SendEvent, ArrivalEvent, ServiceDoneEvent, WaitingCancelEvent};
+
+import {simcore} from "./SimCore.js";
 
 class SendEvent extends simcore.Event {
   constructor(time, sourceStation, destinationStation, client, changeNumbers) {

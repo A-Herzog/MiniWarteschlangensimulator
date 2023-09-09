@@ -16,7 +16,10 @@ limitations under the License.
 
 export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas};
 
+import {language} from "./Language.js";
 import {animationActive} from "./Animator.js";
+import {templates, getRecordByType} from "./Templates.js";
+import {isDesktopApp} from "./Tools.js";
 
 /* Größenanpassung */
 
@@ -45,7 +48,7 @@ function resizeCanvas() {
   style.maxHeight=style.height;
 }
 
-window.addEventListener('load', (event) => {
+if (typeof(window)!='undefined') window.addEventListener('load', (event) => {
   const resizeObserver=new ResizeObserver(resizeCanvas);
   resizeObserver.observe(document.getElementById("sidebar"));
   resizeObserver.observe(document.body);
@@ -390,7 +393,7 @@ function handle_touch_up_templates(e) {
   e.target.style.top=dragStartElementY+"px";
 }
 
-if (window.Touch) window.addEventListener('load', (event) => {
+if (typeof(window)!='undefined' && typeof(document)!='undefined' && ("ontouchstart" in document.documentElement)) window.addEventListener('load', (event) => {
   const canvasArea=document.getElementById('canvas_area');
   canvasArea.addEventListener("touchstart",handle_touch_down,false);
   canvasArea.addEventListener("touchmove",handle_touch_move,false);

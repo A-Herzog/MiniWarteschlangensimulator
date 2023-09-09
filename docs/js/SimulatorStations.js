@@ -14,7 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-'use strict';
+export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimDispose, SimBatch, SimSeparate, SimSignal, SimBarrier};
+
+import {distributionBuilder} from "./SimulatorBuilder.js";
+import {statcore} from "./StatCore.js";
+import {SendEvent, ArrivalEvent, ServiceDoneEvent, WaitingCancelEvent} from "./Events.js";
+import {getPositiveFloat, getNotNegativeFloat, getPositiveInt, getNotNegativeInt} from './Tools.js';
+
+
 
 class Client {
   constructor() {

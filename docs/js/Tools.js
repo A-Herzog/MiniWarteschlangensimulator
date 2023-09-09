@@ -14,29 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-'use strict';
+export {isDesktopApp, getPositiveFloat, getNotNegativeFloat, getPositiveInt, getNotNegativeInt};
 
-/* Sprachauswahl */
-
-function selectLanguageFile(file) {
-  if (window.location.href.endsWith(file)) return;
-  window.location.href='./'+file;
-}
-
-function selectLanguage(languages) {
-  let selectedLanguage=localStorage.getItem('selectedLanguage');
-
-  if (selectedLanguage==null) {
-    const userLang=(navigator.language || navigator.userLanguage).toLocaleLowerCase();
-    let preferredFile=languages.find(language=>language.name=='default').file;
-    for (let language of languages) if (userLang.startsWith(language.name)) {preferredFile=language.file; break;}
-    selectLanguageFile(preferredFile);
-  } else {
-    selectLanguageFile(languages.find(language=>language.name==selectedLanguage).file);
-  }
-}
-
-/* Umgang mit Zahlen */
+const isDesktopApp=(typeof(NL_OS)!='undefined');
+    if (isDesktopApp) Neutralino.init();
 
 function parseFloatStrict(value) {
   if(/^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(value)) return Number(value);
