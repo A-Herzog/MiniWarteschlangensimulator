@@ -17,7 +17,7 @@ limitations under the License.
 import {language} from './Language.js';
 import {zoomIn, zoomOut, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick} from "./Editor.js";
 import {loadExample} from "./Example.js";
-import {startAnimation, animationPlayPause, animationFastForward} from "./Animator.js";
+import {startAnimation, animationPlayPause, animationSingleTimeStep, animationFastForward} from "./Animator.js";
 import {processSeries} from "./Series.js";
 import {isDesktopApp} from "./Tools.js";
 
@@ -80,6 +80,7 @@ tabEdgeButton.innerHTML=" "+language.tabEdge.stop;
 tabAnimation.innerHTML=" "+language.tabAnimation.title;
 animationSpeedLabel.innerHTML=language.tabAnimation.speed;
 animationPlayPauseButtonOuter.title=language.tabAnimation.playPauseInfo;
+animationStepButtonOuter.title=language.tabAnimation.StepInfo;
 animationFastForwardButton.innerHTML=" "+language.tabAnimation.simulation;
 tabAnimationSimInfo.innerHTML=language.tabAnimation.simulationDropDown;
 tabAnimationSim0.innerHTML=language.tabAnimation.simulationDropDown1Mio;
@@ -132,6 +133,7 @@ tabHomeExamples4.onclick=()=>loadExample(4);
 
 animation_button.onclick=()=>startAnimation();
 animationPlayPauseButtonOuter.onclick=()=>animationPlayPause();
+animationStepButtonOuter.onclick=()=>animationSingleTimeStep();
 animationFastForwardButton.onclick=()=>animationFastForward(5);
 tabAnimationSim0.onclick=()=>animationFastForward(1);
 tabAnimationSim1.onclick=()=>animationFastForward(5);

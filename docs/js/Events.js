@@ -19,26 +19,24 @@ export {SendEvent, ArrivalEvent, ServiceDoneEvent, WaitingCancelEvent};
 import {simcore} from "./SimCore.js";
 
 class SendEvent extends simcore.Event {
-  constructor(time, sourceStation, destinationStation, client, changeNumbers) {
+  constructor(time, sourceStation, destinationStation, client) {
     super(time);
     this.sourceStation=sourceStation;
     this.destinationStation=destinationStation;
     this.client=client;
-    this.changeNumbers=changeNumbers;
   }
 
   execute(simulator) {
     const client=this.client;
     const sourceStation=this.sourceStation;
     const destinationStation=this.destinationStation;
-    if (this.changeNumbers) {
-      sourceStation.n--;
-      destinationStation.n++;
-      if (simulator.withAnimation) {
-        simulator.animateMoveClients.push({from: sourceStation.id, to: destinationStation.id});
-        simulator.animateStaticClients[sourceStation.id]=sourceStation.n;
-        simulator.animateStaticClients[destinationStation.id]=destinationStation.n;
-      }
+
+    sourceStation.n--;
+    destinationStation.n++;
+    if (simulator.withAnimation) {
+      simulator.animateMoveClients.push({from: sourceStation.id, to: destinationStation.id});
+      simulator.animateStaticClients[sourceStation.id]=sourceStation.n;
+      simulator.animateStaticClients[destinationStation.id]=destinationStation.n;
     }
     sourceStation.processLeave(simulator,client);
     destinationStation.processArrival(simulator,client);
@@ -46,16 +44,7 @@ class SendEvent extends simcore.Event {
 
   static sendClient(simulator, sourceStation, destinationStation, client, delta) {
     const time=simulator.time;
-    simulator.addEvent(new SendEvent(time+delta,sourceStation,destinationStation,client,delta>0));
-    if (delta==0) {
-      sourceStation.n--;
-      destinationStation.n++;
-      if (simulator.withAnimation) {
-        simulator.animateMoveClients.push({from: sourceStation.id, to: destinationStation.id});
-        simulator.animateStaticClients[sourceStation.id]=sourceStation.n;
-        simulator.animateStaticClients[destinationStation.id]=destinationStation.n;
-      }
-    }
+    simulator.addEvent(new SendEvent(time+delta,sourceStation,destinationStation,client));
   }
 }
 

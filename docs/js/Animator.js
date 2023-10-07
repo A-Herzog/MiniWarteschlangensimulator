@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {startAnimation, animationPlayPause, animationActive, animationFastForward};
+export {startAnimation, animationPlayPause, animationSingleTimeStep, animationActive, animationFastForward};
 
 import {showMessage, showConfirmationMessage, showAnimationSidebar, addEdgeActive, showTemplatesSidebar, elements, edges} from './Editor.js';
 import {SimulatorWorker, WebSimulator} from './Simulator.js';
@@ -30,9 +30,12 @@ function startAnimation() {
 
   /* Falls die letzte Animation im Pause-Modus beendet wurde, diesen visuell zurücksetzen */
   animationPause=false;
-  const button=document.getElementById('animationPlayPauseButton');
-  button.classList.remove('bi-play');
-  button.classList.add('bi-pause');
+  const playPauseButton=document.getElementById('animationPlayPauseButton');
+  playPauseButton.classList.remove('bi-play');
+  playPauseButton.classList.add('bi-pause');
+
+  const stepButton=document.getElementById('animationStepButtonOuter');
+  stepButton.classList.add("disabled");
 
   /* Ggf. Funktion zum Hinzufügen von Kanten beenden */
   if (addEdgeActive) addEdgeClick();
@@ -97,17 +100,26 @@ function setAnimationMode(active) {
 }
 
 function animationPlayPause() {
-  const button=document.getElementById('animationPlayPauseButton');
+  const playpauseButton=document.getElementById('animationPlayPauseButton');
+  const stepButton=document.getElementById('animationStepButtonOuter');
 
   if (animationPause) {
+    /* Start animation */
     animationPause=false;
-    button.classList.remove('bi-play');
-    button.classList.add('bi-pause');
+    playpauseButton.classList.remove('bi-play');
+    playpauseButton.classList.add('bi-pause');
+    stepButton.classList.add("disabled");
     animationStep();
   } else {
+    /* Pause animation */
+    if (animationStepTimeout!=null) {
+      clearTimeout(animationStepTimeout);
+      animationStepTimeout=null;
+    }
     animationPause=true;
-    button.classList.remove('bi-pause');
-    button.classList.add('bi-play');
+    playpauseButton.classList.remove('bi-pause');
+    playpauseButton.classList.add('bi-play');
+    stepButton.classList.remove("disabled");
   }
 }
 
@@ -115,6 +127,7 @@ function animationPlayPause() {
 
 let animationActive=false;
 let animationPause=false;
+let animationStepTimeout=null;
 let animationSlider;
 let animationInfo;
 
@@ -129,6 +142,7 @@ const animationDelay={1: 1000, 2: 500, 3: 200, 4: 50, 5: 0};
 
 
 function animationStep() {
+  animationStepTimeout=null;
   const delay=animationDelay[animationSlider.value];
   const now=Date.now();
 
@@ -153,7 +167,14 @@ function animationStep() {
   /* Nächsten Schritt planen */
   if (!animationPause) {
     const nextStepDelay=simulator.nextEventIsSameTime?animationDuration:Math.max(animationDuration,delay);
-    setTimeout(animationStep,nextStepDelay);
+    animationStepTimeout=setTimeout(animationStep,nextStepDelay);
+  }
+}
+
+function animationSingleTimeStep() {
+  const startTime=simulator.time;
+  while (startTime==simulator.time) {
+    animationStep();
   }
 }
 
