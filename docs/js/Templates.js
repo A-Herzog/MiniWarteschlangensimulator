@@ -166,10 +166,18 @@ function animateDiagram(time, simStation, simData, simStations) {
 
   ctx.beginPath();
   let first=true;
+  let lastY;
   for (let value of values) {
     const x=(1-(time-value.x)/simData.storeSize)*simData.canvasMaxX;
     const y=(1-Math.min(1,value.y/maxYValue))*simData.canvasMaxY;
-    if (first) {ctx.moveTo(x,y); first=false;} else ctx.lineTo(x,y);
+    if (first) {
+      ctx.moveTo(x,y);
+      first=false;
+    } else {
+      ctx.lineTo(x,lastY);
+      ctx.lineTo(x,y);
+    }
+    lastY=y;
   }
   ctx.stroke();
 }
