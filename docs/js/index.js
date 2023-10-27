@@ -87,6 +87,7 @@ tabAnimationSim0.innerHTML=language.tabAnimation.simulationDropDown1Mio;
 tabAnimationSim1.innerHTML="<b>"+language.tabAnimation.simulationDropDown5Mio+"</b>";
 tabAnimationSim2.innerHTML=language.tabAnimation.simulationDropDown10Mio;
 tabAnimationSim3.innerHTML=language.tabAnimation.simulationDropDown25Mio;
+tabAnimationSim4.innerHTML=language.tabAnimation.simulationDropDown100Mio;
 
 function initMenuButton(id, title, tooltip) {
   if (title!=null && title!="") document.querySelector("#"+id+" .menuButtonTitle").innerHTML=" "+title;
@@ -139,6 +140,7 @@ tabAnimationSim0.onclick=()=>animationFastForward(1);
 tabAnimationSim1.onclick=()=>animationFastForward(5);
 tabAnimationSim2.onclick=()=>animationFastForward(10);
 tabAnimationSim3.onclick=()=>animationFastForward(25);
+tabAnimationSim4.onclick=()=>animationFastForward(100);
 
 tabHomeParameterSeries.onclick=()=>processSeries();
 

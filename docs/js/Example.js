@@ -72,7 +72,7 @@ function loadExampleStrategies() {
   const disposeBoxId1=addElementToModel("Dispose",100,900);
 
   /* Kürzere Warteschlange */
-  addTextToModel(225,650,language.examples.exampleControlShortestQueue,10);
+  addTextToModel(225,650,language.examples.exampleControlFewestCustomers,10);
   const decide2BoxId=addElementToModel("Decide",300,500);
   getElementByBoxId(decide2BoxId).setup.mode=2;
   const process21BoxId=addElementToModel("Process",250,700);
