@@ -18,6 +18,7 @@ export {WebSimulator, SimulatorWorker};
 
 import {SimModelBuilder} from "./SimulatorBuilder.js";
 import {simcore} from "./SimCore.js";
+import {statcore} from "./StatCore.js";
 import {language, getCharacteristicsInfo} from "./Language.js";
 
 
@@ -81,7 +82,7 @@ class WebSimulator extends simcore.Simulator {
         if (count>0) status+=", ";
         if (count>0 && count%2==0) status+="<br>";
         count++;
-        status+=getCharacteristicsInfo("E["+recordName+"]")+"="+(Math.round(stationData[recordName].mean*10)/10).toLocaleString();
+        status+=getCharacteristicsInfo("E["+recordName+"]")+"=<span title='"+stationData[recordName].mean.toLocaleString()+"'>"+statcore.formatShorter(stationData[recordName].mean)+"</span>";
       }
       if (className=='Counter') {
         if (count>0) status+=", ";
@@ -252,13 +253,13 @@ class SimulatorWorker {
           if (count>0 && count%4==0) status+="<br>";
           count++;
           const value=(typeof(recordData.mean)=='undefined')?recordData.count:recordData.mean;
-          status+=getCharacteristicsInfo(recordName)+"="+(Math.round(value*10)/10).toLocaleString();
+          status+=getCharacteristicsInfo(recordName)+"=<span title='"+value.toLocaleString()+"'>"+statcore.formatShorter(value)+"</span>";
 
           if (recordData.name=="W" && typeof(recordData.cv)!='undefined') {
             if (count>0) status+=",&nbsp;&nbsp;";
             if (count>0 && count%4==0) status+="<br>";
             count++;
-            status+=getCharacteristicsInfo("CV[W]")+"="+(Math.round(recordData.cv*10)/10).toLocaleString();
+            status+=getCharacteristicsInfo("CV[W]")+"=<span title='"+recordData.cv.toLocaleString()+"'>"+statcore.formatShorter(recordData.cv)+"</span>";
           }
         }
         status+="</small></p>";
