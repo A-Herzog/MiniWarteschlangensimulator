@@ -20,6 +20,7 @@ import {distributionBuilder} from "./SimulatorBuilder.js";
 import {statcore} from "./StatCore.js";
 import {SendEvent, ArrivalEvent, ServiceDoneEvent, WaitingCancelEvent} from "./Events.js";
 import {getPositiveFloat, getNotNegativeFloat, getPositiveInt, getNotNegativeInt} from './Tools.js';
+import {language} from "./Language.js";
 
 
 
@@ -51,7 +52,7 @@ class SimElement {
     this.nextSimElements.push(nextSimElement);
   }
 
-  build(globalStatistics) {
+  build(globalStatistics, allElements) {
     return null;
   }
 
@@ -88,8 +89,8 @@ class SimSource extends SimElement {
     super(editElement);
   }
 
-  build(globalStatistics) {
-    const superError=super.build(globalStatistics);
+  build(globalStatistics, allElements) {
+    const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length!=1) return language.builderSource.edge;
@@ -129,8 +130,8 @@ class SimDelay extends SimElement {
     super(editElement);
   }
 
-  build(globalStatistics) {
-    const superError=super.build(globalStatistics);
+  build(globalStatistics, allElements) {
+    const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length!=1) return language.builderSource.edge;
@@ -180,8 +181,8 @@ class SimProcess extends SimElement {
     this.nq=0;
   }
 
-  build(globalStatistics) {
-    const superError=super.build(globalStatistics);
+  build(globalStatistics,allElements) {
+    const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderProcess.edge;
@@ -365,8 +366,8 @@ class SimDecide extends SimElement {
     super(editElement);
   }
 
-  build(globalStatistics) {
-    const superError=super.build(globalStatistics);
+  build(globalStatistics,allElements) {
+    const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1) return language.builderDecide.edge;
@@ -458,8 +459,8 @@ class SimDuplicate extends SimElement {
     super(editElement);
   }
 
-  build(globalStatistics) {
-    const superError=super.build(globalStatistics);
+  build(globalStatistics, allElements) {
+    const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1) return language.builderDuplicate.edge;
@@ -490,8 +491,8 @@ class SimCounter extends SimElement {
     super(editElement);
   }
 
-  build(globalStatistics) {
-    const superError=super.build(globalStatistics);
+  build(globalStatistics, allElements) {
+    const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1) return language.builderDuplicate.edge;
@@ -514,8 +515,8 @@ class SimDispose extends SimElement {
     super(editElement);
   }
 
-  build(globalStatistics) {
-    const superError=super.build(globalStatistics);
+  build(globalStatistics, allElements) {
+    const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     this.initStatistics(globalStatistics,1,{W: new statcore.Values(), S: new statcore.Values(), V: new statcore.Values(), n: new statcore.Counter()});
@@ -557,8 +558,8 @@ class SimBatch extends SimElement {
     this.queue=[];
   }
 
-  build(globalStatistics) {
-    const superError=super.build(globalStatistics);
+  build(globalStatistics, allElements) {
+    const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderBatch.edge;
@@ -608,8 +609,8 @@ class SimSeparate extends SimElement {
     super(editElement);
   }
 
-  build(globalStatistics) {
-    const superError=super.build(globalStatistics);
+  build(globalStatistics, allElements) {
+    const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderSeparate.edge;
@@ -648,8 +649,8 @@ class SimSignal extends SimElement {
     this.nr=editElement.nr;
   }
 
-  build(globalStatistics) {
-    const superError=super.build(globalStatistics);
+  build(globalStatistics, allElements) {
+    const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderSeparate.edge;
@@ -672,8 +673,8 @@ class SimBarrier extends SimElement {
     this.nq=0;
   }
 
-  build(globalStatistics) {
-    const superError=super.build(globalStatistics);
+  build(globalStatistics, allElements) {
+    const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderSeparate.edge;
@@ -683,6 +684,10 @@ class SimBarrier extends SimElement {
     this.release=getNotNegativeInt(setup.release);
     if (this.release==null) return language.builderProcess.release;
 
+    if (setup.signal=='') {
+      const signalNumbers=allElements.filter(element=>element.type=='Signal').map(element=>element.nr);
+      if (signalNumbers.length>0) setup.signal=signalNumbers[0];
+    }
     this.signalNr=getPositiveInt(setup.signal);
     if (this.signalNr==null) return language.builderProcess.signal;
 

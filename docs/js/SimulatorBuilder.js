@@ -16,10 +16,11 @@ limitations under the License.
 
 export {SimModelBuilder, distributionBuilder};
 
-import {getRecordByType} from "./Templates.js";
+import {templates, getRecordByType} from "./Templates.js";
 import {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimDispose, SimBatch, SimSeparate, SimSignal, SimBarrier} from './SimulatorStations.js';
 import {distcore} from "./DistCore.js";
 import {language} from "./Language.js";
+
 
 
 class SimModelBuilder {
@@ -98,7 +99,7 @@ class SimModelBuilder {
 
     /* Daten in Stationen laden */
     for (let station of this.stationsList) {
-      const stationError=station.build(globalStatistics);
+      const stationError=station.build(globalStatistics,this.editElements);
       if (stationError!=null) return language.builder.stationError+" <b style='color: "+templates.filter(template=>template.type==station.editElement.type)[0].color+"'>"+station.name+"</b>:<br>"+stationError;
     }
 
