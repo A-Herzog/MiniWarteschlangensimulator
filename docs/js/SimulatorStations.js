@@ -691,6 +691,8 @@ class SimBarrier extends SimElement {
     this.signalNr=getPositiveInt(setup.signal);
     if (this.signalNr==null) return language.builderProcess.signal;
 
+    this.storeStignals=setup.storeSignals;
+
     this.initStatistics(globalStatistics,2,{W: new statcore.Values(), NQ: new statcore.States(), n: new statcore.Counter()});
 
     return null;
@@ -719,6 +721,7 @@ class SimBarrier extends SimElement {
     if (nr!=this.signalNr) return;
     this.release++; /* Freigabezähler erhöhen */
     this.testRelease(simulator);
+    if (!this.storeStignals) this.release=0;
   }
 
   testRelease(simulator) {

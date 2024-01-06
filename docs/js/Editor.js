@@ -26,6 +26,8 @@ import {isDesktopApp} from "./Tools.js";
 function resizeCanvas() {
   let style;
 
+  if (document.getElementById("sidebar")==null) return;
+
   const viewportHeight=Math.floor(window.visualViewport.height);
   const viewportWidth=Math.floor(window.visualViewport.width);
   const navWidth=document.getElementById("sidebar").offsetWidth;
@@ -552,6 +554,7 @@ function descriptionForParameter(parameter) {
   if (parameter=="SuccessNextBox") return language.editor.SuccessNextBox;
   if (parameter=='release') return language.editor.release;
   if (parameter=='signal') return language.editor.signal;
+  if (parameter=='storeSignals') return language.editor.storeSignals;
   if (parameter=='source') return language.editor.source;
   if (parameter=='xrange') return language.editor.xrange;
   return "";
@@ -572,6 +575,7 @@ function nameForParameter(parameter) {
   if (parameter=="SuccessNextBox") return "";
   if (parameter=='release') return language.editor.releaseLabel;
   if (parameter=='signal') return language.editor.signalLabel;
+  if (parameter=='storeSignals') return language.editor.storeSignalsLabel;
   if (parameter=='source') return language.editor.sourceLabel;
   if (parameter=='xrange') return language.editor.xrangeLabel;
   return parameter;
@@ -675,6 +679,24 @@ function addEditorElements(element, parent, allElements) {
       }
       select.innerHTML=options;
       select.onchange=function(){element.setup[name]=select.value;}
+      continue;
+    }
+
+    if (name=="storeSignals") {
+      div.classList.add("form-switch");
+      const checkBox=document.createElement("input");
+      div.appendChild(checkBox);
+      checkBox.type="checkbox";
+      checkBox.className="form-check-input";
+      checkBox.checked=element.setup[name];
+      checkBox.onchange=function(){element.setup[name]=checkBox.checked;}
+      checkBox.style.borderRadius=".25em";
+      const checkBoxLabel=document.createElement("label");
+      div.appendChild(checkBoxLabel);
+      checkBoxLabel.className="form-check-label";
+      checkBoxLabel.innerHTML=language.editor.storeSignalsLabel2;
+      checkBoxLabel.style.paddingLeft="10px";
+      checkBoxLabel.htmlFor=checkBox;
       continue;
     }
 

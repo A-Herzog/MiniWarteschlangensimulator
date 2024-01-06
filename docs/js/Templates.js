@@ -284,7 +284,7 @@ templates.push({
   maxEdgesIn: 999,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Barrier",id,language.templates.barrier+"<br>"+nr,"#FB3","#FD7",top,left,isTemplate),
-  setup: {release: 1, signal: ''}
+  setup: {release: 1, signal: '', storeSignals: true}
 });
 templates.push({
   type: 'Text',
