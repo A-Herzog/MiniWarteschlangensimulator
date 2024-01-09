@@ -35,6 +35,7 @@ function loadExample(nr, discardOkChecked=false) {
   if (nr==2) loadExampleRetry();
   if (nr==3) loadExamplePolicy();
   if (nr==4) loadPushPull();
+  if (nr==5) loadBusStopp();
 
   showTemplatesSidebar();
 }
@@ -208,4 +209,44 @@ function loadPushPull() {
   addTextToModel(470,100,language.examples.examplePushPullInfo2,12);
 
   addDiagramToModel(540,100,"Barrier-1");
+}
+
+function loadBusStopp() {
+  addTextToModel(50,100,language.examples.exampleBusStopp,16);
+
+  let setup;
+
+  addTextToModel(105,100,language.examples.exampleBusStoppInfoPassengers,10);
+  const sourceBoxId1=addElementToModel("Source",130,100);
+  setup=getElementByBoxId(sourceBoxId1).setup;
+  setup.EI=3600;
+  setup.CVI=0;
+
+  addTextToModel(155,300,language.examples.exampleBusStoppInfoBusStopp,10);
+  const barrierBoxId=addElementToModel("Barrier",180,300);
+  setup=getElementByBoxId(barrierBoxId).setup;
+  setup.signal='1';
+  setup.storeSignals=false;
+
+  const disposeBoxId1=addElementToModel("Dispose",130,500);
+
+  addTextToModel(305,100,language.examples.exampleBusStoppInfoBusses,10);
+  const sourceBoxId2=addElementToModel("Source",330,100);
+  setup=getElementByBoxId(sourceBoxId2).setup;
+  setup.EI=300;
+
+  const signalBoxId=addElementToModel("Signal",270,300);
+
+  const disposeBoxId2=addElementToModel("Dispose",330,500);
+
+  addEdgeToModel(sourceBoxId1,barrierBoxId);
+  addEdgeToModel(barrierBoxId,disposeBoxId1);
+
+  addEdgeToModel(sourceBoxId2,signalBoxId);
+  addEdgeToModel(signalBoxId,disposeBoxId2);
+
+  addTextToModel(450,100,language.examples.exampleBusStoppInfo1,12);
+  addTextToModel(470,100,language.examples.exampleBusStoppInfo2,12);
+  addTextToModel(490,100,language.examples.exampleBusStoppInfo3,12);
+  addTextToModel(510,100,language.examples.exampleBusStoppInfo4,12);
 }
