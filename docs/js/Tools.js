@@ -17,7 +17,10 @@ limitations under the License.
 export {isDesktopApp, getPositiveFloat, getNotNegativeFloat, getPositiveInt, getNotNegativeInt};
 
 const isDesktopApp=(typeof(NL_OS)!='undefined');
-    if (isDesktopApp) Neutralino.init();
+if (isDesktopApp) {
+  Neutralino.init();
+  Neutralino.events.on("windowClose",()=>Neutralino.app.exit());
+}
 
 function parseFloatStrict(value) {
   if(/^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(value)) return Number(value);
