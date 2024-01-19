@@ -19,8 +19,8 @@ limitations under the License.
 /* Sprachauswahl */
 
 function selectLanguageFile(file) {
-  if (window.location.href.endsWith(file)) return;
-  window.location.href='./'+file;
+  if (window.location.pathname.endsWith(file)) return;
+  window.location.href='./'+file+window.location.search;
 }
 
 function selectLanguage(languages) {

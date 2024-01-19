@@ -160,6 +160,22 @@ tabHomeHelpDownload.onclick=()=>{
   document.body.removeChild(element);
 };
 
+/* Beispiel über URL laden */
+
+const exampleKeywords=[
+  {keywords: ['ErlangC','MMc'], example: 0},
+  {keywords: ['Control','Steuerung','Batch'], example: 1},
+  {keywords: ['Impatience','Retry','Ungeduld','Wiederholer','Callcenter'], example: 2},
+  {keywords: ['Sequence','Reihenfolge','FIFO','FCFS','LIFO','LCFS'], example: 3},
+  {keywords: ['Push','Pull'], example: 4},
+  {keywords: ['HitchhikersParadox','Wartezeitparadoxon','BusStoppParadox','BusStoppParadoxon'], example: 5},
+];
+
+if (window.location.search.startsWith("?")) {
+  const exampleModelName=window.location.search.substring(1).toLocaleLowerCase();
+  exampleKeywords.filter(example=>example.keywords.map(keyword=>keyword.toLowerCase()).indexOf(exampleModelName)>=0).forEach(example=>loadExample(example.example));
+}
+
 /* Start */
 
 document.addEventListener('readystatechange',event=>{if (event.target.readyState=="complete") {
