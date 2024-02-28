@@ -18,7 +18,18 @@ export {SendEvent, ArrivalEvent, ServiceDoneEvent, WaitingCancelEvent};
 
 import {simcore} from "./SimCore.js";
 
+
+/**
+ * Sending a client from a origin to a destination station
+ */
 class SendEvent extends simcore.Event {
+  /**
+   * Constructor
+   * @param {Number} time Simulation time at which the event is to be executed
+   * @param {Object} sourceStation Origin station
+   * @param {Object} destinationStation Destination station
+   * @param {Object} client Client to be sent
+   */
   constructor(time, sourceStation, destinationStation, client) {
     super(time);
     this.sourceStation=sourceStation;
@@ -42,6 +53,14 @@ class SendEvent extends simcore.Event {
     destinationStation.processArrival(simulator,client);
   }
 
+  /**
+   * Generates a send event and adds it to the simulator
+   * @param {Object} simulator Simulator object
+   * @param {Object} sourceStation Origin station
+   * @param {Object} destinationStation Destination station
+   * @param {Object} client Client to be sent
+   * @param {Number} delta When to execute the event (0 means now)
+   */
   static sendClient(simulator, sourceStation, destinationStation, client, delta) {
     const time=simulator.time;
     simulator.addEvent(new SendEvent(time+delta,sourceStation,destinationStation,client));
@@ -49,8 +68,15 @@ class SendEvent extends simcore.Event {
 }
 
 
-
+/**
+ * Arrival of a client at a source station
+ */
 class ArrivalEvent extends simcore.Event {
+  /**
+   * Constructor
+   * @param {Number} time Simulation time at which the event is to be executed
+   * @param {Object} station Station at which the arrival will occur
+   */
   constructor(time, station) {
     super(time);
     this.station=station;
@@ -62,6 +88,11 @@ class ArrivalEvent extends simcore.Event {
     ArrivalEvent.scheduleNext(simulator,station);
   }
 
+  /**
+   * Schedules the next client arrival event
+   * @param {Object} simulator Simulator object
+   * @param {Object} station Station at which the arrival will occur
+   */
   static scheduleNext(simulator, station) {
     const time=simulator.time;
     const delta=station.distI();
@@ -70,8 +101,15 @@ class ArrivalEvent extends simcore.Event {
 }
 
 
-
+/**
+ * This event is executed when a service process at a process station is finished.
+ */
 class ServiceDoneEvent extends simcore.Event {
+  /**
+   * Constructor
+   * @param {Number} time Simulation time at which the event is to be executed
+   * @param {Object} station Station at which the service process is finished
+   */
   constructor(time, station) {
     super(time);
     this.station=station;
@@ -83,8 +121,16 @@ class ServiceDoneEvent extends simcore.Event {
 }
 
 
-
+/**
+ * This event is executed when the waiting time tolerance of the client is exceeded.
+ */
 class WaitingCancelEvent extends simcore.Event {
+  /**
+   * Constructor
+   * @param {Number} time Simulation time at which the event is to be executed
+   * @param {Object} station Station at which the client is waiting
+   * @param {Object} client Waiting client
+   */
   constructor(time, station, client) {
     super(time);
     this.station=station;

@@ -20,6 +20,11 @@ import {discardModel, addElementToModel, addTextToModel, addDiagramToModel, addE
 import {language} from "./Language.js";
 import {showTemplatesSidebar} from './Editor.js';
 
+/**
+ * Loads a built-in example model.
+ * @param {Number} nr Number of the example model (0 to 5) to be loaded
+ * @param {Boolean} discardOkChecked Has a discard check already (and successfully) be performed?
+ */
 function loadExample(nr, discardOkChecked=false) {
   if (!discardOkChecked) {
     discardModel(function() {loadExample(nr,true);});
@@ -40,6 +45,9 @@ function loadExample(nr, discardOkChecked=false) {
   showTemplatesSidebar();
 }
 
+/**
+ * Loads the "Erlang C example model" example mode.
+ */
 function loadExampleSimple() {
   addTextToModel(50,100,language.examples.exampleSimple,16);
   const sourceBoxId=addElementToModel("Source",100,100);
@@ -57,6 +65,9 @@ function loadExampleSimple() {
   addDiagramToModel(y+=18+50,100,"Process-1");
 }
 
+/**
+ * Loads the "Comparison of different control strategies" example mode.
+ */
 function loadExampleStrategies() {
   addTextToModel(50,100,language.examples.exampleControl,16);
 
@@ -65,14 +76,14 @@ function loadExampleStrategies() {
 
   const duplicateBoxId=addElementToModel("Duplicate",300,300);
 
-  /* Zufällige Auswahl */
+  /* Random selection */
   addTextToModel(25,650,language.examples.exampleControlRandom,10);
   const decide1BoxId=addElementToModel("Decide",100,500);
   const process11BoxId=addElementToModel("Process",50,700);
   const process12BoxId=addElementToModel("Process",150,700);
   const disposeBoxId1=addElementToModel("Dispose",100,900);
 
-  /* Kürzere Warteschlange */
+  /* Shortest queue */
   addTextToModel(225,650,language.examples.exampleControlFewestCustomers,10);
   const decide2BoxId=addElementToModel("Decide",300,500);
   getElementByBoxId(decide2BoxId).setup.mode=2;
@@ -80,19 +91,19 @@ function loadExampleStrategies() {
   const process22BoxId=addElementToModel("Process",350,700);
   const disposeBoxId2=addElementToModel("Dispose",300,900);
 
-  /* 2er Batche */
+  /* Batch size 2 */
   addTextToModel(475,700,language.examples.exampleControlBatchService,10);
   const process3BoxId=addElementToModel("Process",500,700);
   getElementByBoxId(process3BoxId).setup.b=2;
   const disposeBoxId3=addElementToModel("Dispose",500,900);
 
-  /* Schnller Bediener */
+  /* Faster operator */
   addTextToModel(625,700,language.examples.exampleControlFastOperator,10);
   const process4BoxId=addElementToModel("Process",650,700);
   getElementByBoxId(process4BoxId).setup.ES=40;
   const disposeBoxId4=addElementToModel("Dispose",650,900);
 
-  /* 2 Bediener */
+  /* 2 operators */
   addTextToModel(775,700,language.examples.exampleControlCombinedQueue,10);
   const process5BoxId=addElementToModel("Process",800,700);
   getElementByBoxId(process5BoxId).setup.c=2;
@@ -120,6 +131,9 @@ function loadExampleStrategies() {
   addEdgeToModel(process5BoxId,disposeBoxId5);
 }
 
+/**
+ * Loads the "Queueing model with impatience and retry" example mode.
+ */
 function loadExampleRetry() {
   addTextToModel(50,100,language.examples.exampleImpatienceRetry,16);
 
@@ -142,6 +156,9 @@ function loadExampleRetry() {
   addEdgeToModel(delayBoxId,processBoxId);
 }
 
+/**
+ * Loads the "Comparison of different operating orders" example mode.
+ */
 function loadExamplePolicy() {
   addTextToModel(50,100,language.examples.examplePolicy,16);
 
@@ -173,6 +190,9 @@ function loadExamplePolicy() {
   addTextToModel(420,100,language.examples.examplePolicyInfo2,12);
 }
 
+/**
+ * Loads the "Push and pull production" example mode.
+ */
 function loadPushPull() {
   addTextToModel(50,100,language.examples.examplePushPull,16);
 
@@ -211,6 +231,9 @@ function loadPushPull() {
   addDiagramToModel(540,100,"Barrier-1");
 }
 
+/**
+ * Loads the "Hitchhiker’s paradox" example mode.
+ */
 function loadBusStopp() {
   addTextToModel(50,100,language.examples.exampleBusStopp,16);
 

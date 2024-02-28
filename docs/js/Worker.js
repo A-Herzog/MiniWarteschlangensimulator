@@ -17,6 +17,9 @@ limitations under the License.
 import {setLanguage} from './Language.js';
 import {WebSimulator} from './Simulator.js';
 
+/**
+ * Web worker for executing parallel simulations.
+ */
 onmessage = function(e) {
   const request=JSON.parse(e.data.model);
   const useLanguage=e.data.useLanguage;

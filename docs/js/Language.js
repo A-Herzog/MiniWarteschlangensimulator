@@ -16,6 +16,9 @@ limitations under the License.
 
 export {language, setLanguage, getCharacteristicsInfo}
 
+/**
+ * Object containing the language strings for the GUI in the selected language.
+ */
 let lang;
 
 /* German */
@@ -688,12 +691,23 @@ function setLanguage(useLanguage=null) {
 
 setLanguage();
 
-/* Kenngrößen-Info */
+/* Performance indicator information */
 
+/**
+ * Generates the html code for an abbrevitation.
+ * @param {String} str Text which is to be annotated
+ * @param {String} info Information to be added to the text
+ * @returns Html code
+ */
 function buildAbbr(str,info) {
   return "<abbr title='"+info+"'>"+str+"</abbr>";
 }
 
+/**
+ * Generates the html code for a performance indicator with an abbrevitation.
+ * @param {String} str Performance indicator text
+ * @returns Html code
+ */
 function getCharacteristicsInfo(str) {
   if (str=='E[W]') return buildAbbr(str,language.statisticsInfo.EW);
   if (str=='E[S]') return buildAbbr(str,language.statisticsInfo.ES);

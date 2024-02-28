@@ -21,8 +21,12 @@ import {animationActive} from "./Animator.js";
 import {templates, getRecordByType} from "./Templates.js";
 import {isDesktopApp} from "./Tools.js";
 
-/* Größenanpassung */
 
+/* === Zooming system === */
+
+/**
+ * Update canvas after window resize
+ */
 function resizeCanvas() {
   let style;
 
@@ -69,11 +73,17 @@ if (typeof(window)!='undefined') window.addEventListener('load', (event) => {
 
 let canvasScale=100;
 
+/**
+ * Enable or disable zoom buttons (when minimum/maximum zoom level is reached).
+ */
 function updateZoomButtons() {
   document.getElementById('zoom_button_in').disabled=canvasScale>=140;
   document.getElementById('zoom_button_out').disabled=canvasScale<=60;
 }
 
+/**
+ * Decreate zoom level.
+ */
 function zoomOut() {
   if (canvasScale<=60) return;
   canvasScale-=20;
@@ -81,6 +91,9 @@ function zoomOut() {
   updateCanvasScale(canvasScale/100);
 }
 
+/**
+ * Increase zoom level.
+ */
 function zoomIn() {
   if (canvasScale>=140) return;
   canvasScale+=20;
@@ -88,15 +101,23 @@ function zoomIn() {
   updateCanvasScale(canvasScale/100);
 }
 
+/**
+ * Update canvas scaling (css) when zoom level was increased or decreased.
+ * @param {Number} newScale New canvas scaling
+ */
 function updateCanvasScale(newScale) {
   const canvas=document.getElementById('canvas_area');
   canvas.style.transform='scale('+newScale+')';
 }
 
 
+/* === Messages === */
 
-/* Meldungen */
-
+/**
+ * Shows a message box with an "Ok" button.
+ * @param {String} title Message box title
+ * @param {String} msg Message box content
+ */
 function showMessage(title, msg) {
   document.getElementById('modalMessageTitle').innerHTML=title;
   document.getElementById('modalMessageBody').innerHTML=msg;
@@ -105,6 +126,12 @@ function showMessage(title, msg) {
   dialog.show();
 }
 
+/**
+ * Shows a Yes/No message box.
+ * @param {String} title Message box title
+ * @param {String} msg Message box content
+ * @param {Function} yesCallback Function to be invoked on "Yes" click
+ */
 function showConfirmationMessage(title, msg, yesCallback) {
   document.getElementById('modalConfirmationTitle').innerHTML=title;
   document.getElementById('modalConfirmationBody').innerHTML=msg;
@@ -114,6 +141,10 @@ function showConfirmationMessage(title, msg, yesCallback) {
   dialog.show();
 }
 
+/**
+ * Shows a "Discard model now?" message box.
+ * @param {Function} yesCallback Function to be invoked on "Yes" click
+ */
 function discardModel(yesCallback) {
   if (elements.length==0) {
     yesCallback();
@@ -123,9 +154,11 @@ function discardModel(yesCallback) {
 }
 
 
+/* === Load/save models === */
 
-/* Modelle laden/speichern */
-
+/**
+ * Menu function: File | New
+ */
 function fileNew() {
   discardModel(function() {
     elements.length=0;
@@ -135,12 +168,20 @@ function fileNew() {
   });
 }
 
+/**
+ * Handler for File | Load drag over event
+ * @param {Object} event
+ */
 function fileLoadDrag(event) {
   event.preventDefault();
 }
 
 let fileLoadEnterCount=0;
 
+/**
+ * Handler for File | Load drag enter event
+ * @param {Object} event
+ */
 function fileLoadDragEnter(event) {
   const element=document.getElementById('fileLoadDropTarget');
   element.style.fontWeight="bold";
@@ -148,6 +189,10 @@ function fileLoadDragEnter(event) {
   fileLoadEnterCount++;
 }
 
+/**
+ * Handler for File | Load drag leave event
+ * @param {Object} event
+ */
 function fileLoadDragLeave(event) {
   fileLoadEnterCount--;
   if (fileLoadEnterCount>0) return;
@@ -156,6 +201,10 @@ function fileLoadDragLeave(event) {
   element.style.backgroundColor="";
 }
 
+/**
+ * Trys to load a model from a JSON object given as a string
+ * @param {String} text String to be interpreted as JSON and then as a model
+ */
 function fileLodeJSON(text) {
   const model=JSON.parse(text);
   discardModel(function() {
@@ -168,6 +217,10 @@ function fileLodeJSON(text) {
   });
 }
 
+/**
+ * Handler for File | Load file drop event
+ * @param {Object} event
+ */
 function fileLoadDrop(event) {
   const element=document.getElementById('fileLoadDropTarget');
   element.style.fontWeight="";
@@ -183,6 +236,10 @@ function fileLoadDrop(event) {
   event.preventDefault();
 }
 
+/**
+ * Menu function: File | Load
+ * (in desktop app version; in web app version only drag and drop loading is possible)
+ */
 function fileLoad() {
   if (!isDesktopApp) return;
 
@@ -196,6 +253,9 @@ function fileLoad() {
     });
 }
 
+/**
+ * Menu function: File | Save
+ */
 function fileSave() {
   const model={elements: elements, edges: edges};
   const json=JSON.stringify(model);
@@ -221,9 +281,18 @@ function fileSave() {
 }
 
 
+/* === Sidebar === */
 
-/* Sidebar */
-
+/**
+ * Shows a specified sidebar
+ * @param {Number} nr Sidebar to be displayed (number between 0 and 5)
+ * @see showFileSidebar()
+ * @see showTemplatesSidebar()
+ * @see showEdgesSidebar()
+ * @see showEditorSidebar()
+ * @see showAnimationSidebar()
+ * @see showMoreSidebar()
+ */
 function showSidebar(nr) {
   document.getElementById('sidebar-file').style.display=(nr==0)?"inline":"none";
   document.getElementById('sidebar-templates').style.display=(nr==1)?"inline":"none";
@@ -236,12 +305,18 @@ function showSidebar(nr) {
   while (editorContent.firstChild) editorContent.removeChild(editorContent.lastChild);
 }
 
+/**
+ * Shows the file menu sidebar.
+ */
 function showFileSidebar() {
   if (animationActive) return;
   if (addEdgeActive) addEdgeClick();
   showSidebar(0);
 }
 
+/**
+ * Shows the add elements sidebar.
+ */
 function showTemplatesSidebar() {
   if (animationActive) return;
   if (addEdgeActive) addEdgeClick();
@@ -249,46 +324,74 @@ function showTemplatesSidebar() {
   resizeCanvas();
 }
 
+/**
+ * Shows the add edge sidebar.
+ */
 function showEdgesSidebar() {
   if (animationActive) return;
   showSidebar(2);
 }
 
+/**
+ * Shows elements settings editor sidebar.
+ */
 function showEditorSidebar() {
   if (animationActive) return;
   showSidebar(3);
 }
 
+/**
+ * Shows the animation sidebar.
+ */
 function showAnimationSidebar() {
   showSidebar(4);
 }
 
+/**
+ * Shows the File | More information sidebar.
+ */
 function showMoreSidebar() {
   if (animationActive) return;
   showSidebar(5);
 }
 
 
+/* === Template drag & drop operations === */
 
-/* Drag&Drop-Operationen */
-
+/**
+ * Callback handler for testing if dropping templates on the drawing surface is allowed.
+ * @param {Object} ev Drop event
+ * @returns Is dropping templates on surface allowed?
+ */
 function allowDrop(ev) {
   if (animationActive) return false;
   ev.preventDefault();
 }
 
+/**
+ * Callback when starting to drag a template from the templates sidebar
+ * @param {Object} ev Drag start event
+ */
 function dragTemplate(ev) {
   ev.dataTransfer.setData("templateType",ev.target.dataset.type);
   ev.dataTransfer.setData("deltaX",ev.layerX);
   ev.dataTransfer.setData("deltaY",ev.layerY);
 }
 
+/**
+ * Callback when starting to drag an element on the drawing surface
+ * @param {Object} ev Drag start event
+ */
 function dragElement(ev) {
   ev.dataTransfer.setData("moveBoxId",ev.target.id);
   ev.dataTransfer.setData("deltaX",ev.layerX);
   ev.dataTransfer.setData("deltaY",ev.layerY);
 }
 
+/**
+ * Callback when dropping an element or a template on the drawing surface.
+ * @param {Object} ev Drop event
+ */
 function canvasDrop(ev) {
   if (animationActive) return;
 
@@ -310,10 +413,10 @@ function canvasDrop(ev) {
   }
 
   if (templateType!='') {
-    /* Aus Vorlage */
+    /* From templates bar */
     addElementToModel(templateType,top,left);
   } else {
-    /* Element verschieben */
+    /* Element moved */
     const boxId=ev.dataTransfer.getData("moveBoxId");
     for (let i=0;i<elements.length;i++) if (elements[i].boxId==boxId) {
       elements[i].top=top;
@@ -325,28 +428,35 @@ function canvasDrop(ev) {
 }
 
 
-
-/* Touch -> Drag&Drop */
+/* === Translate touch operation to drag & drop === */
 
 let dragStartElementX;
 let dragStartElementY;
 let dragStartX;
 let dragStartY;
 
+/**
+ * Touch down event handler
+ * @param {Object} e Touch event
+ */
 function handle_touch_down(e) {
   if (!e.target.classList.contains("draggable")) return;
 
-  /* Startposition des Elements und des Fingers auf der Zeichenfläche merken */
+  /* Store start position for element on drawing surface */
   dragStartElementX=e.target.offsetLeft;
   dragStartElementY=e.target.offsetTop;
   dragStartX=e.targetTouches[0].clientX;
   dragStartY=e.targetTouches[0].clientY;
 }
 
+/**
+ * Touch move event handler
+ * @param {Object} e Touch event
+ */
 function handle_touch_move(e) {
   if (!e.target.classList.contains("draggable")) return;
 
-  /* Verschiebung relativ zur Startposition */
+  /* Moving relative to stored starting position */
   const posx=e.targetTouches[0].clientX;
   const posy=e.targetTouches[0].clientY;
   const deltaX=posx-dragStartX;
@@ -354,14 +464,18 @@ function handle_touch_move(e) {
   e.target.style.left=(dragStartElementX+deltaX)+"px";
   e.target.style.top=(dragStartElementY+deltaY)+"px";
 
-  /* Scrollen der Zeichenfläche aussetzen, so lange wir Drag&Drop machen */
+  /* Do not scroll drawing surface as long as dragging elements is active */
   e.preventDefault();
 }
 
+/**
+ * Touch up event handler (for moving elements on the drawing surface)
+ * @param {Object} e Touch event
+ */
 function handle_touch_up_canvas(e) {
   if (!e.target.classList.contains("draggable")) return;
 
-  /* Daten aus div in Editor-Element übertragen */
+  /* Update data from div element in editor element */
   const boxId=e.target.id;
   for (let i=0;i<elements.length;i++) if (elements[i].boxId==boxId) {
     elements[i].top=e.target.offsetTop;
@@ -369,14 +483,18 @@ function handle_touch_up_canvas(e) {
     break;
   }
 
-  /* Alles neu zeichnen, damit die Kanten auch wieder passen */
+  /* Redraw model (for updating edges) */
   updateModelOnCanvas();
 }
 
+/**
+ * Touch up event handler (for dragging templates to the drawing surface)
+ * @param {Object} e Touch event
+ */
 function handle_touch_up_templates(e) {
   if (!e.target.classList.contains("draggable")) return;
 
-  /* Koordinaten relativ zur Zeichenfläche berechnen */
+  /* Calculate coordinates relative to the drawing surface */
   const sourceRect=document.getElementById('templates_area').getBoundingClientRect();
   const destRect=document.getElementById('canvas_area').getBoundingClientRect();
   const deltaX=destRect.x-sourceRect.x;
@@ -384,13 +502,13 @@ function handle_touch_up_templates(e) {
   const top=e.target.offsetTop-deltaY;
   const left=e.target.offsetLeft-deltaX;
 
-  /* Liegen wir im Zielbereich? */
+  /* Is drop position in the target area? */
   if (top>=0 && left>=0) {
     const templateType=e.target.dataset.type;
     addElementToModel(templateType,top,left);
   }
 
-  /* Ausgangselement wieder an seinen Platz bewegen */
+  /* Move template div back to the initial location */
   e.target.style.left=dragStartElementX+"px";
   e.target.style.top=dragStartElementY+"px";
 }
@@ -408,12 +526,14 @@ if (typeof(window)!='undefined' && typeof(document)!='undefined' && ("ontouchsta
 });
 
 
-
-/* Kanten */
+/* === Edges === */
 
 let addEdgeActive=false;
 let addEdgeFirstBoxId;
 
+/**
+ * Start adding an edge element.
+ */
 function addEdgeClick() {
   if (animationActive) return;
 
@@ -436,16 +556,19 @@ function addEdgeClick() {
 }
 
 
+/* === Clicks on the drawing surface === */
 
-/* Klicks auf Zeichenfläche */
-
+/**
+ * Callback for clicking on the drawing surface
+ * @param {Object} event Click event
+ */
 function canvasClick(event) {
   if (animationActive) return;
 
   const target=event.target;
   const canvas=document.getElementById("canvas_area");
 
-  /* Kanten-Hinzufüge-Modus */
+  /* Add edges modes */
   if (addEdgeActive) {
     if (target==canvas) {addEdgeClick(); return;}
     if (addEdgeFirstBoxId=="") {
@@ -461,21 +584,26 @@ function canvasClick(event) {
     return;
   }
 
-  /* Kante anklicken */
+  /* Click on existing edge */
   if (typeof(target.dataset.edgeIndex)!='undefined') {
     showEdgeEditor(edges[target.dataset.edgeIndex],target.dataset.edgeIndex);
     return;
   }
 
-  /* Element anklicken */
+  /* Click on existing element */
   if (typeof(target.dataset.elementIndex)!='undefined') {
-    showElementEditor(elements[target.dataset.elementIndex],target.dataset.elementIndex,elements);
+    showElementEditor(elements[target.dataset.elementIndex],target.dataset.elementIndex);
     return;
   }
 
   showTemplatesSidebar();
 }
 
+/**
+ * Shows the editor sidebar for editing an edge
+ * @param {Object} edge Edge object to be edited
+ * @param {Number} index Index of the edge object in the list of all edges
+ */
 function showEdgeEditor(edge, index) {
   showEditorSidebar();
   const editor=document.getElementById('sidebar-editor-inner');
@@ -506,7 +634,12 @@ function showEdgeEditor(edge, index) {
   item.onclick=function() {edges.splice(index,1); updateModelOnCanvas(); showTemplatesSidebar();}
 }
 
-function showElementEditor(element, index, allElements) {
+/**
+ * Shows the editor sidebar for editing a station
+ * @param {Object} element Station object to be edited
+ * @param {Number} index Index of the station object in the list of all stations
+ */
+function showElementEditor(element, index) {
   const name=getRecordByType(element.type).name+" "+element.nr;
 
   showEditorSidebar();
@@ -518,7 +651,7 @@ function showElementEditor(element, index, allElements) {
 
   editor.appendChild(document.createElement("hr"));
 
-  addEditorElements(element,editor,allElements);
+  addEditorElements(element,editor);
 
   editor.appendChild(document.createElement("hr"));
 
@@ -537,6 +670,11 @@ function showElementEditor(element, index, allElements) {
   }
 }
 
+/**
+ * Returns the description for a station parameter to be shown above the input field for the parameter.
+ * @param {String} parameter Station parameter name
+ * @returns Description for the parameter
+ */
 function descriptionForParameter(parameter) {
   if (parameter=="EI") return language.editor.EI;
   if (parameter=="CVI") return language.editor.CVI;
@@ -560,6 +698,11 @@ function descriptionForParameter(parameter) {
   return "";
 }
 
+/**
+ * Returns the formula smybol for a station parameter to be shown on the left of the input field for the parameter.
+ * @param {String} parameter Station parameter name
+ * @returns Formula symbol for the parameter
+ */
 function nameForParameter(parameter) {
   if (parameter=="EI") return "E[I]";
   if (parameter=="CVI") return "CV[I]";
@@ -581,6 +724,12 @@ function nameForParameter(parameter) {
   return parameter;
 }
 
+/**
+ * Returns a list of the stations which are directly connected via outgoing edges from a station.
+ * @param {Object} element Station object for which the following station are to be listed
+ * @returns Following stations
+ * @see addEditorElements
+ */
 function getNextStations(element) {
   const boxId=element.boxId;
 
@@ -589,7 +738,12 @@ function getNextStations(element) {
   return nextElements;
 }
 
-function addEditorElements(element, parent, allElements) {
+/**
+ * Adds input lines for the parameters of a station to a HTML node
+ * @param {Object} element Station object to be edited
+ * @param {Object} parent Parent HTML node in which the input lines are to be inserted
+ */
+function addEditorElements(element, parent) {
   if (typeof(element.setup)=='undefined' || element.setup.length==0) {
     const info=document.createElement("div");
     parent.appendChild(info);
@@ -674,7 +828,7 @@ function addEditorElements(element, parent, allElements) {
       div.appendChild(select);
       select.className="form-select";
       let options="";
-      for (let nr of allElements.filter(element=>element.type=='Signal').map(element=>element.nr)) {
+      for (let nr of elements.filter(element=>element.type=='Signal').map(element=>element.nr)) {
         options+="<option value='"+nr+"'"+((value==nr)?' selected':'')+'>'+language.templates.signal+" "+nr+'</option>';
       }
       select.innerHTML=options;
@@ -706,7 +860,7 @@ function addEditorElements(element, parent, allElements) {
       div.appendChild(select);
       select.className="form-select";
       let options="";
-      for (let source of allElements.filter(element=>sourceTypes.indexOf(element.type)>=0)) {
+      for (let source of elements.filter(element=>sourceTypes.indexOf(element.type)>=0)) {
         const listId=source.type+"-"+source.nr;
         options+="<option value='"+listId+"'"+((value==listId)?' selected':'')+'>'+source.name+'</option>';
       }
@@ -742,6 +896,11 @@ function addEditorElements(element, parent, allElements) {
   }
 }
 
+/**
+ * Deletes all incoming and outgoing edges to/from a station.
+ * (Is called when deleting the station itself.)
+ * @param {Number} boxId ID of the station
+ */
 function deleteEdges(boxId) {
   let index=0;
   while (index<edges.length) {
@@ -754,12 +913,22 @@ function deleteEdges(boxId) {
 }
 
 
+/* === Model === */
 
-/* Modell */
-
+/**
+ * List of all stations in the model
+ */
 const elements=[];
+
+/**
+ * List of all edges in the model
+ */
 const edges=[];
 
+/**
+ * Returns the smallest natural number which is not already used as an id for a station.
+ * @returns Next free id for a station
+ */
 function getNextFreeId() {
   let nextId=1;
   let ok=false;
@@ -771,6 +940,11 @@ function getNextFreeId() {
   return nextId;
 }
 
+/**
+ * Returns the next free not used number for a station type (to be displayed below the name of the station in the station box)
+ * @param {String} type Internal type name of the station
+ * @returns Free number (starting with 1) for stations of the given type
+ */
 function getNextFreeTypeNr(type) {
   let nextNr=1;
   let ok=false;
@@ -782,6 +956,13 @@ function getNextFreeTypeNr(type) {
   return nextNr;
 }
 
+/**
+ * Adds a new station at a defined position to the model
+ * @param {String} type Internal type name of the station
+ * @param {Number} top Y coordinate of the station box
+ * @param {Number} left X coordinate of the station box
+ * @returns Id of then new station
+ */
 function addElementToModel(type, top, left) {
   const id=getNextFreeId();
   const nr=getNextFreeTypeNr(type);
@@ -806,6 +987,13 @@ function addElementToModel(type, top, left) {
   return boxId;
 }
 
+/**
+ * Adds a text line to the model
+ * @param {Number} top Y coordinate of the upper left position of the text line
+ * @param {Number} left X coordinate of the upper left position of the text line
+ * @param {String} text Text line to be displayed
+ * @param {Number} fontSize Font size (defaults to 12)
+ */
 function addTextToModel(top, left, text, fontSize=12) {
   const boxId=addElementToModel("Text",top,left);
   const element=getElementByBoxId(boxId);
@@ -814,6 +1002,12 @@ function addTextToModel(top, left, text, fontSize=12) {
   updateModelOnCanvas();
 }
 
+/**
+ * Adds a line diagram to the model
+ * @param {Number} top Y coordinate of the upper left corner of the diagram
+ * @param {Number} left X coordinate of the upper left corner of the diagram
+ * @param {String} source Data to be displayed
+ */
 function addDiagramToModel(top, left, source) {
   const boxId=addElementToModel("Diagram",top,left);
   const element=getElementByBoxId(boxId);
@@ -821,13 +1015,23 @@ function addDiagramToModel(top, left, source) {
   updateModelOnCanvas();
 }
 
+/**
+ * Returns an element object by the elements id
+ * @param {Number} boxId Id of the element object
+ * @returns Element object or null, if there is no element with the given id
+ */
 function getElementByBoxId(boxId) {
   for (let i=0;i<elements.length;i++) if (elements[i].boxId==boxId) return elements[i];
   return null;
 }
 
+/**
+ * Adds a connection edge between two stations
+ * @param {Number} boxId1 Id of the starting element
+ * @param {Number} boxId2 Id of the destination element
+ */
 function addEdgeToModel(boxId1, boxId2) {
-  /* Elemente finden */
+  /* Find elements */
   let element1=getElementByBoxId(boxId1);
   let element2=getElementByBoxId(boxId2);
 
@@ -836,13 +1040,13 @@ function addEdgeToModel(boxId1, boxId2) {
     return;
   }
 
-  /* Vorlagen finden */
+  /* Find templates */
   let template1=null;
   for (let i=0;i<templates.length;i++) if (templates[i].type==element1.type) {template1=templates[i]; break;}
   let template2=null;
   for (let i=0;i<templates.length;i++) if (templates[i].type==element2.type) {template2=templates[i]; break;}
 
-  /* Aus- und einlaufende Kanten zählen */
+  /* Count outgoing and incomoing edges */
   let edgesOut=0;
   let edgesIn=0;
   for (let i=0;i<edges.length;i++) {
@@ -852,7 +1056,7 @@ function addEdgeToModel(boxId1, boxId2) {
     if (edgeBoxId2==boxId2) edgesIn++;
   }
 
-  /* Fehlermeldungen, wenn Kante nicht hinzugefügt werden kann */
+  /* Error message, if the edge cannot be added */
   if (edgesOut>=template1.maxEdgesOut) {
     showMessage(language.dialog.Error,language.tabEdge.errorSource);
     return;
@@ -862,22 +1066,35 @@ function addEdgeToModel(boxId1, boxId2) {
     return;
   }
 
-  /* Kante hinzufügen */
+  /* Add edge */
   edges.push({boxId1: boxId1, boxId2: boxId2});
   updateModelOnCanvas();
 }
 
+/**
+ * Draws an element on the canvas
+ * @param {Object} element Station to be drawn
+ * @param {Number} index Index of the station in the list of all stations
+ * @param {Array} elements List of all stations
+ * @see updateModelOnCanvas()
+ */
 function addElementToCanvas(element, index, elements) {
   const template=getRecordByType(element.type);
   const elementNode=template.addFunc("Box"+element.id,element.nr,element.top,element.left,element.setup,false,elements);
   elementNode.dataset.elementIndex=index;
 }
 
+/**
+ * Draws an edge on the canvas
+ * @param {Object} edge Edge to be drawn
+ * @param {Number} index Index of the edge in the list of all edges
+ * @see updateModelOnCanvas()
+ */
 function addEdgeToCanvas(edge, index) {
   const element1=document.getElementById(edge.boxId1);
   const element2=document.getElementById(edge.boxId2);
 
-  /* Anknüpfpunkte für Kanten bestimmen */
+  /* Calculate connection points for the edge */
   const startX1=element1.offsetLeft;
   const startY1=element1.offsetTop;
   const middleX1=element1.offsetLeft+element1.offsetWidth/2;
@@ -893,7 +1110,7 @@ function addEdgeToCanvas(edge, index) {
   const P1=[[endX1, middleY1], [middleX1, startY1], [startX1, middleY1], [middleX1, endY1]];
   const P2=[[endX2, middleY2], [middleX2, startY2], [startX2, middleY2], [middleX2, endY2]];
 
-  /* Kürzeste Verbindung bestimmen */
+  /* Find shortest connection */
   let best1=0;
   let best2=0;
   let bestDelta=999999999;
@@ -910,7 +1127,7 @@ function addEdgeToCanvas(edge, index) {
   const arrow1=P1[best1];
   const arrow2=P2[best2];
 
-  /* Canvas-Element für Kante erzeugen */
+  /* Generate canvas element for the edge */
   const edgeCanvas=document.createElement("canvas");
   const canvas=document.getElementById("canvas_area");
   canvas.appendChild(edgeCanvas);
@@ -928,7 +1145,7 @@ function addEdgeToCanvas(edge, index) {
   const sy=Math.min(arrow1[1],arrow2[1])-20;
   const sx=(Math.min(arrow1[0],arrow2[0])-20);
 
-  /* Kante zeichnen */
+  /* Draw edge */
   const ctx=edgeCanvas.getContext("2d");
   ctx.lineWidth=2;
   ctx.strokeStyle="black";
@@ -953,7 +1170,7 @@ function addEdgeToCanvas(edge, index) {
 
   let c;
 
-  /* Pfeile zeichnen */
+  /* Draw arrows */
   c={x: b.x-15*delta.x+15*delta2.x, y: b.y-15*delta.y+15*delta2.y};
   ctx.beginPath();
   ctx.moveTo(b.x,b.y);
@@ -967,6 +1184,9 @@ function addEdgeToCanvas(edge, index) {
   ctx.stroke();
 }
 
+/**
+ * Redraws the canvas.
+ */
 function updateModelOnCanvas() {
   const canvas=document.getElementById("canvas_area");
 

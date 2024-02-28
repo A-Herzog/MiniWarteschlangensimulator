@@ -22,6 +22,7 @@ import {language} from './Language.js';
 import {getPositiveFloat, getPositiveInt} from './Tools.js';
 import {SimulatorWorker} from './Simulator.js';
 
+
 let seriesParameters;
 let parameterNr;
 
@@ -35,8 +36,17 @@ let parameterSeriesSimWorker;
 
 
 
-/* Anzeige von Dialogen */
+/* === Helper functions === */
 
+/**
+ * Generates a modal dialog object
+ * @param {String} title Dialog title
+ * @param {String} msg Message to be shown in the dialog
+ * @param {Function} onOk Callback for the "Ok" button
+ * @param {Boolean} addCancel Show a cancel button?
+ * @param {Boolean} fullscreen Display dialog as full screen?
+ * @returns Dialog object
+ */
 function addModalDialog(title, msg, onOk=null, addCancel=false, fullscreen=false) {
   const dialogElement=document.createElement('div');
   dialogElement.className="modal fade";
@@ -92,9 +102,13 @@ function addModalDialog(title, msg, onOk=null, addCancel=false, fullscreen=false
 }
 
 
+/* === Step 1: Parameter selection === */
 
-/* Schritt 1: Auswahl des Parameters */
-
+/**
+ * Tests if a station has two outgoing edges
+ * @param {Number} boxId Id of the station
+ * @returns Returns true, if the station has two outgoing edges
+ */
 function hasTwoOutgoingEdges(boxId) {
   let count=0;
   for (let i=0;i<edges.length;i++) if (edges[i].boxId1==boxId) {
@@ -104,6 +118,10 @@ function hasTwoOutgoingEdges(boxId) {
   return false;
 }
 
+/**
+ * Generates a list of all possible parameters to be changed in the parameter series.
+ * @returns List of possible parameters for the parameter series
+ */
 function getParameters() {
   const list=[];
 
@@ -136,10 +154,14 @@ function getParameters() {
   return list;
 }
 
+/**
+ * Start parameter series system.
+ * Shows a dialog for selecting the parameter to be changed in the parameter series.
+ */
 function processSeries() {
   showTemplatesSidebar();
 
-  /* Modell prüfen */
+  /* Check model */
   const simulator=new WebSimulator(false);
   const buildResult=simulator.build(elements,edges);
   if (buildResult!=null) {
@@ -147,14 +169,14 @@ function processSeries() {
     return;
   }
 
-  /* Mögliche Parameter suchen */
+  /* Identify possible parameters */
   seriesParameters=getParameters();
   if (seriesParameters.length==0) {
     showMessage(language.tabFile.extendedParameterSeries,language.series.noParameter);
     return;
   }
 
-  /* Auswahldialog anzeigen */
+  /* Show selection dialog */
   const content=document.createElement("span");
   let div;
 
@@ -197,9 +219,11 @@ function seriesParameterSelectChange() {
 }
 
 
+/* === Step 2: Range selection === */
 
-/* Schritt 2: Wertebereich */
-
+/**
+ * Shows a dialog for defining the range in which the parameter of the parameter series is to be changed.
+ */
 function seriesParameterRangeDialog() {
   const param=seriesParameters[parameterNr];
 
@@ -305,6 +329,10 @@ function seriesParameterRangeDialog() {
   dialog.object.show();
 }
 
+/**
+ * Tests if the specified range is valid.
+ * @returns Returns true if the specified range is valid.
+ */
 function testRange() {
   const param=seriesParameters[parameterNr];
 
@@ -346,22 +374,29 @@ function testRange() {
   return true;
 }
 
+/**
+ * Callback for range changes.
+ * @see testRange()
+ * @see seriesParameterRangeDialog()
+ */
 function seriesParameterRangeChange() {
   testRange();
 }
 
 
+/* === Step 3: Simulation === */
 
-/* Schritt 3: Simulation */
-
+/**
+ * Runs the parameter series simulations.
+ */
 function seriesParameterStart() {
-  /* Prüfen der Eingaben */
+  /* Input check */
   if (!testRange()) {
     seriesParameterRangeDialog();
     return;
   }
 
-  /* Zu simulierende Modelle anlegen */
+  /* Generate models to be simulated */
   const param=seriesParameters[parameterNr];
   parameterSeriesSimValues=[];
   parameterSeriesSimSetups=[];
@@ -375,7 +410,7 @@ function seriesParameterStart() {
     parameterSeriesSimSetups.push(model);
   }
 
-  /* Fortschrittsdialog anzeigen */
+  /* Show progress dialog */
   const body=document.getElementById('modalAreaBody');
   const footer=document.getElementById('modalAreaFooter');
 
@@ -388,28 +423,38 @@ function seriesParameterStart() {
   const workerDialog=new bootstrap.Modal(document.getElementById('modalArea'),{});
   workerDialog.show();
 
-  /* Simulationen durchführen */
+  /* Run simulations */
   parameterSeriesSimWorker=new SimulatorWorker(parameterSeriesSimSetups,body,progress,()=>{workerDialog.hide(); seriesParameterResults();},()=>workerDialog.hide());
   parameterSeriesSimWorker.start();
 }
 
 
+/* === Step 4: Display results === */
 
-/* Schritt 4: Anzeigen der Ergebnisse */
-
+/**
+ * Colors for the results diagram series
+ * @see seriesParameterResults()
+ */
 const seriesParameterColors=["blue", "red", "green", "orange", "black", "gray", "magenta"]
 
+/**
+ * Generates a results table for export.
+ * @param {String} inputName  Headingfor the first column
+ * @param {Array} inputValues Values in the first column
+ * @param {Array} results Values in the other columns
+ * @returns Table for export
+ */
 function buildTable(inputName, inputValues, results) {
   let table="";
 
-  /* Überschriftenzeile */
+  /* Heading */
   table+=inputName;
   for (let stationName in results[0]) for (let valueName in results[0][stationName]) {
     table+="\t"+stationName+" - "+((valueName=='n')?valueName:("E["+valueName+"]"));
   }
   table+="\n";
 
-  /* Datenzeilen */
+  /* Data lines */
   for (let i=0;i<results.length;i++) {
     table+=inputValues[i].toLocaleString();
     for (let stationName in results[i]) for (let valueName in results[i][stationName]) {
@@ -422,15 +467,18 @@ function buildTable(inputName, inputValues, results) {
   return table;
 }
 
+/**
+ * Downloads some string as a file.
+ * @param {String} content Content for the file download
+ * @param {String} filename Destination file name
+ */
 function download(content, filename) {
-        var a = document.createElement('a');
-        var blob = new Blob([content], {type: 'text/plain'});
-        a.href = window.URL.createObjectURL(blob);
-        a.download=filename;
-        a.click();
+  const a=document.createElement('a');
+  const blob=new Blob([content], {type: 'text/plain'});
+  a.href = window.URL.createObjectURL(blob);
+  a.download=filename;
+  a.click();
 }
-
-/* Diagram system loader */
 
 /** Is Chart.js already loaded? */
 let chartJsLoaded=false;
@@ -454,26 +502,29 @@ function loadChartJs(then) {
   document.head.appendChild(script);
 }
 
+/**
+ * Shows the parameter series simulation results.
+ */
 function seriesParameterResults() {
   const results=parameterSeriesSimWorker.raw;
   const param=seriesParameters[parameterNr];
   const table=buildTable(param.name1+" - "+param.name2,parameterSeriesSimValues,results);
 
-  /* Datenreihen ermitteln */
+  /* Determine data series */
   const datasetNames=[];
   for (let stationName in results[0]) for (let recordName in results[0][stationName]) {
     if (recordName=='W' || recordName=='NQ' || recordName=='N') datasetNames.push({station: stationName, record: recordName});
   }
 
-  /* Dialog erstellen */
+  /* Generate dialog */
   const dialog=addModalDialog(language.tabFile.extendedParameterSeries,'<canvas id="parameterSeries_plot" style="width: 100%;"></canvas>',()=>{},false,true);
   dialog.html.addEventListener('hidden.bs.modal',()=>document.getElementsByClassName('wrapper')[0].removeChild(dialog.html));
 
-  /* Kopieren- und Speichern-Buttons im Fußbereich */
+  /* Copy and save buttons in the footer */
   const footer=dialog.html.getElementsByClassName('modal-footer')[0];
   let div, button, ul, li, a;
 
-  /* Kopieren */
+  /* Copy options */
   footer.appendChild(div=document.createElement('div'));
   div.className='dropdown';
   div.style.display='inline-block';
@@ -508,7 +559,7 @@ function seriesParameterResults() {
     }
   };
 
-  /* Speichern */
+  /* Save options */
   footer.appendChild(div=document.createElement('div'));
   div.className='dropdown';
   div.style.display='inline-block';
@@ -544,7 +595,7 @@ function seriesParameterResults() {
 
   dialog.object.show();
 
-  /* Diagramm anzeigen */
+  /* Show diagram */
   const datasets=[];
   for (let i=0;i<datasetNames.length;i++) {
     const datasetName=datasetNames[i];

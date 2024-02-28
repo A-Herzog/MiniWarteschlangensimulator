@@ -22,8 +22,14 @@ import {statcore} from "./StatCore.js";
 import {language, getCharacteristicsInfo} from "./Language.js";
 
 
-
+/**
+ * Simulator class
+ */
 class WebSimulator extends simcore.Simulator {
+  /**
+   * Constructor
+   * @param {Boolean} withAnimation Run in animation mode?
+   */
   constructor(withAnimation) {
     super(null);
     this.withAnimation=withAnimation;
@@ -35,6 +41,12 @@ class WebSimulator extends simcore.Simulator {
     this.arrivalCount=0;
   }
 
+  /**
+   * Trys to build a simulation model from an editor model.
+   * @param {Array} elements List of all stations
+   * @param {Array} edges List of the edges connecting the stations
+   * @returns Returns null if building was successful, otherwise an error message.
+   */
   build(elements, edges) {
     const builder=new SimModelBuilder(elements,edges);
     const buildResult=builder.build(this.statistics);
@@ -47,25 +59,44 @@ class WebSimulator extends simcore.Simulator {
     return null;
   }
 
+  /**
+   * Returns the list of the simulation station boxes (not visual only stations).
+   */
   get stations() {
     return this.simStations;
   }
 
+  /**
+   * Returns a list of all visual only (diagram) elements.
+   */
   get animationStations() {
     return this.animationStationsList;
   }
 
+  /**
+   * Do all needed calculations (for statistics) when simulation is finished.
+   */
   done() {
     for (let station of this.simStations) station.doneStatistics(this);
     for (let animationStation of this.animationStationsList) animationStation.template.animateCleanFunc(animationStation.element,animationStation.data);
   }
 
+  /**
+   * Executes the next waiting event.
+   * @returns Returns true if there was an event to be executed, otherwise (if the events list is empty) false.
+   */
   executeNext() {
     if (this.withAnimation) this.animateMoveClients=[];
     return super.executeNext();
   }
 
-  getAnimationStatisticTextStation(stationName, stationData) {
+  /**
+   * Returns runtime information on a station as html code.
+   * @param {String} stationName Name of the station
+   * @param {Object} stationData Runtime station data
+   * @returns Runtime information on a station as html code
+   */
+  #getAnimationStatisticTextStation(stationName, stationData) {
     let status="";
     status+="<p><u>"+stationName+"</u><br>";
     status+="<small>";
@@ -95,22 +126,32 @@ class WebSimulator extends simcore.Simulator {
     return status;
   }
 
+  /**
+   * Fires a signal.
+   * @param {Number} nr Number of the signal
+   */
   fireSignal(nr) {
     for (let station of this.simStations) if (typeof(station.signal)=='function') station.signal(this,nr);
   }
 
+  /**
+   * Returns the runtime station information to be displayed during animation.
+   */
   get info() {
     let status="";
     status+="<p><small>"+language.tabAnimation.time+": "+simcore.formatTime(this.time)+"</small></p>";
 
     for (let priority=3;priority>=1;priority--) for (let stationName in this.statistics) {
       const stationData=this.statistics[stationName];
-      if (stationData.priority==priority) status+=this.getAnimationStatisticTextStation(stationName,stationData);
+      if (stationData.priority==priority) status+=this.#getAnimationStatisticTextStation(stationName,stationData);
     }
 
     return status;
   }
 
+  /**
+   * Short simulation results.
+   */
   get infoShort() {
     const raw={};
 
@@ -130,6 +171,9 @@ class WebSimulator extends simcore.Simulator {
     return raw;
   }
 
+  /**
+   * Detailed simulation results.
+   */
   get infoFull() {
     const raw={};
 
@@ -165,15 +209,18 @@ class WebSimulator extends simcore.Simulator {
 }
 
 
-
-function getWebWorker() {
-  const workerFile='Worker.js';
-  return new Worker('./js/'+workerFile,{type: "module"});
-}
-
-
-
+/**
+ * Simulator web worker class
+ */
 class SimulatorWorker {
+  /**
+   * Constructor
+   * @param {Array} models Models to be simulated in parallel
+   * @param {Object} infoElement Html node for displaying progress information
+   * @param {Object} progressBar Progress bar html node
+   * @param {Function} resultsCallback Function which is called when the simulation was completed
+   * @param {Function} cancelCallback Function which is called when the simulation was canceled
+   */
   constructor(models, infoElement, progressBar, resultsCallback, cancelCallback) {
     this.models=models;
     this.infoElement=infoElement;
@@ -182,15 +229,18 @@ class SimulatorWorker {
     this.cancelCallback=cancelCallback;
   }
 
+  /**
+   * Start processing
+   */
   start() {
     const that=this;
     this.worker=[];
     this.workerProgress=[];
     this.results=[];
     for (let i=0;i<this.models.length;i++) {
-      const w=getWebWorker();
+      const w=new Worker('./js/Worker.js',{type: "module"});
       w.onerror=()=>that.infoElement.innerHTML=language.tabAnimation.simulationWebWorkerError;
-      w.onmessage=e=>that.processMessage(w,e);
+      w.onmessage=e=>that.#processMessage(w,e);
       this.worker.push(w);
       this.workerProgress.push(0);
       this.results.push({});
@@ -205,11 +255,16 @@ class SimulatorWorker {
     }
   }
 
-  processMessage(w, e) {
+  /**
+   * Process message from worker thread
+   * @param {Object} w Worker
+   * @param {Object} e Message
+   */
+  #processMessage(w, e) {
     const index=this.worker.indexOf(w);
     const answer=JSON.parse(e.data);
 
-    /* Fortschritt */
+    /* Progress */
     if (typeof(answer.progress)!='undefined') {
       const workerProgress=this.workerProgress;
       workerProgress[index]=answer.progress;
@@ -219,7 +274,7 @@ class SimulatorWorker {
       this.progressBar.innerHTML=percent;
     }
 
-    /* Ergebnisse */
+    /* Results */
     if (typeof(answer.resultShort)!='undefined') {
       this.worker[index].terminate();
       this.results[index]=answer;
@@ -230,6 +285,9 @@ class SimulatorWorker {
     }
   }
 
+  /**
+   * Cancel simulation.
+   */
   cancel() {
     for (let i=0;i<this.worker.length;i++) if (this.worker[i]!=null) {
       this.worker[i].terminate();
@@ -238,7 +296,13 @@ class SimulatorWorker {
     this.cancelCallback();
   }
 
-  buildTextFromStatistics(statistics) {
+  /**
+   * Generates a text from a statistic object.
+   * @param {Object} statistics Station statistics
+   * @returns Statistics results as (html formated) text
+   * @see info
+   */
+  #buildTextFromStatistics(statistics) {
     let status="";
     status+="<p><small>"+language.tabAnimation.time+": "+simcore.formatTime(statistics.time)+"</small></p>";
 
@@ -269,7 +333,14 @@ class SimulatorWorker {
     return status;
   }
 
-  joinResults(results) {
+  /**
+   * Joins the statistics from the threads to a single statistic object.
+   * @param {Array} results Statistic results of the individual web workers
+   * @returns Joined statstics
+   * @see info
+   * @see full
+   */
+  #joinResults(results) {
     const result=structuredClone(results[0]);
 
     for (let i=1;i<results.length;i++) {
@@ -310,25 +381,34 @@ class SimulatorWorker {
     return result;
   }
 
+  /**
+   * Returns short simulation statistics.
+   */
   get info() {
     const data=[];
     data.threads=this.results.length;
     for (let i=0;i<this.results.length;i++) data.push(this.results[i].resultFull);
     if (data.length==1) {
       data[0].threads=1;
-      return this.buildTextFromStatistics(data[0]);
+      return this.#buildTextFromStatistics(data[0]);
     } else {
-      const result=this.joinResults(data);
-      return this.buildTextFromStatistics(result);
+      const result=this.#joinResults(data);
+      return this.#buildTextFromStatistics(result);
     }
   }
 
+  /**
+   * Returns simulation statistics in raw format (for later processing in parameter series).
+   */
   get raw() {
     let data=[];
     for (let i=0;i<this.results.length;i++) data.push(this.results[i].resultShort);
     return data;
   }
 
+  /**
+   * Returns detailed simulation statistics.
+   */
   get full() {
     const data=[];
     data.threads=this.results.length;
@@ -337,7 +417,7 @@ class SimulatorWorker {
       data[0].threads=1;
       return data[0];
     } else {
-      return this.joinResults(data);
+      return this.#joinResults(data);
     }
   }
 }

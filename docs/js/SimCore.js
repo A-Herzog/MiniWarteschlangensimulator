@@ -16,10 +16,10 @@ limitations under the License.
 
 export {simcore};
 
+/**
+ * DistCore base object containing all exported classes as properties.
+ */
 const simcore={};
-
-
-
 
 
 /**
@@ -41,9 +41,6 @@ simcore.Event=class Event {
   execute(simulator) {
   }
 }
-
-
-
 
 
 /**
@@ -106,6 +103,9 @@ simcore.EventList=class EventList {
     return list.shift();
   }
 
+  /**
+   * Returns the planned executing time of the next scheduled event (or null, if no events are scheduled).
+   */
   get nextTime() {
     const list=this.list;
     if (list.length==0) return null;
@@ -133,9 +133,6 @@ simcore.EventList=class EventList {
     return false;
   }
 }
-
-
-
 
 
 /**
@@ -168,6 +165,9 @@ simcore.Simulator=class Simulator {
     return this.currentTime;
   }
 
+  /**
+   * Returns true if the next event to be executed is scheduled for the same execution time as the current event.
+   */
   get nextEventIsSameTime() {
     const time1=this.currentTime;
     const time2=this.events.nextTime;
@@ -220,11 +220,8 @@ simcore.Simulator=class Simulator {
 }
 
 
-
-
-
 /**
- * Formats a number as HH:MM:SS,s string
+ * Formats a number as HH:MM:SS,s string.
  * @param {Number} time Timestamp to be formated
  */
 simcore.formatTime=function(time) {
@@ -252,11 +249,8 @@ simcore.formatTime=function(time) {
 }
 
 
-
-
-
 /**
- * Timer for measuring execution times (in ms)
+ * Timer for measuring execution times (in wall clock ms)
  */
 simcore.Timer=class Timer {
   /**

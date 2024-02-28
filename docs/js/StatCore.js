@@ -16,18 +16,20 @@ limitations under the License.
 
 export {statcore};
 
+/**
+ * StatCore base object containing all exported classes as properties.
+ */
 const statcore={};
 
 
-
-
-
+/**
+ * Converts a number to a locale string with one digit
+ * @param {Number} num Number to be formated as a locale string
+ * @returns Number as locale string with one digit
+ */
 statcore.formatShorter=function(num) {
   return (Math.round(num*10)/10).toLocaleString();
 }
-
-
-
 
 
 /**
@@ -76,16 +78,14 @@ statcore.Counter=class Counter {
 	};
   }
 
-    /**
+  /**
    * Adds data from some other statistics object.
-   * @param Object otherCounter Data to be added
+   * @param {Object} otherCounter Data to be added
    */
   addPartial(otherCounter) {
     this.fieldCount+=otherCounter.count;
   }
 }
-
-
 
 
 /**
@@ -205,7 +205,7 @@ statcore.Values=class Values {
 
   /**
    * Adds data from some other statistics object.
-   * @param Object otherValues Data to be added
+   * @param {Object} otherValues Data to be added
    */
   addPartial(otherValues) {
     this.fieldCount+=otherValues.count;
@@ -215,8 +215,6 @@ statcore.Values=class Values {
     this.fieldMax=Math.max(this.fieldMax,otherValues.max);
   }
 }
-
-
 
 
 /**
@@ -255,12 +253,12 @@ statcore.States=class States {
    * @param {Number} state  New state that gets active at the given time
    */
   set(time,state) {
-    if (this.lastTime>=0 && time>this.lastTime) this.add(time-this.lastTime,this.lastState);
+    if (this.lastTime>=0 && time>this.lastTime) this.#add(time-this.lastTime,this.lastState);
     this.lastTime=time;
     this.lastState=state;
   }
 
-  add(timeDelta,state) {
+  #add(timeDelta,state) {
     this.fieldTimeSum+=timeDelta;
     this.fieldStateSum+=timeDelta*state;
     if (state<this.fieldMin) this.fieldMin=state;
@@ -335,9 +333,6 @@ statcore.States=class States {
 }
 
 
-
-
-
 /**
  * Statistics collector base class
  */
@@ -372,7 +367,7 @@ statcore.Statistics=class Statistics {
 
   /**
    * Generates an object only containing fields.
-   * @return Object only containing fields
+   * @return {Object} only containing fields
    */
   makePlain() {
 	const result={};

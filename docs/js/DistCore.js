@@ -16,20 +16,37 @@ limitations under the License.
 
 export {distcore};
 
+/**
+ * DistCore base object containing all exported functions as properties.
+ */
 const distcore={};
 
 
-
-
-
+/**
+ * Generates a exponential distributed pseudo random number.
+ * @param {Number} mean Mean value (=1/lambda)
+ * @returns Pseudo random number
+ */
 distcore.exp=function(mean) {
   return -mean*Math.log(1.0-Math.random());
 }
 
+/**
+ * Generates a uniform distributed pseudo random number.
+ * @param {Number} a Lower bound
+ * @param {Number} b Upper bound
+ * @returns Pseudo random number
+ */
 distcore.uniform=function(a,b) {
   return a+(b-a)*Math.random();
 }
 
+/**
+ * Generates a log-normal distributed pseudo random number.
+ * @param {Number} mu Parameter mu (not mean)
+ * @param {Number} sigma Parameter sigma (not standard deviation)
+ * @returns Pseudo random number
+ */
 distcore.lognormal=function(mu,sigma) {
   let q=10;
   let u=0;
@@ -46,6 +63,12 @@ distcore.lognormal=function(mu,sigma) {
   return Math.exp(u*product+mu);
 }
 
+/**
+ * Generates a gamma distributed pseudo random number.
+ * @param {Number} shape Shape parameter
+ * @param {Number} scale Scale parameter
+ * @returns Pseudo random number
+ */
 distcore.gamma=function(shape,scale) {
   /*
    * see org.apache.commons.math3.distribution.GammaDistribution.sample()
@@ -115,6 +138,19 @@ distcore.gamma=function(shape,scale) {
   }
 }
 
+/**
+ * Returns a pseudo random number generator function with setup specified in the parameter
+ * @param {any} info Generator setup (see below)
+ * @returns Pseudo random number generator function
+ * @description
+ * If parameter is a number, returns a function returning this number.
+ * If parameter is a function, returns this function.
+ * If parameter is a string, it has to be of type "distFunction(param1;param2)".
+ * Supported random distributions: "const", "uniform" "exp", "lognormal", "gamma".
+ * In case of "const" and "exp" parameter has to be the mean.
+ * In case of "lognormal" and "gamma" parameters have to be mean and standard deviation.
+ * In case of "uniform" parameters have to be lower and upper bound.
+ */
 distcore.get=function(info) {
   const infoType=typeof(info);
   if (infoType=="undefined") return function(){return 0;}
@@ -167,15 +203,6 @@ distcore.get=function(info) {
 	    return ()=>distcore.exp(scale);
     }
 	  return ()=>distcore.gamma(shape,scale);
-  	// alpha=Shape
-	  // beta=Scale
-
-	  // final double d2=sd*sd/Math.max(mean,0.000001);
-	  // final double d1=mean/Math.max(d2,0.000001);
-	  // d2=Scale=sd*sd/Math.max(mean,0.000001);
-	  // d1=Shape=mean/Math.max(Scale,0.000001);
-
-    // return new GammaDistribution(d1,d2);
   }
 
   return null;

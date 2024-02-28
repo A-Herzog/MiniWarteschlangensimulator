@@ -23,8 +23,13 @@ import {getPositiveFloat, getNotNegativeFloat, getPositiveInt, getNotNegativeInt
 import {language} from "./Language.js";
 
 
-
+/**
+ * Simulation client class
+ */
 class Client {
+  /**
+   * Constructor
+   */
   constructor() {
     this.w=0;
     this.s=0;
@@ -32,63 +37,134 @@ class Client {
 }
 
 
-
+/**
+ * Abstract simulation station class
+ */
 class SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
   constructor(editElement) {
     this.editElement=editElement;
     this.nextSimElements=[];
     this.n=0;
   }
 
+  /**
+   * Returns the id of the station.
+   */
   get id() {
     return this.editElement.id;
   }
 
+  /**
+   * Returns the name of the station.
+   */
   get name() {
     return this.editElement.name;
   }
 
+  /**
+   * Add a connecting to the following station.
+   * @param {Object} nextSimElement Next station
+   */
   addEdgeOut(nextSimElement) {
     this.nextSimElements.push(nextSimElement);
   }
 
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
   build(globalStatistics, allElements) {
     return null;
   }
 
-  initStatistics(globalStatistics, priority, fields) {
+  /**
+   * Adds the statistic indicators for this station to the global statistics object.
+   * @param {Object} globalStatistics Global statistic object (parameter in build function)
+   * @param {Number} priority Display order for this statistic indicator
+   * @param {Object} fields Names and statistics objects to be added to the global statistics
+   */
+  _initStatistics(globalStatistics, priority, fields) {
     this.statistics={priority: priority};
     for (let name in fields) this.statistics[name]=fields[name];
     globalStatistics[this.name]=this.statistics;
   }
 
+  /**
+   * Is called at the end of the simulation to complete the statistic data.
+   * @param {Object} simulator Simulator object
+   */
   doneStatistics(simulator) {
   }
 
+  /**
+   * Is called by the simulator to generate the events which should be in the list at the beginning of the simulation.
+   * (For example the first client arrival at a source station.)
+   * @param {Object} simulator Statistic object
+   */
   generateInitialEvents(simulator) {
   }
 
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processArrival(simulator, client) {
   }
 
+  /**
+   * Processes a client leaving this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processLeave(simulator, client) {
   }
 
-  sendClient(simulator, client, destination, delta=0) {
+  /**
+   * Sends a client to another station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client to be sent
+   * @param {Object} destination Destination station
+   * @param {Number} delta Time delta (0 means "now")
+   */
+  _sendClient(simulator, client, destination, delta=0) {
     SendEvent.sendClient(simulator, this, destination, client, delta);
   }
 
+  /**
+   * Notifies the station that a signal has been fired.
+   * @param {Object} simulator Simulator object
+   * @param {Number} nr Number of the signal
+   */
   signal(simulator, nr) {
   }
 }
 
 
-
+/**
+ * Simulation source station
+ */
 class SimSource extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
   constructor(editElement) {
     super(editElement);
   }
 
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
   build(globalStatistics, allElements) {
     const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
@@ -109,27 +185,49 @@ class SimSource extends SimElement {
     return null;
   }
 
+  /**
+   * Is called by the simulator to generate the events which should be in the list at the beginning of the simulation.
+   * (First client arrival at this source station.)
+   * @param {Object} simulator Statistic object
+   */
   generateInitialEvents(simulator) {
     ArrivalEvent.scheduleNext(simulator,this);
   }
 
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processArrival(simulator, client) {
     const b=this.b;
     this.n=b;
     for (let i=1;i<=b;i++) {
-      this.sendClient(simulator,new Client(),this.nextSimElements[0]);
+      this._sendClient(simulator,new Client(),this.nextSimElements[0]);
     }
     simulator.arrivalCount++;
   }
 }
 
 
-
+/**
+ * Simulation delay station
+ */
 class SimDelay extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
   constructor(editElement) {
     super(editElement);
   }
 
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
   build(globalStatistics, allElements) {
     const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
@@ -144,15 +242,24 @@ class SimDelay extends SimElement {
     if (CVS==null) return language.builderDelay.CVS;
     this.distS=distributionBuilder(ES,CVS);
 
-    this.initStatistics(globalStatistics,2,{S: new statcore.Values(), N: new statcore.States(), n: new statcore.Counter()});
+    this._initStatistics(globalStatistics,2,{S: new statcore.Values(), N: new statcore.States(), n: new statcore.Counter()});
 
     return null;
   }
 
+  /**
+   * Is called at the end of the simulation to complete the statistic data.
+   * @param {Object} simulator Simulator object
+   */
   doneStatistics(simulator) {
     this.statistics.N.set(simulator.time,this.n);
   }
 
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processArrival(simulator, client) {
     const statistics=this.statistics;
 
@@ -164,24 +271,41 @@ class SimDelay extends SimElement {
     statistics.S.add(delta);
     statistics.N.set(simulator.time,this.n);
 
-    this.sendClient(simulator,client,this.nextSimElements[0],delta);
+    this._sendClient(simulator,client,this.nextSimElements[0],delta);
   }
 
+  /**
+   * Processes a client leaving this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processLeave(simulator, client) {
     this.statistics.N.set(simulator.time,this.n);
   }
 }
 
 
-
+/**
+ * Simulation process station
+ */
 class SimProcess extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
   constructor(editElement) {
     super(editElement);
     this.queue=[];
     this.nq=0;
   }
 
-  build(globalStatistics,allElements) {
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
+  build(globalStatistics, allElements) {
     const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
@@ -222,7 +346,7 @@ class SimProcess extends SimElement {
       this.nextCancel=null;
     }
 
-    this.initStatistics(globalStatistics,2,{
+    this._initStatistics(globalStatistics,2,{
       W: new statcore.Values(),
       S: new statcore.Values(),
       V: new statcore.Values(),
@@ -235,27 +359,36 @@ class SimProcess extends SimElement {
     return null;
   }
 
+  /**
+   * Is called at the end of the simulation to complete the statistic data.
+   * @param {Object} simulator Simulator object
+   */
   doneStatistics(simulator) {
     this.statistics.N.set(simulator.time,this.n);
     this.statistics.NQ.set(simulator.time,this.nq);
     this.statistics.cBusy.set(simulator.time,this.c-this.freeC);
   }
 
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processArrival(simulator, client) {
     const time=simulator.time;
     const statistics=this.statistics;
     statistics.n.add();
 
-    /* Kunden an Station erfassen */
+    /* Record client at station */
     statistics.N.set(time,this.n);
 
-    /* Kunde an Warteschlange anstellen */
+    /* Add client to queue */
     this.queue.push(client);
     this.nq++;
     statistics.NQ.set(time,this.nq);
     client.startWaiting=time;
 
-    /* Wenn nötig, Abbruch-Ereignis anlegen */
+    /* If needed, add waiting cancelation event to list */
     if (this.nextCancel!=null) {
       const wt=this.distWT();
       const cancelEvent=new WaitingCancelEvent(time+wt,this,client);
@@ -263,24 +396,39 @@ class SimProcess extends SimElement {
       simulator.addEvent(cancelEvent);
     }
 
-    /* Prüfen, ob eine Bedienung beginnen kann */
-    this.testStartService(simulator);
+    /* Test if a service process can start */
+    this._testStartService(simulator);
   }
 
+  /**
+   * Processes a client leaving this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processLeave(simulator, client) {
     this.statistics.N.set(simulator.time,this.n);
   }
 
+  /**
+   * Notifies the station that a service process has ended.
+   * @param {Object} simulator Simulator object
+   * @see ServiceDoneEvent
+   */
   serviceEnded(simulator) {
-    /* Bediener als "frei" vermerken */
+    /* Define operator as "available" */
     this.freeC++;
     this.statistics.cBusy.set(simulator.time,this.c-this.freeC);
 
-    /* Prüfen, ob eine Bedienung beginnen kann */
-    this.testStartService(simulator);
+    /* Test if a service process can start */
+    this._testStartService(simulator);
   }
 
-  testStartService(simulator) {
+  /**
+   * Tests if a waiting client and a free operator is available so a serivce process can be started
+   * (and starts the service process in this case).
+   * @param {Object} simulator Simulator object
+   */
+  _testStartService(simulator) {
     const b=this.b;
     if (this.queue.length<b || this.freeC==0) return;
 
@@ -290,7 +438,7 @@ class SimProcess extends SimElement {
     const delta=this.distS();
 
     for (let i=1;i<=b;i++) {
-      /* Kunde aus Warteschlange entnehmen */
+      /* Remove client from queue */
       let client;
       switch (this.policy) {
         case 1:
@@ -312,7 +460,7 @@ class SimProcess extends SimElement {
           break;
       }
 
-      /* Statistik für Station und Kunde erfassen */
+      /* Record statistics for client and for station */
       const W=time-client.startWaiting;
       statistics.W.add(W);
       statistics.S.add(delta);
@@ -320,53 +468,71 @@ class SimProcess extends SimElement {
       client.w+=W;
       client.s+=delta;
 
-      /* Weiterleitung konfigurieren */
-      this.sendClient(simulator,client,this.nextSuccess,delta);
+      /* Configure forwarding */
+      this._sendClient(simulator,client,this.nextSuccess,delta);
 
-      /* Wenn nötig, Abbruch-Ereigniss löschen */
+      /* If needed: Remove waiting cancelation event from list */
       if (typeof(client.cancelEvent)!='undefined' && client.cancelEvent!=null) {
         simulator.removeEvent(client.cancelEvent);
         client.cancelEvent=null;
       }
     }
 
-    /* Warteschlangenlänge erfassen */
+    /* Record queue length */
     this.nq-=b;
     statistics.NQ.set(time,this.nq);
 
-    /* Bediener als "belegt" vermerken */
+    /* Define operator as "occupied" */
     this.freeC--;
     statistics.cBusy.set(time,this.c-this.freeC);
 
-    /* Ereignis für "Bedeinung zuende" anlegen */
+    /* Added event "Service done" to list */
     simulator.addEvent(new ServiceDoneEvent(time+delta,this));
   }
 
+  /**
+   * Notifies the station that a waiting client has given up waiting.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   * @see WaitingCancelEvent
+   */
   cancelWaiting(simulator, client) {
-    /* Kunde aus Warteschlange entfernen */
+    /* Remove client from queue */
     const index=this.queue.indexOf(client);
     this.queue.splice(index,1);
     this.nq--;
     this.statistics.NQ.set(simulator.time,this.nq);
 
-    /* Statistik für Station und Kunde erfassen */
+    /* Record statistics for client and for station */
     const W=simulator.time-client.startWaiting;
     this.statistics.W.add(W);
     client.w+=W;
 
-    /* Weiterleiten */
-    this.sendClient(simulator,client,this.nextCancel,0);
+    /* Forwarding */
+    this._sendClient(simulator,client,this.nextCancel,0);
   }
 }
 
 
-
+/**
+ * Simulation decide station
+ */
 class SimDecide extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
   constructor(editElement) {
     super(editElement);
   }
 
-  build(globalStatistics,allElements) {
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
+  build(globalStatistics, allElements) {
     const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
@@ -396,18 +562,23 @@ class SimDecide extends SimElement {
       }
     }
 
-    this.initStatistics(globalStatistics,1,{n: new statcore.Counter()});
+    this._initStatistics(globalStatistics,1,{n: new statcore.Counter()});
 
     return null;
   }
 
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processArrival(simulator, client) {
     this.statistics.n.add();
 
     let next=0;
 
     if (this.mode==0) {
-      /* Zufällig */
+      /* Random */
       const rnd=Math.random()*this.ratesSum;
       let sum=0;
       for (let i=0;i<this.rates.length;i++) {
@@ -448,88 +619,138 @@ class SimDecide extends SimElement {
       }
     }
 
-    this.sendClient(simulator,client,this.nextSimElements[next],0);
+    this._sendClient(simulator,client,this.nextSimElements[next],0);
   }
 }
 
 
-
+/**
+ * Simulation duplicate station
+ */
 class SimDuplicate extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
   constructor(editElement) {
     super(editElement);
   }
 
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
   build(globalStatistics, allElements) {
     const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1) return language.builderDuplicate.edge;
 
-    this.initStatistics(globalStatistics,1,{n: new statcore.Counter()});
+    this._initStatistics(globalStatistics,1,{n: new statcore.Counter()});
 
     return null;
   }
 
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processArrival(simulator, client) {
     this.statistics.n.add();
-    this.sendClient(simulator,client,this.nextSimElements[0],0);
+    this._sendClient(simulator,client,this.nextSimElements[0],0);
 
     for (let i=1;i<this.nextSimElements.length;i++) {
       const newClient=new Client();
       newClient.w=client.w;
       newClient.s=client.s;
       this.n+=1;
-      this.sendClient(simulator,newClient,this.nextSimElements[i],0);
+      this._sendClient(simulator,newClient,this.nextSimElements[i],0);
     }
   }
 }
 
 
-
+/**
+ * Simulation counter station
+ */
 class SimCounter extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
   constructor(editElement) {
     super(editElement);
   }
 
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
   build(globalStatistics, allElements) {
     const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1) return language.builderDuplicate.edge;
 
-    this.initStatistics(globalStatistics,1,{n: new statcore.Counter()});
+    this._initStatistics(globalStatistics,1,{n: new statcore.Counter()});
 
     return null;
   }
 
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processArrival(simulator, client) {
     this.statistics.n.add();
-    this.sendClient(simulator,client,this.nextSimElements[0],0);
+    this._sendClient(simulator,client,this.nextSimElements[0],0);
   }
 }
 
 
-
+/**
+ * Simulation dispose station
+ */
 class SimDispose extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
   constructor(editElement) {
     super(editElement);
   }
 
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
   build(globalStatistics, allElements) {
     const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
 
-    this.initStatistics(globalStatistics,1,{W: new statcore.Values(), S: new statcore.Values(), V: new statcore.Values(), n: new statcore.Counter()});
+    this._initStatistics(globalStatistics,1,{W: new statcore.Values(), S: new statcore.Values(), V: new statcore.Values(), n: new statcore.Counter()});
 
     return null;
   }
 
-  processClientForStatistics(client) {
+  /**
+   * Records the data from a client object in statistics.
+   * @param {Object} client Client object
+   */
+  #processClientForStatistics(client) {
     if (typeof(client.sub)!='undefined') {
       for (let sub of client.sub) {
         sub.w+=client.w;
         sub.s+=client.s;
-        this.processClientForStatistics(sub);
+        this.#processClientForStatistics(sub);
       }
     } else {
       const statistics=this.statistics;
@@ -542,8 +763,13 @@ class SimDispose extends SimElement {
     }
   }
 
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processArrival(simulator, client) {
-    this.processClientForStatistics(client);
+    this.#processClientForStatistics(client);
 
     this.n=0;
     if (simulator.withAnimation) simulator.animateStaticClients[this.id]=0;
@@ -551,13 +777,25 @@ class SimDispose extends SimElement {
 }
 
 
-
+/**
+ * Simulation batch station
+ */
 class SimBatch extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
   constructor(editElement) {
     super(editElement);
     this.queue=[];
   }
 
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
   build(globalStatistics, allElements) {
     const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
@@ -567,11 +805,16 @@ class SimBatch extends SimElement {
     this.b=getPositiveInt(this.editElement.setup.b);
     if (this.b==null) return language.builderBatch.b;
 
-    this.initStatistics(globalStatistics,2,{W: new statcore.Values(), N: new statcore.States()});
+    this._initStatistics(globalStatistics,2,{W: new statcore.Values(), N: new statcore.States()});
 
     return null;
   }
 
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processArrival(simulator, client) {
     /* Kunden an Station erfassen */
     this.statistics.N.set(simulator.time,this.n);
@@ -591,24 +834,41 @@ class SimBatch extends SimElement {
         this.statistics.W.add(delta);
         newClient.sub.push(c);
       }
-      this.sendClient(simulator,newClient,this.nextSimElements[0],0);
+      this._sendClient(simulator,newClient,this.nextSimElements[0],0);
       this.n=this.n-this.b+1;
       if (simulator.withAnimation) simulator.animateStaticClients[this.id]=this.n;
     }
   }
 
+  /**
+   * Processes a client leaving this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processLeave(simulator, client) {
     this.statistics.N.set(simulator.time,this.n);
   }
 }
 
 
-
+/**
+ * Simulation separate station
+ */
 class SimSeparate extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
   constructor(editElement) {
     super(editElement);
   }
 
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
   build(globalStatistics, allElements) {
     const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
@@ -618,37 +878,55 @@ class SimSeparate extends SimElement {
     return null;
   }
 
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processArrival(simulator, client) {
-    /* Handelt es sich überhaupt um einen Batch-Kunden? */
+    /* Is the current client a batch? */
     if (typeof(client.sub)=='undefined') {
-      this.sendClient(simulator,client,this.nextSimElements[0],0);
+      /* If no, just forward the client. */
+      this._sendClient(simulator,client,this.nextSimElements[0],0);
       return;
     }
 
-    /* Warte- und Bedienzeit auf die untergeordneten Kunden übertragen */
+    /* Transfer waiting and processing times to subordinate clients */
     for (let i=0;i<client.sub.length;i++) {
       client.sub[i].w+=client.w;
       client.sub[i].s+=client.s;
     }
 
-    /* Zählung anpassen */
+    /* Update client at this station counter */
     this.n=this.n-1+client.sub.length;
 
-    /* Untergeordnete Kunden weiterleiten */
+    /* Forward subordinate clients */
     for (let i=0;i<client.sub.length;i++) {
-      this.sendClient(simulator,client.sub[i],this.nextSimElements[0],0);
+      this._sendClient(simulator,client.sub[i],this.nextSimElements[0],0);
     }
   }
 }
 
 
-
+/**
+ * Simulation signal station
+ */
 class SimSignal extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
   constructor(editElement) {
     super(editElement);
     this.nr=editElement.nr;
   }
 
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
   build(globalStatistics, allElements) {
     const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
@@ -658,21 +936,38 @@ class SimSignal extends SimElement {
     return null;
   }
 
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processArrival(simulator, client) {
     simulator.fireSignal(this.nr);
-    this.sendClient(simulator,client,this.nextSimElements[0],0);
+    this._sendClient(simulator,client,this.nextSimElements[0],0);
   }
 }
 
 
-
+/**
+ * Simulation barrier station
+ */
 class SimBarrier extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
   constructor(editElement) {
     super(editElement);
     this.queue=[];
     this.nq=0;
   }
 
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
   build(globalStatistics, allElements) {
     const superError=super.build(globalStatistics,allElements);
     if (superError!=null) return superError;
@@ -693,57 +988,75 @@ class SimBarrier extends SimElement {
 
     this.storeStignals=setup.storeSignals;
 
-    this.initStatistics(globalStatistics,2,{W: new statcore.Values(), NQ: new statcore.States(), n: new statcore.Counter()});
+    this._initStatistics(globalStatistics,2,{W: new statcore.Values(), NQ: new statcore.States(), n: new statcore.Counter()});
 
     return null;
   }
 
+  /**
+   * Is called at the end of the simulation to complete the statistic data.
+   * @param {Object} simulator Simulator object
+   */
   doneStatistics(simulator) {
     this.statistics.NQ.set(simulator.time,this.nq);
   }
 
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
   processArrival(simulator, client) {
     const time=simulator.time;
     const statistics=this.statistics;
     statistics.n.add();
 
-    /* Kunde an Warteschlange anstellen */
+    /* Add client to queue */
     this.queue.push(client);
     this.nq++;
     statistics.NQ.set(time,this.nq);
     client.startWaiting=time;
 
-    /* Prüfen, ob eine Freigabe erfolgen kann */
-    this.testRelease(simulator);
+    /* Test if a client can be released */
+    this.#testRelease(simulator);
   }
 
+  /**
+   * Notifies the station that a signal has been fired.
+   * @param {Object} simulator Simulator object
+   * @param {Number} nr Number of the signal
+   */
   signal(simulator, nr) {
     if (nr!=this.signalNr) return;
-    this.release++; /* Freigabezähler erhöhen */
-    this.testRelease(simulator);
+    this.release++; /* Increase release counter */
+    this.#testRelease(simulator);
     if (!this.storeStignals) this.release=0;
   }
 
-  testRelease(simulator) {
-    /* Freigabe möglich? */
+  /**
+   * Test if a client can be released (and releases the client in this case)
+   * @param {Object} simulator Simulator object
+   */
+  #testRelease(simulator) {
+    /* Release possible? */
     if (this.queue.length==0 || this.release==0) return;
-    this.release--; /* Freigabezähler verringern */
+    this.release--; /* Decrease release counter */
 
     const statistics=this.statistics;
     const time=simulator.time;
 
-    /* Kunden Warteschlange entnehmen */
+    /* Remove client from queue */
     const client=this.queue.shift();
 
-    /* Statistik für Station und Kunde erfassen */
+    /* Record statistics for client and for station */
     const W=time-client.startWaiting;
     statistics.W.add(W);
     client.w+=W;
 
-    /* Weiterleitung konfigurieren */
-    this.sendClient(simulator,client,this.nextSimElements[0],0);
+    /* Setup forwarding */
+    this._sendClient(simulator,client,this.nextSimElements[0],0);
 
-    /* Warteschlangenlänge erfassen */
+    /* Record queue length */
     this.nq--;
     statistics.NQ.set(time,this.nq);
   }

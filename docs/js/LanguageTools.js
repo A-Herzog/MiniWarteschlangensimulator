@@ -16,13 +16,21 @@ limitations under the License.
 
 'use strict';
 
-/* Sprachauswahl */
+/* Language selection */
 
+/**
+ * Ensures the current location is the location for the right language.
+ * @param {String} file
+ */
 function selectLanguageFile(file) {
   if (window.location.pathname.endsWith(file)) return;
   window.location.href='./'+file+window.location.search;
 }
 
+/**
+ * Selects the language of the web app by the preferred browser language or the user selection (via local storage)
+ * @param {Array} languages Object containing the language ids and the names of the web app main files per language
+ */
 function selectLanguage(languages) {
   let selectedLanguage=localStorage.getItem('selectedLanguage');
 

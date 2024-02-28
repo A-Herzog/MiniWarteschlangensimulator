@@ -20,8 +20,19 @@ import {language} from "./Language.js";
 import {getPositiveFloat} from './Tools.js';
 import {dragElement, dragTemplate} from "./Editor.js";
 
-/* Darstellung der Boxen */
 
+/**
+ * Generates and adds a station box html element.
+ * @param {String} type Station type
+ * @param {Number} id Station id
+ * @param {String} name Name of the station to be displayed in the station box
+ * @param {String} color1 Color for the left side of the box
+ * @param {String} color2 Color for the right side of the box
+ * @param {Number} top Y coordinate of the upper left corner of the station box
+ * @param {Number} left X coordinate of the upper left corner of the station box
+ * @param {Boolean} isTemplate Is the box to be added to the canvas (false) or to the templates bar (true)
+ * @returns Station html element
+ */
 function addBox(type, id, name, color1, color2, top, left, isTemplate) {
   const box=document.createElement("div");
   box.className="box draggable";
@@ -44,6 +55,17 @@ function addBox(type, id, name, color1, color2, top, left, isTemplate) {
   return box;
 }
 
+/**
+ * Generates and adds a text line html element.
+ * @param {String} type Element type
+ * @param {Number} id Element id
+ * @param {String} text Text to be displayed
+ * @param {Number} fontSize Font size
+ * @param {Number} top Y coordinate of the upper left corner of the text line
+ * @param {Number} left X coordinate of the upper left corner of the text line
+ * @param {Boolean} isTemplate Is the text line to be added to the canvas (false) or to the templates bar (true)
+ * @returns Text line html element
+ */
 function addText(type, id, text, fontSize, top, left, isTemplate) {
   const box=document.createElement("span");
   box.className="draggable";
@@ -69,6 +91,16 @@ function addText(type, id, text, fontSize, top, left, isTemplate) {
   return box;
 }
 
+/**
+ * Generates and adds a diagram element.
+ * @param {String} type Element type
+ * @param {Number} id Element id
+ * @param {Number} top Y coordinate of the upper left corner of the diagram box
+ * @param {Number} left X coordinate of the upper left corner of the diagram box
+ * @param {String} sourceName Diagram data source
+ * @param {Boolean} isTemplate Is the diagram to be added to the canvas (false) or to the templates bar (true)
+ * @returns Diagram html element
+ */
 function addDiagram(type, id, top, left, sourceName, isTemplate) {
   const box=document.createElement("div");
   box.className="box_diagram draggable";
@@ -96,8 +128,15 @@ function addDiagram(type, id, top, left, sourceName, isTemplate) {
   return box;
 }
 
+/**
+ * Updates the diagram display during an animation.
+ * @param {Number} time Current time
+ * @param {Object} simStation Diagram station
+ * @param {Object} simData Simulation runtime data
+ * @param {Array} simStations List of all simulation stations
+ */
 function animateDiagram(time, simStation, simData, simStations) {
-  /* Zugehörige Quelle beim ersten Aufruf ermitteln */
+  /* Find out data source station index on first invocation */
   if (typeof(simData.simStationIndex)=='undefined') {
     simData.simStationIndex=-1;
     for (let i=0;i<simStations.length;i++) {
@@ -112,10 +151,10 @@ function animateDiagram(time, simStation, simData, simStations) {
   }
   if (simData.simStationIndex<0) return;
 
-  /* Aktuellen Wert auslesen */
+  /* Read current value */
   const currentYValue=simStations[simData.simStationIndex].n;
 
-  /* Alte Werte wenn nötig löschen, neuen Wert hinzufügen */
+  /* Remove old values if needed, add new value */
   if (typeof(simData.values)=='undefined') {
     simData.values=[];
     simData.values.push({x: 0, y: 0});
@@ -133,7 +172,7 @@ function animateDiagram(time, simStation, simData, simStations) {
     values.push({x: time, y: currentYValue});
   }
 
-  /* Zeichenfläche beim ersten Aufruf vorbereiten */
+  /* Prepare canvas on first invocation */
   if (typeof(simData.canvas)=='undefined') {
     const outerElement=document.getElementById(simStation.boxId);
     const canvas=document.createElement("canvas");
@@ -147,7 +186,7 @@ function animateDiagram(time, simStation, simData, simStations) {
     simData.canvasMaxY=canvas.height-canvas.offsetTop;
   }
 
-  /* Diagramm zeichnen */
+  /* Draw diagram */
   let maxYValue=values.map(value=>value.y).reduce((a,b)=>Math.max(a,b));
   maxYValue=Math.max(10,maxYValue);
   if (maxYValue>10) maxYValue=Math.max(maxYValue,20);
@@ -182,14 +221,19 @@ function animateDiagram(time, simStation, simData, simStations) {
   ctx.stroke();
 }
 
+/**
+ * Cleans the diagram display.
+ * @param {Object} simStation Diagram station
+ * @param {Object} simData Simulation runtime data
+ */
 function animateDiagramClean(simStation, simData) {
   if (typeof(simData.canvas)!='undefined') simData.canvas.parentElement.removeChild(simData.canvas);
 }
 
 
-
-/* Vorlagen */
-
+/**
+ * Station templates
+ */
 const templates=[];
 
 templates.push({
@@ -313,6 +357,11 @@ templates.push({
   visualOnly: true
 });
 
+/**
+ * Returns a station template object based on a given station type
+ * @param {String} type Station type
+ * @returns Station template object
+ */
 function getRecordByType(type) {
   for (let template of templates) if (template.type==type) return template;
   return null;

@@ -22,32 +22,54 @@ import {distcore} from "./DistCore.js";
 import {language} from "./Language.js";
 
 
-
+/**
+ * Builds a (read only, fast) simulation model from a (weakly connected, editable) editor model.
+ */
 class SimModelBuilder {
+  /**
+   * Constructor
+   * @param {Array} editElements List of the edit model elements
+   * @param {Array} editEdges List of the edit model edges
+   */
   constructor(editElements, editEdges) {
     this.editElements=editElements;
     this.editEdges=editEdges;
   }
 
-  getElementByBoxId(boxId) {
+  /**
+   * Returns the editor model station object for a given id.
+   * @param {Number} boxId Id of the station
+   * @returns Returns the station with the given id (or null if there is no station with this id)
+   */
+  #getElementByBoxId(boxId) {
     for (let editElement of this.editElements) if (editElement.boxId==boxId) return editElement;
     return null;
   }
 
-  getSimStationFromBoxId(boxId) {
-    const editElement=this.getElementByBoxId(boxId);
+  /**
+   * Returns the simulation model station object for a given id.
+   * @param {Number} boxId Id of the station
+   * @returns Returns the station with the given id (or null if there is no station with this id)
+   */
+  #getSimStationFromBoxId(boxId) {
+    const editElement=this.#getElementByBoxId(boxId);
     if (editElement==null) return null;
     const id=editElement.id;
     for (let station of this.stationsList) if (station.id==id) return station;
     return null;
   }
 
+  /**
+   * Builds the simulation model.
+   * @param {Object} globalStatistics Global statistics object to be connected to the simulation model
+   * @returns Error message or null in case of success
+   */
   build(globalStatistics) {
     this.stationsList=[];
     this.animationStationsList=[];
     let hasSource=false;
 
-    /* Stationen anlegen */
+    /* Generate stations */
     for (let editElement of this.editElements) {
 
       if (editElement.visualOnly) {
@@ -78,18 +100,18 @@ class SimModelBuilder {
       return language.builder.noSource;
     }
 
-    /* Stationen verknüpfen */
+    /* Connect stations */
     const destinationStations=new Set();
     for (let editEdge of this.editEdges) {
-      const station1=this.getSimStationFromBoxId(editEdge.boxId1);
-      const station2=this.getSimStationFromBoxId(editEdge.boxId2);
+      const station1=this.#getSimStationFromBoxId(editEdge.boxId1);
+      const station2=this.#getSimStationFromBoxId(editEdge.boxId2);
       if (station1!=null && station2!=null) {
         station1.addEdgeOut(station2);
         destinationStations.add(station2);
       }
     }
 
-    /* Unverbundene Stationen entfernen */
+    /* Remove unconnected stations */
     const removeStations=new Set();
     for (let station of this.stationsList) if (!destinationStations.has(station) && station.editElement.type!="Source") removeStations.add(station);
     for (let removeStation of removeStations) {
@@ -97,7 +119,7 @@ class SimModelBuilder {
       this.stationsList.splice(index,1);
     }
 
-    /* Daten in Stationen laden */
+    /* Load data into stations */
     for (let station of this.stationsList) {
       const stationError=station.build(globalStatistics,this.editElements);
       if (stationError!=null) return language.builder.stationError+" <b style='color: "+templates.filter(template=>template.type==station.editElement.type)[0].color+"'>"+station.name+"</b>:<br>"+stationError;
@@ -106,15 +128,27 @@ class SimModelBuilder {
     return null;
   }
 
+  /**
+   * Returns the list of the simulation station boxes (not visual only stations).
+   */
   get stations() {
     return this.stationsList;
   }
 
+  /**
+   * Returns a list of all visual only (diagram) elements.
+   */
   get animationStations() {
     return this.animationStationsList;
   }
 }
 
+/**
+ * Generates a pseudo random number generator from mean and CV using distcore.
+ * @param {Number} E Mean
+ * @param {Number} CV Coefficient of variation
+ * @returns Pseudo random number generator
+ */
 function distributionBuilder(E, CV) {
   if (CV==0) return distcore.get("const("+E+")");
   if (CV==1.0) return distcore.get("exp("+E+")");

@@ -160,7 +160,7 @@ tabHomeHelpDownload.onclick=()=>{
   document.body.removeChild(element);
 };
 
-/* Beispiel über URL laden */
+/* Load example via URL */
 
 const exampleKeywords=[
   {keywords: ['ErlangC','MMc'], example: 0},
