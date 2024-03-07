@@ -804,6 +804,8 @@ function addEditorElements(element, parent) {
       options+="<option value='1'"+((value==1)?' selected':'')+'>'+language.editor.policyFIFO+'</option>';
       options+="<option value='0'"+((value==0)?' selected':'')+'>'+language.editor.policyRandom+'</option>';
       options+="<option value='-1'"+((value==-1)?' selected':'')+'>'+language.editor.policyLIFO+'</option>';
+      options+="<option value='2'"+((value==2)?' selected':'')+'>'+language.editor.policySJF+'</option>';
+      options+="<option value='-2'"+((value==-2)?' selected':'')+'>'+language.editor.policyLJF+'</option>';
       select.innerHTML=options;
       select.onchange=function(){element.setup[name]=select.value;}
       continue;

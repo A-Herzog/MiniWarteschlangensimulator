@@ -162,32 +162,51 @@ function loadExampleRetry() {
 function loadExamplePolicy() {
   addTextToModel(50,100,language.examples.examplePolicy,16);
 
-  const sourceBoxId=addElementToModel("Source",220,100);
-  const duplicateBoxId=addElementToModel("Duplicate",220,300);
+  const sourceBoxId=addElementToModel("Source",320,100);
+  const duplicateBoxId=addElementToModel("Duplicate",320,300);
   const processBoxId1=addElementToModel("Process",120,500);
   getElementByBoxId(processBoxId1).setup.policy=1;
   const processBoxId2=addElementToModel("Process",220,500);
   getElementByBoxId(processBoxId2).setup.policy=0;
   const processBoxId3=addElementToModel("Process",320,500);
   getElementByBoxId(processBoxId3).setup.policy=-1;
+  const processBoxId4=addElementToModel("Process",420,500);
+  getElementByBoxId(processBoxId4).setup.policy=2;
+  const processBoxId5=addElementToModel("Process",520,500);
+  getElementByBoxId(processBoxId5).setup.policy=-2;
+
   const disposeBoxId1=addElementToModel("Dispose",120,700);
   const disposeBoxId2=addElementToModel("Dispose",220,700);
   const disposeBoxId3=addElementToModel("Dispose",320,700);
+  const disposeBoxId4=addElementToModel("Dispose",420,700);
+  const disposeBoxId5=addElementToModel("Dispose",520,700);
 
   addEdgeToModel(sourceBoxId,duplicateBoxId);
   addEdgeToModel(duplicateBoxId,processBoxId1);
   addEdgeToModel(duplicateBoxId,processBoxId2);
   addEdgeToModel(duplicateBoxId,processBoxId3);
+  addEdgeToModel(duplicateBoxId,processBoxId4);
+  addEdgeToModel(duplicateBoxId,processBoxId5);
   addEdgeToModel(processBoxId1,disposeBoxId1);
   addEdgeToModel(processBoxId2,disposeBoxId2);
   addEdgeToModel(processBoxId3,disposeBoxId3);
+  addEdgeToModel(processBoxId4,disposeBoxId4);
+  addEdgeToModel(processBoxId5,disposeBoxId5);
 
   addTextToModel(100,500,language.examples.examplePolicyFIFO,10);
   addTextToModel(200,500,language.examples.examplePolicyRandom,10);
   addTextToModel(300,500,language.examples.examplePolicyLIFO,10);
+  addTextToModel(400,500,language.examples.examplePolicySJF,10);
+  addTextToModel(500,500,language.examples.examplePolicyLJF,10);
 
   addTextToModel(400,100,language.examples.examplePolicyInfo1,12);
   addTextToModel(420,100,language.examples.examplePolicyInfo2,12);
+  addTextToModel(440,100,language.examples.examplePolicyInfo3,12);
+  addTextToModel(460,100,language.examples.examplePolicyInfo4,12);
+  addTextToModel(480,100,language.examples.examplePolicyInfo5,12);
+  addTextToModel(500,100,language.examples.examplePolicyInfo6,12);
+  if (language.examples.examplePolicyInfo7!='') addTextToModel(520,100,language.examples.examplePolicyInfo7,12);
+  if (language.examples.examplePolicyInfo8!='') addTextToModel(540,100,language.examples.examplePolicyInfo8,12);
 }
 
 /**

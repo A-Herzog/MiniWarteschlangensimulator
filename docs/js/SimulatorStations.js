@@ -243,6 +243,7 @@ class SimDelay extends SimElement {
     this.distS=distributionBuilder(ES,CVS);
 
     this._initStatistics(globalStatistics,2,{S: new statcore.Values(), N: new statcore.States(), n: new statcore.Counter()});
+    this.statistics.N.set(0,0);
 
     return null;
   }
@@ -328,6 +329,8 @@ class SimProcess extends SimElement {
 
     this.policy=parseInt(setup.policy);
 
+    if ((this.policy==-2 || this.policy==2) && (this.b>1)) return language.builderProcess.ServiceTimePriorityAndBatch;
+
     this.nextSuccess=this.nextSimElements[0];
     if (this.nextSimElements.length==2) {
       const EWT=getPositiveFloat(setup.EWT);
@@ -355,6 +358,9 @@ class SimProcess extends SimElement {
       cBusy: new statcore.States(),
       n: new statcore.Counter()
     });
+    this.statistics.NQ.set(0,0);
+    this.statistics.N.set(0,0);
+    this.statistics.cBusy.set(0,0);
 
     return null;
   }
@@ -381,6 +387,9 @@ class SimProcess extends SimElement {
 
     /* Record client at station */
     statistics.N.set(time,this.n);
+
+    /* Calculate service time (needed at this early stage for SJF / LJF modes) */
+    client.serviceTime=this.distS();
 
     /* Add client to queue */
     this.queue.push(client);
@@ -435,7 +444,9 @@ class SimProcess extends SimElement {
     const statistics=this.statistics;
     const time=simulator.time;
 
-    const delta=this.distS();
+    let delta=0;
+    let serviceTime;
+    let useIndex;
 
     for (let i=1;i<=b;i++) {
       /* Remove client from queue */
@@ -447,18 +458,34 @@ class SimProcess extends SimElement {
           break;
         case 0:
           /* Random */
-          const useIndex=Math.floor(Math.random()*this.queue.length);
+          useIndex=Math.floor(Math.random()*this.queue.length);
           client=this.queue.splice(useIndex,1)[0];
           break;
         case -1:
           /* LIFO */
           client=this.queue.splice(this.queue.length-1,1)[0];
           break;
+        case 2:
+          /* Shortest job first */
+          serviceTime=this.queue[0].serviceTime;
+          useIndex=0;
+          for (let j=1;j<this.queue.length;j++) if (this.queue[j].serviceTime<serviceTime) {serviceTime=this.queue[j].serviceTime; useIndex=j;}
+          client=this.queue.splice(useIndex,1)[0];
+          break;
+        case -2:
+          /* Longest job first */
+          serviceTime=this.queue[0].serviceTime;
+          useIndex=0;
+          for (let j=1;j<this.queue.length;j++) if (this.queue[j].serviceTime>serviceTime) {serviceTime=this.queue[j].serviceTime; useIndex=j;}
+          client=this.queue.splice(useIndex,1)[0];
+          break;
         default:
           /* Fallback: FIFO */
           client=this.queue.shift();
           break;
       }
+
+      if (i==1) delta=client.serviceTime;
 
       /* Record statistics for client and for station */
       const W=time-client.startWaiting;
@@ -806,6 +833,7 @@ class SimBatch extends SimElement {
     if (this.b==null) return language.builderBatch.b;
 
     this._initStatistics(globalStatistics,2,{W: new statcore.Values(), N: new statcore.States()});
+    this.statistics.N.set(0,0);
 
     return null;
   }
@@ -989,6 +1017,7 @@ class SimBarrier extends SimElement {
     this.storeStignals=setup.storeSignals;
 
     this._initStatistics(globalStatistics,2,{W: new statcore.Values(), NQ: new statcore.States(), n: new statcore.Counter()});
+    this.statistics.NQ.set(0,0);
 
     return null;
   }
