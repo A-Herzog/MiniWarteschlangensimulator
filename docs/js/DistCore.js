@@ -79,15 +79,15 @@ distcore.gamma=function(shape,scale) {
 
     while (true) {
       /* Step 1: */
-      var u = Math.random();
-      var bGS = 1.0 + shape/Math.E;
-      var p = bGS * u;
+      const u = Math.random();
+      const bGS = 1.0 + shape/Math.E;
+      const p = bGS * u;
 
       if (p <= 1) {
         /* Step 2: */
 
-        var x = Math.pow(p, 1 / shape);
-        var u2 = Math.random();
+        const x = Math.pow(p, 1 / shape);
+        const u2 = Math.random();
 
         if (u2 > Math.exp(-x)) {
           /* Reject */
@@ -98,8 +98,8 @@ distcore.gamma=function(shape,scale) {
       } else {
         /* Step 3: */
 
-        var x = -1 * Math.log((bGS - p) / shape);
-        var u2 = Math.random();
+        const x = -1 * Math.log((bGS - p) / shape);
+        const u2 = Math.random();
 
         if (u2 > Math.pow(x, shape - 1)) {
           /* Reject */
@@ -113,19 +113,19 @@ distcore.gamma=function(shape,scale) {
 
   /* Now shape >= 1 */
 
-  var d = shape - 0.333333333333333333;
-  var c = 1 / (3 * Math.sqrt(d));
+  const d = shape - 0.333333333333333333;
+  const c = 1 / (3 * Math.sqrt(d));
 
   while (true) {
-    var x = Math.cos(2*Math.PI*Math.random())*Math.sqrt(-2*Math.log(Math.random())); /* = N(0,1) random number */
-    var v = (1 + c * x) * (1 + c * x) * (1 + c * x);
+    const x = Math.cos(2*Math.PI*Math.random())*Math.sqrt(-2*Math.log(Math.random())); /* = N(0,1) random number */
+    const v = (1 + c * x) * (1 + c * x) * (1 + c * x);
 
     if (v <= 0) {
       continue;
     }
 
-    var x2 = x * x;
-    var u = Math.random();
+    const x2 = x * x;
+    const u = Math.random();
 
     /* Squeeze */
     if (u < 1 - 0.0331 * x2 * x2) {

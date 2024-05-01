@@ -14,18 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {simcore};
-
-/**
- * DistCore base object containing all exported classes as properties.
- */
-const simcore={};
+export {Event, Simulator, formatTime, Timer};
 
 
 /**
  * Base class for events
  */
-simcore.Event=class Event {
+class Event {
   /**
    * Constructor
    * @param {Number} time Planned execution time
@@ -46,7 +41,7 @@ simcore.Event=class Event {
 /**
  * Sorted event list
  */
-simcore.EventList=class EventList {
+class EventList {
   /**
    * Constructor
    */
@@ -126,7 +121,102 @@ simcore.EventList=class EventList {
    */
   remove(event) {
     const list=this.list;
-    for (let i=0;i<list.length;i++) if (list[i]==event) {
+    const len=list.length;
+    for (let i=0;i<len;i++) if (list[i]==event) {
+      list.splice(i,1);
+      return true;
+    }
+    return false;
+  }
+}
+
+
+/**
+ * Sorted event list (internally using reverse order in array -- approx. 3% faster than default implementation in Firefox and 5% slower in Chrome/Edge)
+ */
+class ReverseEventList {
+  /**
+   * Constructor
+   */
+  constructor() {
+    this.list=[];
+  }
+
+  /**
+   * Number of events currently in list.
+   */
+  get length() {
+    return this.list.length;
+  }
+
+  /**
+   * Adds a new event to the sorted list of events.
+   * @param {Event} event Event to be added to list
+   */
+  add(event) {
+    const list=this.list;
+
+    if (list.length==0) {
+      list.push(event);
+      return;
+    }
+
+    const eventTime=event.time;
+    let a=0;
+    let b=list.length-1;
+    while (b-a>2) {
+      const m=Math.round((a+b)/2);
+      const mTime=list[m].time;
+      if (mTime>eventTime) {
+        a=m;
+      } else {
+        b=m;
+      }
+    }
+
+    for (let i=a;i<=b;i++) if (list[i].time<eventTime) {
+      list.splice(i,0,event);
+      return;
+    }
+    list.splice(b+1,0,event);
+  }
+
+  /**
+   * Removes the event with the lowest execution time from list and returns it.
+   * @returns Next event to be executed (or null if no events are in list)
+   */
+  next() {
+    const list=this.list;
+    if (list.length==0) return null;
+    return list.pop();
+  }
+
+  /**
+   * Returns the planned executing time of the next scheduled event (or null, if no events are scheduled).
+   */
+  get nextTime() {
+    const list=this.list;
+    const len=list.length;
+    if (len==0) return null;
+    return list[len-1].time;
+  }
+
+  /**
+   * Clears the event list.
+   */
+  clear() {
+    this.list=[];
+  }
+
+  /**
+   * Removes an element from the events list.
+   * @param {Event} event Event to be removed
+   * @returns Returns true if the event was in the list and could be removed (otherwise false)
+   */
+  remove(event) {
+    const list=this.list;
+    const len=list.length;
+    for (let i=0;i<len;i++) if (list[i]==event) {
       list.splice(i,1);
       return true;
     }
@@ -138,14 +228,14 @@ simcore.EventList=class EventList {
 /**
  * Simulator main class
  */
-simcore.Simulator=class Simulator {
+class Simulator {
   /**
    * Constructor
    * @param {Function} logger Callback for logger (function acceptiong a string) or null, if no logging is intended
    */
   constructor(logger) {
     this.logger=logger;
-    this.events=new simcore.EventList();
+    this.events=new EventList();
     this.executionCount=0;
     this.currentTime=0;
     this.lastLogTime=-1;
@@ -214,7 +304,7 @@ simcore.Simulator=class Simulator {
     if (this.logger==null) return;
 
     if (this.lastLogTime>=0 && this.lastLogTime!=this.currentTime) this.logger("");
-    this.logger(simcore.formatTime(this.currentTime)+": "+message);
+    this.logger(formatTime(this.currentTime)+": "+message);
     this.lastLogTime=this.currentTime;
   }
 }
@@ -224,7 +314,7 @@ simcore.Simulator=class Simulator {
  * Formats a number as HH:MM:SS,s string.
  * @param {Number} time Timestamp to be formated
  */
-simcore.formatTime=function(time) {
+function formatTime(time) {
   time=Math.round(time*10);
 
   let frac=time%10;
@@ -252,7 +342,7 @@ simcore.formatTime=function(time) {
 /**
  * Timer for measuring execution times (in wall clock ms)
  */
-simcore.Timer=class Timer {
+class Timer {
   /**
    * Constructor
    */

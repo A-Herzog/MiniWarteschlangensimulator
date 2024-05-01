@@ -16,13 +16,13 @@ limitations under the License.
 
 export {SendEvent, ArrivalEvent, ServiceDoneEvent, WaitingCancelEvent};
 
-import {simcore} from "./SimCore.js";
+import {Event} from "./SimCore.js";
 
 
 /**
  * Sending a client from a origin to a destination station
  */
-class SendEvent extends simcore.Event {
+class SendEvent extends Event {
   /**
    * Constructor
    * @param {Number} time Simulation time at which the event is to be executed
@@ -71,7 +71,7 @@ class SendEvent extends simcore.Event {
 /**
  * Arrival of a client at a source station
  */
-class ArrivalEvent extends simcore.Event {
+class ArrivalEvent extends Event {
   /**
    * Constructor
    * @param {Number} time Simulation time at which the event is to be executed
@@ -104,7 +104,7 @@ class ArrivalEvent extends simcore.Event {
 /**
  * This event is executed when a service process at a process station is finished.
  */
-class ServiceDoneEvent extends simcore.Event {
+class ServiceDoneEvent extends Event {
   /**
    * Constructor
    * @param {Number} time Simulation time at which the event is to be executed
@@ -124,7 +124,7 @@ class ServiceDoneEvent extends simcore.Event {
 /**
  * This event is executed when the waiting time tolerance of the client is exceeded.
  */
-class WaitingCancelEvent extends simcore.Event {
+class WaitingCancelEvent extends Event {
   /**
    * Constructor
    * @param {Number} time Simulation time at which the event is to be executed

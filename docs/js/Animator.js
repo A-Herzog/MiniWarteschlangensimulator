@@ -19,7 +19,7 @@ export {startAnimation, animationPlayPause, animationSingleTimeStep, animationAc
 import {showMessage, showConfirmationMessage, showAnimationSidebar, addEdgeActive, showTemplatesSidebar, elements, edges} from './Editor.js';
 import {SimulatorWorker, WebSimulator} from './Simulator.js';
 import {language, getCharacteristicsInfo} from "./Language.js";
-import {simcore} from './SimCore.js';
+import {formatTime} from './SimCore.js';
 
 /**
  * Start animation.
@@ -439,7 +439,8 @@ function animationFastForwardStep2(arrivalMio) {
   workerDialog.show();
 
   const countSum=arrivalMio*1_000_000;
-  const cpuCount=navigator.hardwareConcurrency;
+  let cpuCount=navigator.hardwareConcurrency;
+  if (navigator.userAgent.toLocaleLowerCase().indexOf("firefox")>=0 && cpuCount==16) cpuCount=24; /* Firefox will never report more than 16 threads; having more threads than logical core is of no (big) disadvantage, to guessing here. */
   const model={elements: elements, edges: edges, count: Math.ceil(countSum/cpuCount)};
   const models=[];
   for (let i=0;i<cpuCount;i++) models.push(model);
@@ -484,11 +485,12 @@ function animationFastForwardShowFullData() {
   content+='<div class="wrapper" style="padding: 20px;">';
 
   content+="<p>";
-  content+=language.tabAnimation.time+": "+simcore.formatTime(statistics.time)+"<br>";
-  content+=language.tabAnimation.threads+": "+statistics.threads;
+  content+=language.tabAnimation.time+": "+formatTime(statistics.time)+"<br>";
+  content+=language.tabAnimation.threads+": "+statistics.threads+"<br>";
+  content+=language.tabAnimation.runTime+": "+statistics.runTime.toLocaleString()+" ms";
   content+="</p>"
 
-  contentPlain.push(language.tabAnimation.time+": "+simcore.formatTime(statistics.time));
+  contentPlain.push(language.tabAnimation.time+": "+formatTime(statistics.time));
   contentPlain.push(language.tabAnimation.threads+": "+statistics.threads);
   contentPlain.push("");
 

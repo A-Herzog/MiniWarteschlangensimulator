@@ -17,7 +17,7 @@ limitations under the License.
 export {WebSimulator, SimulatorWorker};
 
 import {SimModelBuilder} from "./SimulatorBuilder.js";
-import {simcore} from "./SimCore.js";
+import {Simulator, formatTime, Timer} from "./SimCore.js";
 import {statcore} from "./StatCore.js";
 import {language, getCharacteristicsInfo} from "./Language.js";
 
@@ -25,7 +25,7 @@ import {language, getCharacteristicsInfo} from "./Language.js";
 /**
  * Simulator class
  */
-class WebSimulator extends simcore.Simulator {
+class WebSimulator extends Simulator {
   /**
    * Constructor
    * @param {Boolean} withAnimation Run in animation mode?
@@ -139,7 +139,7 @@ class WebSimulator extends simcore.Simulator {
    */
   get info() {
     let status="";
-    status+="<p><small>"+language.tabAnimation.time+": "+simcore.formatTime(this.time)+"</small></p>";
+    status+="<p><small>"+language.tabAnimation.time+": "+formatTime(this.time)+"</small></p>";
 
     for (let priority=3;priority>=1;priority--) for (let stationName in this.statistics) {
       const stationData=this.statistics[stationName];
@@ -237,6 +237,7 @@ class SimulatorWorker {
     this.worker=[];
     this.workerProgress=[];
     this.results=[];
+    this.timer=new Timer();
     for (let i=0;i<this.models.length;i++) {
       const w=new Worker('./js/Worker.js',{type: "module"});
       w.onerror=()=>that.infoElement.innerHTML=language.tabAnimation.simulationWebWorkerError;
@@ -281,7 +282,10 @@ class SimulatorWorker {
       this.worker[index]=null;
       let allDone=true;
       for (let i=0;i<this.worker.length;i++) if (this.worker[i]!=null) {allDone=false; break;}
-      if (allDone) this.resultsCallback();
+      if (allDone) {
+        this.runTime=this.timer.time;
+        this.resultsCallback();
+      }
     }
   }
 
@@ -304,7 +308,7 @@ class SimulatorWorker {
    */
   #buildTextFromStatistics(statistics) {
     let status="";
-    status+="<p><small>"+language.tabAnimation.time+": "+simcore.formatTime(statistics.time)+"</small></p>";
+    status+="<p><small>"+language.tabAnimation.time+": "+formatTime(statistics.time)+"</small></p>";
 
     for (let priority=3;priority>=1;priority--) for (let stationName in statistics.stations) {
       const stationData=statistics.stations[stationName];
@@ -413,11 +417,14 @@ class SimulatorWorker {
     const data=[];
     data.threads=this.results.length;
     for (let i=0;i<this.results.length;i++) data.push(this.results[i].resultFull);
+    let result;
     if (data.length==1) {
       data[0].threads=1;
-      return data[0];
+      result=data[0];
     } else {
-      return this.#joinResults(data);
+      result=this.#joinResults(data);
     }
+    result.runTime=this.runTime;
+    return result;
   }
 }

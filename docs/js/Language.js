@@ -124,9 +124,10 @@ lang.tabAnimation.simulationDropDown10Mio="Viele (10 Mio.)";
 lang.tabAnimation.simulationDropDown25Mio="Sehr viele (25 Mio.)";
 lang.tabAnimation.simulationDropDown100Mio="Extrem viele (100 Mio.)";
 lang.tabAnimation.allData="Details anzeigen";
-lang.tabAnimation.time="Zeit";
+lang.tabAnimation.time="Simulierte Zeit";
 lang.tabAnimation.count="Anzahl";
-lang.tabAnimation.threads="Genutzte CPU-Kerne";
+lang.tabAnimation.threads="Genutzte Anzahl an Threads Kerne";
+lang.tabAnimation.runTime="Laufzeit";
 lang.tabAnimation.copy="In Zwischenablage kopieren";
 lang.tabAnimation.resultsFile="Ergebnisse.txt";
 
@@ -460,9 +461,10 @@ lang.tabAnimation.simulationDropDown10Mio="Many (10 mio.)";
 lang.tabAnimation.simulationDropDown25Mio="Very many (25 mio.)";
 lang.tabAnimation.simulationDropDown100Mio="Extremly many (100 mio.)";
 lang.tabAnimation.allData="Show details";
-lang.tabAnimation.time="Time";
+lang.tabAnimation.time="Simulated time";
 lang.tabAnimation.count="Count";
-lang.tabAnimation.threads="Used CPU cores";
+lang.tabAnimation.threads="Used number of threads";
+lang.tabAnimation.runTime="Runtime";
 lang.tabAnimation.copy="Copy to clipboard";
 lang.tabAnimation.resultsFile="Results.txt";
 

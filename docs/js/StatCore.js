@@ -74,8 +74,8 @@ statcore.Counter=class Counter {
    */
   makePlain() {
     return {
-	  count: this.count
-	};
+	    count: this.count
+	  };
   }
 
   /**
@@ -192,15 +192,15 @@ statcore.Values=class Values {
    */
   makePlain() {
     return {
-	  count: this.count,
-	  sum: this.sum,
-	  sum2: this.fieldSum2,
-	  min: this.min,
-	  max: this.max,
-	  mean: this.mean,
-	  sd: this.sd,
-	  cv: this.cv
-	};
+	    count: this.count,
+	    sum: this.sum,
+	    sum2: this.fieldSum2,
+	    min: this.min,
+	    max: this.max,
+	    mean: this.mean,
+	    sd: this.sd,
+	    cv: this.cv
+	  };
   }
 
   /**
@@ -312,12 +312,12 @@ statcore.States=class States {
    */
   makePlain() {
     return {
-	  time: this.time,
-	  sum: this.fieldStateSum,
-	  min: this.min,
-	  max: this.max,
-	  mean: this.mean
-	};
+	    time: this.time,
+	    sum: this.fieldStateSum,
+	    min: this.min,
+	    max: this.max,
+	    mean: this.mean
+	  };
   }
 
   /**
@@ -380,6 +380,6 @@ statcore.Statistics=class Statistics {
    * @param Object partialData Data to be added
    */
   addPartial(partialData) {
-	for (let i=0;i<this.allObjs.length;i++) this.allObjs[i].addPartial(partialData[this.allNames[i]]);
+	  for (let i=0;i<this.allObjs.length;i++) this.allObjs[i].addPartial(partialData[this.allNames[i]]);
   }
 }

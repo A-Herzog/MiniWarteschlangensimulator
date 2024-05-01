@@ -205,7 +205,7 @@ class SimSource extends SimElement {
     for (let i=1;i<=b;i++) {
       this._sendClient(simulator,new Client(),this.nextSimElements[0]);
     }
-    simulator.arrivalCount++;
+    simulator.arrivalCount+=b;
   }
 }
 
