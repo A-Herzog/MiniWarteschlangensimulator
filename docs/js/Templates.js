@@ -18,7 +18,7 @@ export {templates, getRecordByType};
 
 import {language} from "./Language.js";
 import {getPositiveFloat} from './Tools.js';
-import {dragElement, dragTemplate} from "./Editor.js";
+import {dragElement, dragElementProgress, dragTemplate} from "./Editor.js";
 
 
 /**
@@ -51,6 +51,7 @@ function addBox(type, id, name, color1, color2, top, left, isTemplate) {
   } else {
     document.getElementById("canvas_area").appendChild(box);
     box.ondragstart=dragElement;
+    box.ondrag=dragElementProgress;
   }
   return box;
 }
@@ -87,6 +88,7 @@ function addText(type, id, text, fontSize, top, left, isTemplate) {
   } else {
     document.getElementById("canvas_area").appendChild(box);
     box.ondragstart=dragElement;
+    box.ondrag=dragElementProgress;
   }
   return box;
 }
@@ -124,6 +126,7 @@ function addDiagram(type, id, top, left, sourceName, isTemplate) {
   } else {
     document.getElementById("canvas_area").appendChild(box);
     box.ondragstart=dragElement;
+    box.ondrag=dragElementProgress;
   }
   return box;
 }

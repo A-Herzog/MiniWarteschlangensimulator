@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas};
+export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragElementProgress, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas};
 
 import {language} from "./Language.js";
 import {animationActive} from "./Animator.js";
@@ -383,9 +383,22 @@ function dragTemplate(ev) {
  * @param {Object} ev Drag start event
  */
 function dragElement(ev) {
+  /* Respect surface zooming */
+  ev.target.style.left=Math.round(parseInt(ev.target.style.left)*canvasScale/100)+"px";
+  ev.target.style.top=Math.round(parseInt(ev.target.style.top)*canvasScale/100)+"px";
+  ev.target.style.transform="scale("+(canvasScale/100)+")"; /* This will also zoom the original element on the surface - this is why we hide the original element while dragging */
+
   ev.dataTransfer.setData("moveBoxId",ev.target.id);
   ev.dataTransfer.setData("deltaX",ev.layerX);
   ev.dataTransfer.setData("deltaY",ev.layerY);
+}
+
+/**
+ * Callback when dragging (after start drag) on the drawing surface
+ * @param {Object} ev Drag event
+ */
+function dragElementProgress(ev) {
+  ev.target.style.display="none"; /* Hide original element (not possible in start drag event) */
 }
 
 /**
