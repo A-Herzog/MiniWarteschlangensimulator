@@ -81,7 +81,7 @@ function addText(type, id, text, fontSize, top, left, isTemplate) {
   box.style.fontSize=fontSize+"pt";
   box.draggable=true;
   box.dataset.type=type;
-  box.innerHTML=(typeof(text)=='undefined')?language.templates.text:text;
+  box.innerText=(typeof(text)=='undefined')?language.templates.text:text;
   if (isTemplate) {
     document.getElementById("templates_area").appendChild(box);
     box.ondragstart=dragTemplate;
