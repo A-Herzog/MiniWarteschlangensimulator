@@ -1,4 +1,5 @@
 !define PrgName "MiniWarteschlangensimulator"
+!define PrgTempPathName "MiniWarteschlangensimulator"
 !define PrgFileName "MiniWarteschlangensimulator"
 !define PrgIcon "..\docs\favicon.ico"
 !define Copyright "Alexander Herzog"
@@ -26,13 +27,13 @@ ShowInstDetails nevershow
 RequestExecutionLevel user
 
 Section ""
-  SetOutPath "$TEMP\${PrgName}"
+  SetOutPath "$TEMP\${PrgTempPathName}"
   
   File "..\dist\MiniWarteschlangensimulator\MiniWarteschlangensimulator-win_x64.exe"
   File "..\dist\MiniWarteschlangensimulator\resources.neu"
   ; File "..\dist\MiniWarteschlangensimulator\WebView2Loader.dll"
   
-  ExecWait "$TEMP\${PrgName}\MiniWarteschlangensimulator-win_x64.exe"
+  ExecWait "$TEMP\${PrgTempPathName}\MiniWarteschlangensimulator-win_x64.exe"
   
-  RmDir /r "$TEMP\${PrgName}"
+  RmDir /r "$TEMP\${PrgTempPathName}"
 SectionEnd
