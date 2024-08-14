@@ -618,7 +618,7 @@ function seriesParameterResults() {
         title: {display: true, text: seriesParameters[parameterNr].fullName}
       },
       y: {
-        title: {display: true, text: language.tabAnimation.time},
+        title: {display: true, text: language.tabAnimation.timePlain},
         min: 0
       },
       y2: {
