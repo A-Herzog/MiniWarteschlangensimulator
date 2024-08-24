@@ -19,7 +19,7 @@ export {processSeries};
 import {showMessage, showTemplatesSidebar, elements, edges} from './Editor.js';
 import {WebSimulator} from './Simulator.js';
 import {language} from './Language.js';
-import {getPositiveFloat, getPositiveInt} from './Tools.js';
+import {getPositiveFloat, getNotNegativeFloat, getPositiveInt} from './Tools.js';
 import {SimulatorWorker} from './Simulator.js';
 
 
@@ -130,10 +130,11 @@ function getParameters() {
     for (let id2 in element.setup) {
       let name2=null;
       let isInteger=false;
+      let allow0=false;
       if (id2=='EI') name2='E[I]';
-      if (id2=='CVI') name2='CV[I]';
+      if (id2=='CVI') {name2='CV[I]'; allow0=true;}
       if (id2=='ES') name2='E[S]';
-      if (id2=='CVS') name2='CV[S]';
+      if (id2=='CVS') {name2='CV[S]'; allow0=true;}
       if (id2=='EWT' && hasTwoOutgoingEdges(element.boxId)) name2='E[WT]';
       if (id2=='CVWT' && hasTwoOutgoingEdges(element.boxId)) name2='CV[WT]';
       if (id2=='b') {name2='b'; isInteger=true;}
@@ -146,6 +147,7 @@ function getParameters() {
         name2: name2,
         initialValue: element.setup[id2],
         isInteger: isInteger,
+        allow0: allow0,
         fullName: element.name+" "+name2
       });
     }
@@ -359,10 +361,18 @@ function testRange() {
     parameterValue2=value2;
     parameterValueStep=step;
   } else {
-    const value1=getPositiveFloat(value1Str);
-    if (value1==null) {info.innerHTML=language.series.rangeStartError+" "+language.series.rangeFloatError; info.style.display=""; return false;}
-    const value2=getPositiveFloat(value2Str);
-    if (value2==null) {info.innerHTML=language.series.rangeEndError+" "+language.series.rangeFloatError; info.style.display=""; return false;}
+    let value1, value2;
+    if (param.allow0) {
+      value1=getNotNegativeFloat(value1Str);
+      if (value1==null) {info.innerHTML=language.series.rangeStartError+" "+language.series.rangeFloat0Error; info.style.display=""; return false;}
+      value2=getNotNegativeFloat(value2Str);
+      if (value2==null) {info.innerHTML=language.series.rangeEndError+" "+language.series.rangeFloat0Error; info.style.display=""; return false;}
+    } else {
+      value1=getPositiveFloat(value1Str);
+      if (value1==null) {info.innerHTML=language.series.rangeStartError+" "+language.series.rangeFloatError; info.style.display=""; return false;}
+      value2=getPositiveFloat(value2Str);
+      if (value2==null) {info.innerHTML=language.series.rangeEndError+" "+language.series.rangeFloatError; info.style.display=""; return false;}
+    }
     const step=getPositiveFloat(stepStr);
     if (step==null) {info.innerHTML=language.series.rangeStepError+" "+language.series.rangeFloatError; info.style.display=""; return false;}
     if (value2<=value1) {info.innerHTML=language.series.rangeStartEndError; info.style.display=""; return false;}
