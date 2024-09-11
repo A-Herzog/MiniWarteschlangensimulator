@@ -373,6 +373,8 @@ function allowDrop(ev) {
  * @param {Object} ev Drag start event
  */
 function dragTemplate(ev) {
+  if (animationActive) return;
+
   ev.dataTransfer.setData("templateType",ev.target.dataset.type);
   ev.dataTransfer.setData("deltaX",ev.layerX);
   ev.dataTransfer.setData("deltaY",ev.layerY);
@@ -383,6 +385,8 @@ function dragTemplate(ev) {
  * @param {Object} ev Drag start event
  */
 function dragElement(ev) {
+  if (animationActive) return;
+
   /* Respect surface zooming */
   ev.target.style.left=Math.round(parseInt(ev.target.style.left)*canvasScale/100)+"px";
   ev.target.style.top=Math.round(parseInt(ev.target.style.top)*canvasScale/100)+"px";
@@ -398,6 +402,8 @@ function dragElement(ev) {
  * @param {Object} ev Drag event
  */
 function dragElementProgress(ev) {
+  if (animationActive) return;
+
   ev.target.style.display="none"; /* Hide original element (not possible in start drag event) */
 }
 
@@ -453,6 +459,7 @@ let dragStartY;
  * @param {Object} e Touch event
  */
 function handle_touch_down(e) {
+  if (animationActive) return;
   if (!e.target.classList.contains("draggable")) return;
 
   /* Store start position for element on drawing surface */
@@ -467,6 +474,7 @@ function handle_touch_down(e) {
  * @param {Object} e Touch event
  */
 function handle_touch_move(e) {
+  if (animationActive) return;
   if (!e.target.classList.contains("draggable")) return;
 
   /* Moving relative to stored starting position */
@@ -486,6 +494,7 @@ function handle_touch_move(e) {
  * @param {Object} e Touch event
  */
 function handle_touch_up_canvas(e) {
+  if (animationActive) return;
   if (!e.target.classList.contains("draggable")) return;
 
   /* Update data from div element in editor element */
@@ -505,6 +514,7 @@ function handle_touch_up_canvas(e) {
  * @param {Object} e Touch event
  */
 function handle_touch_up_templates(e) {
+  if (animationActive) return;
   if (!e.target.classList.contains("draggable")) return;
 
   /* Calculate coordinates relative to the drawing surface */
