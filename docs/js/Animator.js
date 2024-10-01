@@ -17,6 +17,7 @@ limitations under the License.
 export {startAnimation, animationPlayPause, animationSingleTimeStep, animationActive, animationFastForward};
 
 import {showMessage, showConfirmationMessage, showAnimationSidebar, addEdgeActive, showTemplatesSidebar, elements, edges} from './Editor.js';
+import {fixModel} from './FixModel.js';
 import {SimulatorWorker, WebSimulator} from './Simulator.js';
 import {language, getCharacteristicsInfo} from "./Language.js";
 import {formatTime} from './SimCore.js';
@@ -44,6 +45,7 @@ function startAnimation() {
   if (addEdgeActive) addEdgeClick();
 
   /* Check and generate model */
+  fixModel(elements,edges);
   simulator=new WebSimulator(true);
   const buildResult=simulator.build(elements,edges);
   if (buildResult!=null) {
