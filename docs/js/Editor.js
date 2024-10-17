@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragElementProgress, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas};
+export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragElementProgress, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas, deleteSelectedElement};
 
 import {language} from "./Language.js";
 import {animationActive} from "./Animator.js";
@@ -284,6 +284,22 @@ function fileSave() {
 /* === Sidebar === */
 
 /**
+ * Currently select edge (-1 for no edge selected)
+ * @see showEdgeEditor
+ * @see showSidebar
+ * @see deleteSelectedElement
+ */
+let indexEdgeInEditor=-1;
+
+/**
+ * Currently select station (-1 for no station selected)
+ * @see showElementEditor
+ * @see showSidebar
+ * @see deleteSelectedElement
+ */
+let indexElementInEditor=-1;
+
+/**
  * Shows a specified sidebar
  * @param {Number} nr Sidebar to be displayed (number between 0 and 5)
  * @see showFileSidebar()
@@ -294,6 +310,8 @@ function fileSave() {
  * @see showMoreSidebar()
  */
 function showSidebar(nr) {
+  indexEdgeInEditor=-1;
+  indexElementInEditor=-1;
   document.getElementById('sidebar-file').style.display=(nr==0)?"inline":"none";
   document.getElementById('sidebar-templates').style.display=(nr==1)?"inline":"none";
   document.getElementById('sidebar-edges').style.display=(nr==2)?"inline":"none";
@@ -579,7 +597,7 @@ function addEdgeClick() {
 }
 
 
-/* === Clicks on the drawing surface === */
+/* === Clicks or key down on the drawing surface === */
 
 /**
  * Callback for clicking on the drawing surface
@@ -629,6 +647,7 @@ function canvasClick(event) {
  */
 function showEdgeEditor(edge, index) {
   showEditorSidebar();
+  indexEdgeInEditor=index;
   const editor=document.getElementById('sidebar-editor-inner');
 
   const heading=document.createElement("h4");
@@ -666,6 +685,7 @@ function showElementEditor(element, index) {
   const name=getRecordByType(element.type).name+" "+element.nr;
 
   showEditorSidebar();
+  indexElementInEditor=index;
   const editor=document.getElementById('sidebar-editor-inner');
 
   const heading=document.createElement("h4");
@@ -934,6 +954,27 @@ function deleteEdges(boxId) {
     } else {
       index++;
     }
+  }
+}
+
+/**
+ * Deletes the currently selected station or edge.
+ */
+function deleteSelectedElement() {
+  if (indexElementInEditor>=0) {
+    const element=elements[indexElementInEditor];
+    deleteEdges(element.boxId);
+    elements.splice(indexElementInEditor,1);
+    updateModelOnCanvas();
+    showTemplatesSidebar();
+    return;
+  }
+
+  if (indexEdgeInEditor>=0) {
+    edges.splice(indexEdgeInEditor,1);
+    updateModelOnCanvas();
+    showTemplatesSidebar();
+    return;
   }
 }
 

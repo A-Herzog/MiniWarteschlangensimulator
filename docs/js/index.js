@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import {language} from './Language.js';
-import {zoomIn, zoomOut, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick} from "./Editor.js";
+import {zoomIn, zoomOut, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick, deleteSelectedElement} from "./Editor.js";
 import {loadExample} from "./Example.js";
 import {startAnimation, animationPlayPause, animationSingleTimeStep, animationFastForward} from "./Animator.js";
 import {processSeries} from "./Series.js";
@@ -145,6 +145,10 @@ tabAnimationSim3.onclick=()=>animationFastForward(25);
 tabAnimationSim4.onclick=()=>animationFastForward(100);
 
 tabHomeParameterSeries.onclick=()=>processSeries();
+
+/* Connecting module functions with key handlers */
+
+canvas_area.addEventListener("keydown",event=>{if (event.key=='Delete') deleteSelectedElement();});
 
 /* Online/Offline specific functions */
 
