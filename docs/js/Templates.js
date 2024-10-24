@@ -26,6 +26,7 @@ import {dragElement, dragElementProgress, dragTemplate} from "./Editor.js";
  * @param {String} type Station type
  * @param {Number} id Station id
  * @param {String} name Name of the station to be displayed in the station box
+ * @param {String} hint Content of option tooltip for the template (can be null)
  * @param {String} color1 Color for the left side of the box
  * @param {String} color2 Color for the right side of the box
  * @param {Number} top Y coordinate of the upper left corner of the station box
@@ -33,7 +34,7 @@ import {dragElement, dragElementProgress, dragTemplate} from "./Editor.js";
  * @param {Boolean} isTemplate Is the box to be added to the canvas (false) or to the templates bar (true)
  * @returns Station html element
  */
-function addBox(type, id, name, color1, color2, top, left, isTemplate) {
+function addBox(type, id, name, hint ,color1, color2, top, left, isTemplate) {
   const box=document.createElement("div");
   box.className="box draggable";
   box.id=id;
@@ -45,6 +46,7 @@ function addBox(type, id, name, color1, color2, top, left, isTemplate) {
   box.draggable=true;
   box.dataset.type=type;
   box.innerHTML=name;
+  if (hint) box.title=hint;
   if (isTemplate) {
     document.getElementById("templates_area").appendChild(box);
     box.ondragstart=dragTemplate;
@@ -245,7 +247,7 @@ templates.push({
   name: language.templates.source,
   maxEdgesIn: 0,
   maxEdgesOut: 1,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Source",id,language.templates.source+"<br>"+nr,"green","#1C1",top,left,isTemplate),
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Source",id,language.templates.source+"<br>"+nr,language.templates.sourceHint,"green","#1C1",top,left,isTemplate),
   setup: {EI: 100, CVI: 1, b: 1}
 });
 templates.push({
@@ -254,7 +256,7 @@ templates.push({
   name: language.templates.delay,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Delay",id,language.templates.delay+"<br>"+nr,"#55F","#99F",top,left,isTemplate),
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Delay",id,language.templates.delay+"<br>"+nr,language.templates.delayHint,"#55F","#99F",top,left,isTemplate),
   setup: {ES: 80, CVS: 1}
 });
 templates.push({
@@ -263,7 +265,7 @@ templates.push({
   name: language.templates.process,
   maxEdgesIn: 999,
   maxEdgesOut: 2,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Process",id,language.templates.process+"<br>"+nr,"#00C","#33F",top,left,isTemplate),
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Process",id,language.templates.process+"<br>"+nr,language.templates.processHint,"#00C","#33F",top,left,isTemplate),
   setup: {ES: 80, CVS: 1, c: 1, b: 1, EWT: 300, CVWT: 1, policy: 1, SuccessNextBox: ''}
 });
 templates.push({
@@ -272,7 +274,7 @@ templates.push({
   name: language.templates.decide,
   maxEdgesIn: 999,
   maxEdgesOut: 999,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Decide",id,language.templates.decide+"<br>"+nr,"#DD0","#DD7",top,left,isTemplate),
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Decide",id,language.templates.decide+"<br>"+nr,language.templates.decideHint,"#DD0","#DD7",top,left,isTemplate),
   setup: {mode: 0, rates: "1;1"}
 });
 templates.push({
@@ -281,7 +283,7 @@ templates.push({
   name: language.templates.duplicate,
   maxEdgesIn: 999,
   maxEdgesOut: 999,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Duplicate",id,language.templates.duplicate+"<br>"+nr,"#900","#955",top,left,isTemplate)
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Duplicate",id,language.templates.duplicate+"<br>"+nr,language.templates.duplicateHint,"#900","#955",top,left,isTemplate)
 });
 templates.push({
   type: 'Counter',
@@ -289,7 +291,7 @@ templates.push({
   name: language.templates.counter,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Counter",id,language.templates.counter+"<br>"+nr,"#BBB","#DDD",top,left,isTemplate)
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Counter",id,language.templates.counter+"<br>"+nr,language.templates.counterHint,"#BBB","#DDD",top,left,isTemplate)
 });
 templates.push({
   type: 'Dispose',
@@ -297,7 +299,7 @@ templates.push({
   name: language.templates.dispose,
   maxEdgesIn: 999,
   maxEdgesOut: 0,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Dispose",id,language.templates.dispose+"<br>"+nr,"red","#F33",top,left,isTemplate)
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Dispose",id,language.templates.dispose+"<br>"+nr,language.templates.disposeHint,"red","#F33",top,left,isTemplate)
 });
 templates.push({
   type: 'Batch',
@@ -305,7 +307,7 @@ templates.push({
   name: language.templates.batch,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Batch",id,language.templates.batch+"<br>"+nr,"#F0F","#FAF",top,left,isTemplate),
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Batch",id,language.templates.batch+"<br>"+nr,language.templates.batchHint,"#F0F","#FAF",top,left,isTemplate),
   setup: {b: 2}
 });
 templates.push({
@@ -314,7 +316,7 @@ templates.push({
   name: language.templates.separate,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Separate",id,language.templates.separate+"<br>"+nr,"#F0F","#FAF",top,left,isTemplate)
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Separate",id,language.templates.separate+"<br>"+nr,language.templates.separateHint,"#F0F","#FAF",top,left,isTemplate)
 });
 templates.push({
   type: 'Signal',
@@ -322,7 +324,7 @@ templates.push({
   name: language.templates.signal,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Signal",id,language.templates.signal+"<br>"+nr,"#FB3","#FD7",top,left,isTemplate)
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Signal",id,language.templates.signal+"<br>"+nr,language.templates.signalHint,"#FB3","#FD7",top,left,isTemplate)
 });
 templates.push({
   type: 'Barrier',
@@ -330,7 +332,7 @@ templates.push({
   name: language.templates.barrier,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Barrier",id,language.templates.barrier+"<br>"+nr,"#FB3","#FD7",top,left,isTemplate),
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Barrier",id,language.templates.barrier+"<br>"+nr,language.templates.barrierHint,"#FB3","#FD7",top,left,isTemplate),
   setup: {release: 1, signal: '', storeSignals: true}
 });
 templates.push({
