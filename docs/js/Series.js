@@ -242,8 +242,8 @@ function seriesParameterRangeDialog() {
   div.innerHTML=text;
 
   if (parameterValue1==null) {
-    parameterValue1=param.initialValue/2;
-    parameterValue2=param.initialValue*2;
+    parameterValue1=getPositiveFloat(param.initialValue)/2;
+    parameterValue2=getPositiveFloat(param.initialValue)*2;
     if (param.isInteger) {
       parameterValue1=Math.max(1,Math.round(parameterValue1));
       parameterValue2=Math.max(1,Math.round(parameterValue2));
@@ -527,7 +527,7 @@ function seriesParameterResults() {
   }
 
   /* Generate dialog */
-  const dialog=addModalDialog(language.tabFile.extendedParameterSeries,'<canvas id="parameterSeries_plot" style="width: 100%;"></canvas>',()=>{},false,true);
+  const dialog=addModalDialog(language.tabFile.extendedParameterSeries,'<canvas id="parameterSeries_plot" style="width: 100%;"></canvas><small>'+language.tabFile.extendedParameterSeriesPlotInfo+'</small>',()=>{},false,true);
   dialog.html.addEventListener('hidden.bs.modal',()=>document.getElementsByClassName('wrapper')[0].removeChild(dialog.html));
 
   /* Copy and save buttons in the footer */
