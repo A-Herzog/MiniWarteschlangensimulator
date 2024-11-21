@@ -310,6 +310,11 @@ let indexElementInEditor=-1;
  * @see showMoreSidebar()
  */
 function showSidebar(nr) {
+  let needCanvasUpdate=edges.filter(edge=>edge.select).length>0 || elements.filter(element=>element.select).length>0;
+  edges.forEach(edge=>edge.select=false);
+  elements.forEach(element=>element.select=false);
+  if (needCanvasUpdate) updateModelOnCanvas();
+
   indexEdgeInEditor=-1;
   indexElementInEditor=-1;
   document.getElementById('sidebar-file').style.display=(nr==0)?"inline":"none";
@@ -647,6 +652,7 @@ function canvasClick(event) {
  */
 function showEdgeEditor(edge, index) {
   showEditorSidebar();
+  edge.select=true;
   indexEdgeInEditor=index;
   const editor=document.getElementById('sidebar-editor-inner');
 
@@ -674,6 +680,8 @@ function showEdgeEditor(edge, index) {
   menu.appendChild(item);
   item.innerHTML="<i class='bi bi-trash'></i> "+language.tabEdge.delete;
   item.onclick=function() {edges.splice(index,1); updateModelOnCanvas(); showTemplatesSidebar();}
+
+  updateModelOnCanvas();
 }
 
 /**
@@ -685,6 +693,7 @@ function showElementEditor(element, index) {
   const name=getRecordByType(element.type).name+" "+element.nr;
 
   showEditorSidebar();
+  element.select=true;
   indexElementInEditor=index;
   const editor=document.getElementById('sidebar-editor-inner');
 
@@ -711,6 +720,8 @@ function showElementEditor(element, index) {
     updateModelOnCanvas();
     showTemplatesSidebar();
   }
+
+  updateModelOnCanvas();
 }
 
 /**
@@ -1148,6 +1159,7 @@ function addElementToCanvas(element, index, elements) {
   const template=getRecordByType(element.type);
   const elementNode=template.addFunc("Box"+element.id,element.nr,element.top,element.left,element.setup,false,elements);
   elementNode.dataset.elementIndex=index;
+  if (element.select) elementNode.style.border="3px solid lime";
 }
 
 /**
@@ -1214,7 +1226,7 @@ function addEdgeToCanvas(edge, index) {
   /* Draw edge */
   const ctx=edgeCanvas.getContext("2d");
   ctx.lineWidth=2;
-  ctx.strokeStyle="black";
+  ctx.strokeStyle=edge.select?"lime":"black";
 
   const a={x: arrow1[0]-sx, y: arrow1[1]-sy};
   const b={x: arrow2[0]-sx, y: arrow2[1]-sy};
