@@ -49,6 +49,8 @@ if (!isDesktopApp) {
 }
 tabHomeHelpInfo.innerHTML=" "+language.tabFile.helpInfo;
 const infoPageUrl='info'+((document.documentElement.lang=='de')?'_de':'')+'.html';
+tabHomeHelpTutorial.innerHTML=" "+language.tabFile.helpTutorial;
+tabHomeHelpTutorial.onclick=()=>{if (isDesktopApp) Neutralino.window.create('/'+infoPageUrl+'?tutorial'); else window.open(infoPageUrl+'?tutorial');}
 tabHomeHelpQT.innerHTML=" "+language.tabFile.helpQueueingTheory;
 tabHomeHelpQT.onclick=()=>{if (isDesktopApp) Neutralino.window.create('/'+infoPageUrl+'?qt'); else window.open(infoPageUrl+'?qt');}
 tabHomeHelpGlossary.innerHTML=" "+language.tabFile.helpGlossary;

@@ -22,7 +22,8 @@ closeButton.onclick=()=>{if (isDesktopApp) Neutralino.window.hide(); else window
 
 const pages={
   "qt": "info_qt",
-  "glossary" : "info_glossary"
+  "glossary" : "info_glossary",
+  "tutorial": "info_tutorial"
 };
 
 const id=window.location.search;

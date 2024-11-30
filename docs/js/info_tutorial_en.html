@@ -1,0 +1,213 @@
+<!--
+Copyright 2024 Alexander Herzog
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<style>
+  div.titledimage {
+    float: right;
+    max-width: 450px;
+    margin-left: 10px;
+  }
+  div.titledimage img {
+    border: 1px solid gray;
+    border-radius: 2px;
+    max-width: 450px;
+  }
+  div.titledimage p {
+    font-size: smaller;
+    color: darkgray;
+    margin-top: 1px;
+  }
+  h3 {
+    clear: both;
+  }
+  span.key {
+    background-color: lightgray;
+    border: 1px solid black;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: smaller;
+    padding: 1px 3px;
+  }
+</style>
+
+<h2>Creation and simulation of an initial model with Mini Warteschlangensimulator</h2>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial1_en.png">
+  <p>Figure 1: Representation of a service system as a flow chart</p>
+</div>
+
+<p>
+In queueing simulation, service systems are mapped in the form of <strong>flowcharts</strong>.
+A service system can be either a simple supermarket queue or a complex production or logistics system.
+The elements of the flow diagram correspond to the process stations and other stations within the system.
+The connecting arrows between the elements are the possible paths that customers can take through the system.
+The customers are represented in the animation as small symbols that move from station to station.
+</p>
+
+<p>
+All queueing models have to have at least one <strong>source</strong> and one <strong>exit</strong>.
+Customers are generated at the source. From this station, they move through the system.
+Consequently, a source has no incoming edges (no customers can be led to a source) but exactly one outgoing edge
+(via which the newly created customers leave the source and move through the system).
+The opposite is true for exits: these can each have one or more incoming edges
+(via which the customers arrive at the respective exit).
+As the customers finally leave the system at an exit, exits have no outgoing edges,
+i.e. a customer who has reached an exit disappears from the model at this station.
+</p>
+
+<p>
+The actual operation logic takes place between the source and exit.
+The main flow chart element for this is the <strong>process station</strong>.
+At this station, incoming customers are served by one or more operators
+and have to wait in a queue if no free operator is available at the time of their arrival.
+</p>
+
+<h3>Elementenvorlagen</h3>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial2_en.png">
+  <p>Figure 2: Element template panel on the left-hand side of the program window</p>
+</div>
+
+<p>
+On the left-hand side of the program window, you will find the element templates panel overwritten with
+<strong><i class="bi bi-plus-square"></i>&nbsp;Add stations</strong>  for creating the flow diagram (see Figure 2).
+If another program function has been selected and the element templates panel therefore is no longer displayed,
+you can return to this function at any time using the button with the same name in the toolbar at the top of the program window.
+</p>
+
+<p>
+Individual stations can be dragged and dropped from the element template panel onto the drawing area.
+Stations that are already on the drawing area can be moved using drag&amp;drop.
+To delete a station again, click on it and then either press the <span class="key">Del</span> key
+or click on the "<i class="bi bi-trash"></i>&nbsp;Delete station" button on the left in the properties panel.
+</p>
+
+<h3>Building a simple model</h3>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial3_en.png">
+  <p>Figure 3: Stations for a first model</p>
+</div>
+
+<p>
+In the following, a simple M/M/1 model will be constructed. This service system consists of a source at which customers
+arrive with exponentially distributed inter-arrival times, and a process station at which an operator works and requires
+a random, also exponentially distributed service time per service. Served customers leave the system via a subsequent exit station.
+</p>
+
+<p>
+To build this model, the following three stations have to be dragged from the template panel onto the drawing area
+one after the other and placed in a row from left to right (see also figure 3):
+</p>
+
+<ol>
+  <li><strong>Source</strong></li>
+  <li><strong>Process</strong></li>
+  <li><strong>Exit</strong></li>
+</ol>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial4_en.png">
+  <p>Figure 4: Function for adding connecting edges</p>
+</div>
+
+<p>
+In a second step, the path of the customers through the model have to be defined using connection arrows.
+The customers are created at the source, should move from there to the process station and, after successful
+service process at this station, be directed to the exit where they leave the model.
+</p>
+
+<p>
+The following connections are required for this:
+</p>
+
+<ul>
+  <li>Source &rarr; Process</li>
+  <li>Process &rarr; Exit</li>
+</ul>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial5_en.png">
+  <p>Figure 5: Complete M/M/1 model</p>
+</div>
+
+<p>
+To add connecting edges, the <strong><i class="bi bi-share-fill"></i>&nbsp;Add edges</strong> function
+in the horizontal toolbar at the top of the program window has to be activated (see figure 4).
+To add an edge to the model with the insert function activated, first click on the start and then the target element of the edge,
+i.e. first the source and then the process station. Then the process station and then the exit.
+This should result in a model as shown in figure 5.
+</p>
+
+<h3>Editing the model parameters</h3>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial6_en.png">
+  <p>Figure 6: Panel for editing the station parameters</p>
+</div>
+
+<p>
+The default values set at the source and the process station are that a customer arrives at the source every 100 seconds on average
+and that a service process at the process station takes 80 seconds on average and one operator works at the station.
+This results in a capacity utilization of 80%. Furthermore, coefficients of variation of 1 are set for both the
+inter-arrival times and the service times. Specifically, the exponential distribution is used for both times during the simulation.
+This results in an analytically calculable M/M/1 model. The simulation should therefore produce the following approximate parameters after a long runtime:
+</p>
+
+<ul>
+  <li>Average queue length: <strong>E[N<sub>Q</sub>]=3.2</strong></li>
+  <li>Average number of customers in the system: <strong>E[N]=4</strong></li>
+  <li>Average waiting time: <strong>E[W]=320 seconds</strong></li>
+  <li>Average residence time: <strong>E[V]=400 seconds</strong></li>
+</ul>
+
+<p>
+As the purpose of a simulation is not to reproduce results that can already be calculated analytically,
+it will be important to be able to vary the parameters of the model later on. To change the settings of a station,
+it has to be first clicked. The parameters of the station then appear in the sidebar on the left-hand side of the
+program window and can also be changed there. In figure 6, the process station has been clicked.
+The configurable parameters of the process station are displayed on the left.
+</p>
+
+<h3>Running a simulation</h3>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial7_en.png">
+  <p>Figure 7: Program window during a running animation</p>
+</div>
+
+<p>
+Once the model has been fully constructed, it can be simulated in order to determine the associated parameters (such as the average waiting time of customers, etc.).
+In Mini Warteschlangensimulator, a simulation is always carried out using an animation.
+To start an animation, the <strong><i class="bi bi-play-circle"></i>&nbsp;Animation</strong> button has to be clicked.
+The model is then checked for logical errors (e.g. missing connecting edges) and if successful, the animation is started.
+The program window should then look as shown in figure 7. The drawing area shows how the individual customers move through the system.
+The animation sidebar, outlined in red in figure 7, shows the continuously updated system parameters.
+The buttons at the top of this sidebar can be used to pause the animation or change the speed.
+</p>
+
+<p>
+To end a running animation and return to editor mode, simply click the <strong><i class="bi bi-play-circle"></i>&nbsp;Animation</strong> button again.
+</p>
+
+<p>
+In order to route a large number of customers through the system (without animation output) for statistically stable results,
+the <strong><i class="bi bi-chevron-double-right"></i>&nbsp;Simulation</strong> button in the animation sidebar has to be
+clicked while the animation function is activated. The current animation is then terminated and instead a total of 5 million
+customers are moved through the system without graphical output. The results of this simulation are then displayed.
+</p>

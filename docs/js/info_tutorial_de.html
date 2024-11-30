@@ -1,0 +1,211 @@
+<!--
+Copyright 2024 Alexander Herzog
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<style>
+  div.titledimage {
+    float: right;
+    max-width: 450px;
+    margin-left: 10px;
+  }
+  div.titledimage img {
+    border: 1px solid gray;
+    border-radius: 2px;
+    max-width: 450px;
+  }
+  div.titledimage p {
+    font-size: smaller;
+    color: darkgray;
+    margin-top: 1px;
+  }
+  h3 {
+    clear: both;
+  }
+  span.key {
+    background-color: lightgray;
+    border: 1px solid black;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: smaller;
+    padding: 1px 3px;
+  }
+</style>
+
+<h2>Erstellung und Simulation eines ersten Modells mit dem Mini Warteschlangensimulator</h2>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial1_de.png">
+  <p>Abbildung 1: Darstellung eines Bediensystems als Fließbild</p>
+</div>
+
+<p>
+Bei der Warteschlangensimulation werden Bediensysteme in Form von <strong>Fließbildern</strong> abgebildet.
+Ein Bediensystem kann dabei sowohl eine einfache Supermarkt-Warteschlange als auch ein komplexes Produktions- oder Logistiksystem sein.
+Die Elemente des Fließbildes entsprechen den Bedienstationen und sonstigen Stationen innerhalb des Systems.
+Die Verbindungspfeile zwischen den Elementen sind die möglichen Pfade, die die Kunden durch das System wählen können.
+Die Kunden werden in der Animation als kleine Symbole, die sich von Station zu Station bewegen, dargestellt.
+</p>
+
+<p>
+Jedes Warteschlangenmodell muss jeweils mindestens eine <strong>Quelle</strong> und einen <strong>Ausgang</strong> besitzen.
+An der Quelle werden die Kunden generiert. Von dieser Station aus bewegen sie sich durch das System.
+Folglich besitzt eine Quelle keine einlaufende Kante (es können keine Kunden zu einer Quelle geführt werden) jedoch genau
+eine auslaufende Kante (über die die neu erstellten Kunden die Quelle verlassen und sich durch das System bewegen).
+Bei Ausgängen verhält es sich genau umgekehrt: Diese können jeweils eine oder mehrere einlaufende Kanten besitzen
+(über die die Kunden bei dem jeweiligen Ausgang eintreffen). Da die Kunden das System an einem Ausgangs final verlassen,
+besitzen Ausgänge keine auslaufenden Kanten, d.h. ein Kunde, der einmal einen Ausgang erreicht hat, verschwindet an dieser
+Station aus dem Modell.
+</p>
+
+<p>
+Die eigentliche Bediensystemlogik findet zwischen Quelle und Ausgang statt. Das wesentliche Fließbildelement hierfür ist
+die <strong>Bedienstation</strong>. An dieser werden die eintreffenden Kunden durch einen oder mehrere Bediener bedient
+und an dieser müssen sie in Form einer Warteschlange warten, wenn zum Zeitpunkt ihrer Ankunft kein freier Bediener verfügbar ist.
+</p>
+
+<h3>Elementenvorlagen</h3>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial2_de.png">
+  <p>Abbildung 2: Elementenvorlagenleiste auf der linken Seite des Programmfensters</p>
+</div>
+
+<p>
+Auf der linken Seite des Programmfensters befinden sich die mit <strong><i class="bi bi-plus-square"></i>&nbsp;Stationen hinzufügen</strong>
+überschriebenen Elementenvorlagen zur Erstellung des Fließbildes (siehe Abbildung 2). Wurde eine andere Programmfunktion gewählt und werden die
+Elementenvorlagen daher nicht mehr angezeigt, kann jederzeit über die gleichnamige Schaltfläche in der Symbolleiste oben im Programmfenster
+zu dieser Funktion zurückgekehrt werden.
+</p>
+
+<p>
+Aus der Elementenvorlagenleiste können einzelne Stationen per Drag&amp;drop auf die Zeichenfläche gezogen werden. Stationen, die sich
+bereits auf der Zeichenfläche befinden, können per Drag&drop verschoben werden. Um eine Station wieder zu löschen, muss diese angeklickt
+werden und dann entweder die <span class="key">Entf</span>-Taste
+gedrückt werden oder links in der Eigenschaftenleiste auf die "<i class="bi bi-trash"></i>&nbsp;Station löschen"-Schaltfläche geklickt werden.
+</p>
+
+<h3>Aufbau eines einfachen Modells</h3>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial3_de.png">
+  <p>Abbildung 3: Stationen für ein erstes Modell</p>
+</div>
+
+<p>
+Im Folgenden soll ein einfaches M/M/1-Modell aufgebaut werden. Dieses Bediensystem besteht aus einer Quelle, an der Kunden
+mit exponentiell verteilten Zwischenankunftszeiten eintreffen, sowie einer Bedienstation, an der ein Bediener arbeitet und
+pro Bedienung eine zufällige, ebenfalls exponentiell verteilte Bediendauer benötigt. Bediente Kunden verlassen das System
+über eine folgende Ausgangstation.
+</p>
+
+<p>
+Zum Aufbau dieses Modells müssen nacheinander die folgenden drei Stationen aus der Vorlagenleiste auf die Zeichenfläche
+gezogen werden und dabei von links nach rechts in Reihe platziert werden (siehe auch Abbildung 3):
+</p>
+
+<ol>
+  <li><strong>Quelle</strong></li>
+  <li><strong>Bedienstation</strong></li>
+  <li><strong>Ausgang</strong></li>
+</ol>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial4_de.png">
+  <p>Abbildung 4: Funktion zum Hinzufügen von Verbindungskanten</p>
+</div>
+
+<p>
+In einem zweiten Schritt muss der Pfad der Kunden durch das Modell durch Verbindungspfeile definiert werden.
+Die Kunden werden an der Quelle erzeugt, sollen sich von dort zur Bedienstation bewegen und nach einer erfolgreichen
+Bedienung an dieser Station zum Ausgang geleitet werden, an dem sie das Modell verlassen.
+</p>
+
+<p>
+Dafür sind folgende Verbindungen nötig:
+</p>
+
+<ul>
+  <li>Quelle &rarr; Bedienstation</li>
+  <li>Bedienstation &rarr; Ausgang</li>
+</ul>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial5_de.png">
+  <p>Abbildung 5: Vollständiges M/M/1-Modell</p>
+</div>
+
+<p>
+Zum Hinzufügen von Verbindungskanten muss die Funktion <strong><i class="bi bi-share-fill"></i>&nbsp;Kanten hinzufügen</strong> in der horizontalen Symbolleiste oben im Programmfenster aktiviert werden (siehe Abbildung 4).
+Um bei aktivierter Einfügefunktion eine Katen zum Modell hinzuzufügen, müssen zunächst das Start- und dann das Zielelement der Kante angeklickt werden, d.h. zunächst die Quelle und dann die Bedienstation.
+Danach die Bedienstation und dann der Ausgang. Es sollte sich ein Modell wie in Abbildung 5 dargestellt ergeben.
+</p>
+
+<h3>Bearbeitung der Modellparameter</h3>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial6_de.png">
+  <p>Abbildung 6: Seitenleiste zur Bearbeitung der Stationsparameter</p>
+</div>
+
+<p>
+Als Vorgabewerte sind an Quelle und Bedienstation eingestellt, dass im Mittel alle 100 Sekunden ein Kunde an der Quelle eintrifft
+und dass eine Bedienung an der Bedienstation im Mittel 80 Sekunden dauert und an der Station ein Bediener arbeitet.
+Damit ergibt sich eine Auslastung von 80%. Des Weiteren sind sowohl für die Zwischenankunfts- als auch die Bedienzeiten jeweils
+Variationskoeffizienten von 1 eingestellt. Konkret wird für beide Zeitdauern während der Simulation die Exponentialverteilung verwendet.
+Damit ergibt sich ein analytisch berechenbares M/M/1-Modell. Bei der Simulation sollten sich folglich nach langer Laufzeit näherungsweise
+folgende Kenngrößen ergeben:
+</p>
+
+<ul>
+  <li>Mittlere Warteschlangenlänge: <strong>E[N<sub>Q</sub>]=3,2</strong></li>
+  <li>Mittlere Anzahl an Kunden im System: <strong>E[N]=4</strong></li>
+  <li>Mittlere Wartezeit: <strong>E[W]=320 Sekunden</strong></li>
+  <li>Mittlere Verweilzeit: <strong>E[V]=400 Sekunden</strong></li>
+</ul>
+
+<p>
+Da der Sinn einer Simulation nicht darin besteht, Ergebnisse nachzuvollziehen, die sich bereits analytisch berechnen lassen, wird es später
+von Bedeutung sein, die Parameter des Modells variieren zu können. Um die Einstellungen einer Station zu verändern, muss diese zunächst
+angeklickt werden. Dann erscheinen die Parameter der Station in der Seitenleiste auf der linken Seite des Programmfensters und können dort
+auch verändert werden. In Abbildung 6 wurde die Bedienstation angeklickt. Angezeigt werden links die konfigurierbaren Parameter der Bedienstation.
+</p>
+
+<h3>Durchführung einer Simulation</h3>
+
+<div class="titledimage">
+  <img src="./images/info_tutorial7_de.png">
+  <p>Abbildung 7: Programmfenster während einer laufenden Animation</p>
+</div>
+
+<p>
+Ist das zu betrachtende Modell vollständig aufgebaut, kann dieses simuliert werden, um die zugehörigen Kenngrößen (wie die mittlere Wartezeit der Kunden usw.)
+zu ermitteln. Im Mini Warteschlangensimulator wird eine Simulation immer über eine Animation ausgeführt. Um eine Animation zu starten, muss die
+Schaltfläche <strong><i class="bi bi-play-circle"></i>&nbsp;Animation</strong> angeklickt werden. Das Modell wird dann auf logische Fehler (z.B. fehlende Verbindungskanten)
+hin untersucht und im Erfolgsfall wird die Animation gestartet. Das Programmfenster sollte dann wie in Abbildung 7 dargestellt aussehen. Auf der Zeichenfläche
+wird dargestellt, wie sich die einzelnen Kunden durch das System bewegen. In der in Abbildung 7 rot umrandeten Animationsseitenleiste werden die fortlaufend
+aktualisierten Kenngrößen des Systems dargestellt. Über die Schalflächen oben kann die Animation pausiert werden oder die Geschwindigkeit verändert werden.
+</p>
+
+<p>
+Um eine laufende Animation wieder zu beenden und zum Editormodus zurück zu kehren, muss lediglich erneut die <strong><i class="bi bi-play-circle"></i>&nbsp;Animation</strong>-Schaltfläche
+angeklickt werden.
+</p>
+
+<p>
+Um für statistisch stabile Ergebnisse eine große Anzahl an Kunden (ohne Animationsausgabe) durch das System zu schleusen, muss während die Animationsfunktion
+aktiviert ist die <strong><i class="bi bi-chevron-double-right"></i>&nbsp;Simulation</strong>-Schaltfläche in der Animationsseitenleiste angeklickt werden.
+Es wird dann die laufende Animation beendet und stattdessen werden ohne grafische Ausgabe insgesamt 5 Mio. Kunden durch das System geschleust.
+Im Anschluss daran werden die Ergebnisse dieser Simulation angezeigt.
+</p>
