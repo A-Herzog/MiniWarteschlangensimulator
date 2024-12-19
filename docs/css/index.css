@@ -172,3 +172,18 @@
 math {
   font-size: 125%;
 }
+
+.trashBox {
+  position: absolute;
+  left: 1px;
+  bottom: 1px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid white;
+  border-radius: 2px;
+  background-color: red;
+  font-size: 10pt;
+  text-align: center;
+  color: white;
+}

@@ -714,14 +714,17 @@ function showElementEditor(element, index) {
   const item=document.createElement("li");
   menu.appendChild(item);
   item.innerHTML="<i class='bi bi-trash'></i> "+language.editor.deleteStation;
-  item.onclick=function() {
-    deleteEdges(element.boxId);
-    elements.splice(index,1);
-    updateModelOnCanvas();
-    showTemplatesSidebar();
-  }
+  item.onclick=e=>deleteElement(element,index);
 
   updateModelOnCanvas();
+}
+
+// FIXME: Doku
+function deleteElement(element, index) {
+  deleteEdges(element.boxId);
+  elements.splice(index,1);
+  updateModelOnCanvas();
+  showTemplatesSidebar();
 }
 
 /**
@@ -1159,7 +1162,16 @@ function addElementToCanvas(element, index, elements) {
   const template=getRecordByType(element.type);
   const elementNode=template.addFunc("Box"+element.id,element.nr,element.top,element.left,element.setup,false,elements);
   elementNode.dataset.elementIndex=index;
-  if (element.select) elementNode.style.border="3px solid lime";
+  if (element.select) {
+    elementNode.style.border="3px solid lime";
+    if (!("ontouchstart" in document.documentElement)) {
+      const trashBox=document.createElement("span");
+      trashBox.className="trashBox bi bi-trash";
+      trashBox.title=language.editor.deleteStation;
+      elementNode.appendChild(trashBox);
+      trashBox.onclick=e=>deleteElement(element,index);
+    }
+  }
 }
 
 /**
