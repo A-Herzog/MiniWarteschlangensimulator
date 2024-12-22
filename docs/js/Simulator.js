@@ -114,6 +114,13 @@ class WebSimulator extends Simulator {
         if (count>0 && count%2==0) status+="<br>";
         count++;
         status+=getCharacteristicsInfo("E["+recordName+"]")+"=<span title='"+stationData[recordName].mean.toLocaleString()+"'>"+statcore.formatShorter(stationData[recordName].mean)+"</span>";
+        if (recordName=='cBusy' && stationData.c) {
+          if (count>0) status+=", ";
+          if (count>0 && count%2==0) status+="<br>";
+          count++;
+          const rho=stationData[recordName].mean/stationData.c; // XXX:
+          status+=getCharacteristicsInfo("rho")+"=<span title='"+(rho*100).toLocaleString()+"%'>"+statcore.formatShorter(rho*100)+"%</span>";
+        }
       }
       if (className=='Counter') {
         if (count>0) status+=", ";
@@ -192,14 +199,21 @@ class WebSimulator extends Simulator {
         if (className=='Values') {
           rawData["E["+recordName+"]"]=stat.makePlain();
           rawData["E["+recordName+"]"].name=recordName;
+          continue;
         }
         if (className=='States') {
           rawData["E["+recordName+"]"]={count: stat.time, mean: stat.mean, min: stat.min, max: stat.max};
           rawData["E["+recordName+"]"].name=recordName;
+          continue;
         }
         if (className=='Counter') {
           rawData[recordName]={count: stat.count};
           rawData[recordName].name=recordName;
+          continue;
+        }
+        if (className=='Number') {
+          rawData[recordName]=stat;
+          continue;
         }
       }
     }
@@ -317,6 +331,7 @@ class SimulatorWorker {
         let count=0;
         for (let recordName in stationData.records) {
           const recordData=stationData.records[recordName];
+          if (typeof(recordData)=='number') continue;
           if (count>0) status+=",&nbsp;&nbsp;";
           if (count>0 && count%4==0) status+="<br>";
           count++;
@@ -328,6 +343,13 @@ class SimulatorWorker {
             if (count>0 && count%4==0) status+="<br>";
             count++;
             status+=getCharacteristicsInfo("CV[W]")+"=<span title='"+recordData.cv.toLocaleString()+"'>"+statcore.formatShorter(recordData.cv)+"</span>";
+          }
+          if (recordData.name=="cBusy" && typeof(stationData.records.c)!='undefined') {
+            const rho=recordData.mean/stationData.records.c;
+            if (count>0) status+=",&nbsp;&nbsp;";
+            if (count>0 && count%4==0) status+="<br>";
+            count++;
+            status+=getCharacteristicsInfo("rho")+"=<span title='"+(rho*100).toLocaleString()+"%'>"+statcore.formatShorter(rho*100)+"%</span>";
           }
         }
         status+="</small></p>";
@@ -354,6 +376,10 @@ class SimulatorWorker {
         for (let recordName in r.stations[stationName].records) {
           const recordData=r.stations[stationName].records[recordName];
           const resultData=result.stations[stationName].records[recordName];
+          if (typeof(recordData)=='number') {
+            result.stations[stationName].records[recordName]=recordData;
+            continue;
+          }
           if (typeof(resultData.mean)!='undefined') {
             if (resultData.count+recordData.count>0) resultData.mean=(resultData.mean*resultData.count+recordData.mean*recordData.count)/(resultData.count+recordData.count);
           }

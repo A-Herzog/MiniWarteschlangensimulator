@@ -174,7 +174,6 @@ const animationDelay={1: 1000, 2: 500, 3: 200, 4: 50, 5: 0};
 function animationStep() {
   animationStepTimeout=null;
   const delay=animationDelay[animationSlider.value];
-  const now=Date.now();
 
   /* Execute simulation step */
   if (simulator==null) return;
@@ -503,9 +502,10 @@ function animationFastForwardShowFullData() {
       content+="<ul>";
       contentPlain.push(stationName);
       for (let recordName in stationData.records) {
+        const recordData=stationData.records[recordName];
+        if (typeof(recordData)=='number') continue;
         content+="<li>";
         let plainLine="";
-        const recordData=stationData.records[recordName];
         if (typeof(recordData.mean)!='undefined') {
           content+=getCharacteristicsInfo("E["+recordData.name+"]")+"="+recordData.mean.toLocaleString();
           plainLine+="E["+recordData.name+"]="+recordData.mean.toLocaleString();
@@ -524,6 +524,11 @@ function animationFastForwardShowFullData() {
           if (typeof(recordData.sd)!='undefined') {
             content+=", "+getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
             plainLine+=", n="+recordData.count.toLocaleString();
+          }
+          if (recordData.name=='cBusy' && stationData.records.c) {
+            const rho=recordData.mean/stationData.records.c;
+            content+=", "+getCharacteristicsInfo("rho")+"="+(rho*100).toLocaleString()+"%"; // XXX:
+            plainLine+=", rho="+(rho*100).toLocaleString()+"%";
           }
         } else {
           content+=getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();

@@ -356,7 +356,8 @@ class SimProcess extends SimElement {
       NQ: new statcore.States(),
       N: new statcore.States(),
       cBusy: new statcore.States(),
-      n: new statcore.Counter()
+      n: new statcore.Counter(),
+      c: this.c
     });
     this.statistics.NQ.set(0,0);
     this.statistics.N.set(0,0);
