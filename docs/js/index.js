@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import {language} from './Language.js';
-import {zoomIn, zoomOut, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick, deleteSelectedElement} from "./Editor.js";
+import {zoomIn, zoomOut, showConfirmationMessage, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick, deleteSelectedElement} from "./Editor.js";
 import {loadExample} from "./Example.js";
 import {startAnimation, animationPlayPause, animationSingleTimeStep, animationFastForward} from "./Animator.js";
 import {processSeries} from "./Series.js";
@@ -192,4 +192,8 @@ document.addEventListener('readystatechange',event=>{if (event.target.readyState
   }
   mainContent.style.display="";
   infoLoading.style.display="none";
+  const lastModel=localStorage.getItem("current_model");
+  if (lastModel!=null) {
+    showConfirmationMessage(language.restore.title,language.restore.question,()=>fileLodeJSON(lastModel));
+  }
 }});

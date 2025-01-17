@@ -118,7 +118,7 @@ class WebSimulator extends Simulator {
           if (count>0) status+=", ";
           if (count>0 && count%2==0) status+="<br>";
           count++;
-          const rho=stationData[recordName].mean/stationData.c; // XXX:
+          const rho=stationData[recordName].mean/stationData.c;
           status+=getCharacteristicsInfo("rho")+"=<span title='"+(rho*100).toLocaleString()+"%'>"+statcore.formatShorter(rho*100)+"%</span>";
         }
       }

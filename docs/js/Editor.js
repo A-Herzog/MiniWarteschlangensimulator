@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragElementProgress, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas, deleteSelectedElement};
+export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragElementProgress, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas, deleteSelectedElement};
 
 import {language} from "./Language.js";
 import {animationActive} from "./Animator.js";
@@ -719,7 +719,11 @@ function showElementEditor(element, index) {
   updateModelOnCanvas();
 }
 
-// FIXME: Doku
+/**
+ * Deletes an element
+ * @param {Object} element Station object to be edited
+ * @param {Number} index Index of the station object in the list of all stations
+ */
 function deleteElement(element, index) {
   deleteEdges(element.boxId);
   elements.splice(index,1);
@@ -1302,4 +1306,9 @@ function updateModelOnCanvas() {
 
   for (let i=0;i<elements.length;i++) addElementToCanvas(elements[i],i,elements);
   for (let i=0;i<edges.length;i++) addEdgeToCanvas(edges[i],i);
+
+  /* Store current model in local storage */
+  const model={elements: elements, edges: edges};
+  const json=JSON.stringify(model);
+  localStorage.setItem("current_model",json);
 }

@@ -527,7 +527,7 @@ function animationFastForwardShowFullData() {
           }
           if (recordData.name=='cBusy' && stationData.records.c) {
             const rho=recordData.mean/stationData.records.c;
-            content+=", "+getCharacteristicsInfo("rho")+"="+(rho*100).toLocaleString()+"%"; // XXX:
+            content+=", "+getCharacteristicsInfo("rho")+"="+(rho*100).toLocaleString()+"%";
             plainLine+=", rho="+(rho*100).toLocaleString()+"%";
           }
         } else {

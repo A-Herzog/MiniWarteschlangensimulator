@@ -35,6 +35,10 @@ lang.dialog.No="Nein";
 lang.dialog.Error="Fehler";
 lang.dialog.CloseWindow="Fenster schließen";
 
+lang.restore={};
+lang.restore.title="Modell wiederherstellen";
+lang.restore.question="Soll das zuletzt bearbeitete Modell jetzt wiederhergestellt werden?";
+
 lang.tabFile={};
 lang.tabFile.title="Datei";
 lang.tabFile.button="Datei";
@@ -387,6 +391,10 @@ lang.dialog.Yes="Yes";
 lang.dialog.No="No";
 lang.dialog.Error="Error";
 lang.dialog.CloseWindow="Close window";
+
+lang.restore={};
+lang.restore.title="Restore model";
+lang.restore.question="Do you want to restore the last edited model now?";
 
 lang.tabFile={};
 lang.tabFile.title="File";
