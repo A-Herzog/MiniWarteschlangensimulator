@@ -458,12 +458,16 @@ function canvasDrop(ev) {
     /* From templates bar */
     addElementToModel(templateType,top,left);
   } else {
-    /* Element moved */
+    /* Element moved or copied */
     const boxId=ev.dataTransfer.getData("moveBoxId");
-    for (let i=0;i<elements.length;i++) if (elements[i].boxId==boxId) {
-      elements[i].top=top;
-      elements[i].left=left;
-      break;
+    let index=-1;
+    for (let i=0;i<elements.length;i++) if (elements[i].boxId==boxId) {index=i; break;}
+    if (index<0) return;
+    if (ev.ctrlKey) {
+      addCopyElementToModel(elements[index],top,left);
+    } else {
+      elements[index].top=top;
+      elements[index].left=left;
     }
     updateModelOnCanvas();
   }
@@ -1072,6 +1076,37 @@ function addElementToModel(type, top, left) {
 }
 
 /**
+ * Adds a new station as a copy of an existing station at a defined position to the model
+ * @param {Object} copySource Station to be copied
+ * @param {Number} top Y coordinate of the station box
+ * @param {Number} left X coordinate of the station box
+ * @returns Id of then new station
+ */
+function addCopyElementToModel(copySource, top, left) {
+  const id=getNextFreeId();
+  const nr=getNextFreeTypeNr(copySource.type);
+  const boxId="Box"+id;
+
+  const template=getRecordByType(copySource.type);
+
+  elements.push({
+    id: id,
+    boxId: boxId,
+    type: copySource.type,
+    name: template.name+" "+nr,
+    nr: nr,
+    top: top,
+    left: left,
+    setup: structuredClone(copySource.setup),
+    visibleSetup: ((typeof(copySource.visibleSetup)=='undefined')?false:copySource.visibleSetup),
+    visualOnly: ((typeof(copySource.visualOnly)=='undefined')?false:copySource.visualOnly)
+  });
+  updateModelOnCanvas();
+
+  return boxId;
+}
+
+/**
  * Adds a text line to the model
  * @param {Number} top Y coordinate of the upper left position of the text line
  * @param {Number} left X coordinate of the upper left position of the text line
@@ -1301,6 +1336,7 @@ function updateModelOnCanvas() {
     info.style.padding="15px";
     info.style.color="#555";
     info.innerHTML=infoText;
+    localStorage.removeItem("current_model");
     return;
   }
 
