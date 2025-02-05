@@ -563,7 +563,7 @@ function handle_touch_up_templates(e) {
   e.target.style.top=dragStartElementY+"px";
 }
 
-if (typeof(window)!='undefined' && typeof(document)!='undefined' && ("ontouchstart" in document.documentElement)) window.addEventListener('load', (event) => {
+if (typeof(window)!='undefined' && typeof(document)!='undefined' && (("ontouchstart" in document.documentElement) || navigator.maxTouchPoints>0)) window.addEventListener('load', (event) => {
   const canvasArea=document.getElementById('canvas_area');
   canvasArea.addEventListener("touchstart",handle_touch_down,false);
   canvasArea.addEventListener("touchmove",handle_touch_move,false);
