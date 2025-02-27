@@ -112,7 +112,7 @@ function addDiagram(type, id, top, left, sourceName, isTemplate) {
     box.classList.add("box_diagram_template");
     box.innerHTML=language.templates.diagram;
   } else {
-    box.innerHTML=language.templates.diagram+((sourceName!='')?(", "+language.templates.diagramSource+"=<b>"+sourceName+"</b>, "+"aktuelle Anzahl an Kunden an der Station"):"");
+    box.innerHTML=language.templates.diagram+((sourceName!='')?(", "+language.templates.diagramSource+"=<b>"+sourceName+"</b>, "+language.templates.diagramSourceClients):"");
   }
   box.id=id;
   box.style.zIndex=1;

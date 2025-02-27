@@ -176,6 +176,7 @@ lang.templates.barrierHint="Verzögert eintreffende Kunden so lange, bis an eine
 lang.templates.text="Text";
 lang.templates.diagram="Diagramm";
 lang.templates.diagramSource="Datenquelle";
+lang.templates.diagramSourceClients="aktuelle Anzahl an Kunden an der Station";
 
 lang.editor={};
 lang.editor.EI="Mittlere Zwichenankunftszeit";
@@ -533,6 +534,7 @@ lang.templates.barrierHint="Delays incoming customers until a signal is triggere
 lang.templates.text="Text";
 lang.templates.diagram="Diagram";
 lang.templates.diagramSource="data source";
+lang.templates.diagramSourceClients="current number of customers at the station";
 
 lang.editor={};
 lang.editor.EI="Average inter-arrival time";
