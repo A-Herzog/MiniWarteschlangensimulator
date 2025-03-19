@@ -165,7 +165,8 @@ This should result in a model as shown in figure 5.
 The default values set at the source and the process station are that a customer arrives at the source every 100 seconds on average
 and that a service process at the process station takes 80 seconds on average and one operator works at the station.
 This results in a capacity utilization of 80%. Furthermore, coefficients of variation of 1 are set for both the
-inter-arrival times and the service times. Specifically, the exponential distribution is used for both times during the simulation.
+inter-arrival times and the service times. In this case, the exponential distribution is used for both times during the simulation.
+If a coefficients of variation not equal to 1 is configured, a log-normal distribution is used in the simulation.
 This results in an analytically calculable M/M/1 model. The simulation should therefore produce the following approximate parameters after a long runtime:
 </p>
 
