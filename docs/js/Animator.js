@@ -487,8 +487,10 @@ function animationFastForwardShowFullData() {
 
   content+="<p>";
   content+=language.tabAnimation.time+": "+formatTime(statistics.time)+"<br>";
+  content+=language.tabAnimation.events+": "+statistics.eventCount.toLocaleString()+"<br>";
   content+=language.tabAnimation.threads+": "+statistics.threads+"<br>";
-  content+=language.tabAnimation.runTime+": "+statistics.runTime.toLocaleString()+" ms";
+  content+=language.tabAnimation.runTime+": "+statistics.runTime.toLocaleString()+" ms<br>";
+  content+=language.tabAnimation.eventsPerThreadPerSecond+": "+Math.round(statistics.eventCount/statistics.runTime/statistics.threads*1000).toLocaleString();
   content+="</p>"
 
   contentPlain.push(language.tabAnimation.time+": "+formatTime(statistics.time));

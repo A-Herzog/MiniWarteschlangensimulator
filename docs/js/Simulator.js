@@ -185,6 +185,7 @@ class WebSimulator extends Simulator {
     const raw={};
 
     raw.time=this.time;
+    raw.eventCount=this.count;
 
     raw.stations={};
     for (let stationName in this.statistics) {
@@ -372,6 +373,7 @@ class SimulatorWorker {
     for (let i=1;i<results.length;i++) {
       const r=results[i];
       result.time+=r.time;
+      result.eventCount+=r.eventCount;
       for (let stationName in r.stations) {
         for (let recordName in r.stations[stationName].records) {
           const recordData=r.stations[stationName].records[recordName];
