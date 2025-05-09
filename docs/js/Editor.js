@@ -850,6 +850,8 @@ function addEditorElements(element, parent) {
       options+="<option value='0'"+((value==0)?' selected':'')+'>'+language.editor.modeRandom+'</option>';
       options+="<option value='1'"+((value==1)?' selected':'')+'>'+language.editor.modeMinNQ+'</option>';
       options+="<option value='2'"+((value==2)?' selected':'')+'>'+language.editor.modeMinN+'</option>';
+      options+="<option value='3'"+((value==3)?' selected':'')+'>'+language.editor.modeMaxNQ+'</option>';
+      options+="<option value='4'"+((value==4)?' selected':'')+'>'+language.editor.modeMaxN+'</option>';
       select.innerHTML=options;
       select.onchange=function(){element.setup[name]=select.value;}
 

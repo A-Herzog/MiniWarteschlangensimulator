@@ -569,9 +569,9 @@ class SimDecide extends SimElement {
     const setup=this.editElement.setup;
 
     this.mode=setup.mode;
-    if (this.mode<0 || this.mode>2) return language.builderDecide.mode;
+    if (this.mode<0 || this.mode>4) return language.builderDecide.mode;
 
-    if (this.mode==1 || this.mode==2) for (let i=0;i<this.nextSimElements.length;i++) {
+    if (this.mode==1 || this.mode==2 || this.mode==3 || this.mode==4) for (let i=0;i<this.nextSimElements.length;i++) {
       if (this.nextSimElements[i].constructor.name!='SimProcess') {
         return language.builderDecide.nextMin1+this.nextSimElements[i].name+language.builderDecide.nextMin2;
       }
@@ -638,6 +638,38 @@ class SimDecide extends SimElement {
       for (let i=1;i<this.nextSimElements.length;i++) {
         const value=this.nextSimElements[i].n;
         if (value<bestValue) {bestValue=value; bestIndex=[i]; continue;}
+        if (value==bestValue) {bestIndex.push(i);}
+      }
+      if (bestIndex.length==1) {
+        next=bestIndex[0];
+      } else {
+        next=bestIndex[Math.floor(Math.random()*bestIndex.length)];
+      }
+    }
+
+    if (this.mode==3) {
+      /* Max NQ */
+      let bestValue=this.nextSimElements[0].nq;
+      let bestIndex=[0];
+      for (let i=1;i<this.nextSimElements.length;i++) {
+        const value=this.nextSimElements[i].nq;
+        if (value>bestValue) {bestValue=value; bestIndex=[i]; continue;}
+        if (value==bestValue) {bestIndex.push(i);}
+      }
+      if (bestIndex.length==1) {
+        next=bestIndex[0];
+      } else {
+        next=bestIndex[Math.floor(Math.random()*bestIndex.length)];
+      }
+    }
+
+    if (this.mode==4) {
+      /* Max N */
+      let bestValue=this.nextSimElements[0].n;
+      let bestIndex=[0];
+      for (let i=1;i<this.nextSimElements.length;i++) {
+        const value=this.nextSimElements[i].n;
+        if (value>bestValue) {bestValue=value; bestIndex=[i]; continue;}
         if (value==bestValue) {bestIndex.push(i);}
       }
       if (bestIndex.length==1) {
