@@ -44,7 +44,7 @@
     "binaryName": "MiniWarteschlangensimulator",
     "resourcesPath": "/docs/",
     "clientLibrary": "docs/libs/neutralino.js",
-    "binaryVersion": "5.0.0",
-    "clientVersion": "5.0.1"
+    "binaryVersion": "6.0.0",
+    "clientVersion": "6.0.0"
   }
 }

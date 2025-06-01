@@ -42,10 +42,13 @@ tabHomeExtended.innerHTML=language.tabFile.extended;
 tabHomeParameterSeries.innerHTML=" "+language.tabFile.extendedParameterSeries;
 tabHomeHelp.innerHTML=language.tabFile.help;
 if (!isDesktopApp) {
-  tabHomeHelpDownload.innerHTML=" "+language.tabFile.extendedDownloadApp;
-  tabHomeHelpDownload.title=language.tabFile.extendedDownloadAppInfo;
+  tabHomeHelpDownloadExe.innerHTML=" "+language.tabFile.extendedDownloadAppExe;
+  tabHomeHelpDownloadExe.title=language.tabFile.extendedDownloadAppInfo;
+  tabHomeHelpDownloadZip.innerHTML=" "+language.tabFile.extendedDownloadAppZip;
+  tabHomeHelpDownloadZip.title=language.tabFile.extendedDownloadAppInfo;
 } else {
-  tabHomeHelpDownload.style.display="none";
+  tabHomeHelpDownloadExe.style.display="none";
+  tabHomeHelpDownloadZip.style.display="none";
 }
 tabHomeHelpInfo.innerHTML=" "+language.tabFile.helpInfo;
 const infoPageUrl='info'+((document.documentElement.lang=='de')?'_de':'')+'.html';
@@ -156,9 +159,18 @@ canvas_area.addEventListener("keydown",event=>{if (event.key=='Delete') deleteSe
 
 if (isDesktopApp) HomepageLink.onclick=()=>{Neutralino.os.open(HomepageLink.href); return false;}
 
-tabHomeHelpDownload.onclick=()=>{
+tabHomeHelpDownloadExe.onclick=()=>{
   const element = document.createElement('a');
   element.setAttribute('href','https://github.com/A-Herzog/MiniWarteschlangensimulator/releases/latest/download/MiniWarteschlangensimulator.exe');
+  element.setAttribute('target','_blank');
+  element.style.display='none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+};
+tabHomeHelpDownloadZip.onclick=()=>{
+  const element = document.createElement('a');
+  element.setAttribute('href','https://github.com/A-Herzog/MiniWarteschlangensimulator/releases/latest/download/MiniWarteschlangensimulator_Linux_MacOS.zip');
   element.setAttribute('target','_blank');
   element.style.display='none';
   document.body.appendChild(element);

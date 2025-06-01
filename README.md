@@ -12,7 +12,8 @@ To use simulator just go to
 
 You can also download the simulator as an offline usable Windows application:
 
-**[MiniWarteschlangensimulator.exe](https://github.com/A-Herzog/MiniWarteschlangensimulator/releases/latest/download/MiniWarteschlangensimulator.exe)**
+* **[MiniWarteschlangensimulator.exe](https://github.com/A-Herzog/MiniWarteschlangensimulator/releases/latest/download/MiniWarteschlangensimulator.exe)**
+* **[MiniWarteschlangensimulator_Linux_MacOS.zip](https://github.com/A-Herzog/MiniWarteschlangensimulator/releases/latest/download/MiniWarteschlangensimulator_Linux_MacOS.zip)**
 
 ## License
 
