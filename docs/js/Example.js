@@ -35,12 +35,29 @@ function loadExample(nr, discardOkChecked=false) {
   edges.length=0;
   updateModelOnCanvas();
 
-  if (nr==0) loadExampleSimple();
-  if (nr==1) loadExampleStrategies();
-  if (nr==2) loadExampleRetry();
-  if (nr==3) loadExamplePolicy();
-  if (nr==4) loadPushPull();
-  if (nr==5) loadBusStopp();
+  switch (nr) {
+    case 0:
+      loadExampleSimple();
+      break;
+    case 1:
+      loadExampleStrategies();
+      break;
+    case 2:
+      loadExampleRetry();
+      break;
+    case 3:
+      loadExamplePolicy();
+      break;
+    case 4:
+      loadPushPull();
+      break;
+    case 5:
+      loadBusStopp();
+      break;
+    case 6:
+      loadGalton();
+      break;
+  }
 
   showTemplatesSidebar();
 }
@@ -291,4 +308,30 @@ function loadBusStopp() {
   addTextToModel(470,100,language.examples.exampleBusStoppInfo2,12);
   addTextToModel(490,100,language.examples.exampleBusStoppInfo3,12);
   addTextToModel(510,100,language.examples.exampleBusStoppInfo4,12);
+}
+
+function generateBoxes(type, top, left, count) {
+  const ids=[];
+  for (let i=0;i<count;i++) ids.push(addElementToModel(type,top,left+i*200));
+  return ids;
+}
+
+function loadGalton() {
+  addTextToModel(50,100,language.examples.exampleGalton,16);
+
+  const sourceBoxId=addElementToModel("Source",150,500);
+  const decideIds=[];
+  for (let i=0;i<5;i++) decideIds.push(generateBoxes("Decide",250+i*100,500-i*100,i+1));
+  const disposeIds=generateBoxes("Dispose",750,100,5);
+
+  addEdgeToModel(sourceBoxId,decideIds[0][0]);
+  for (let i=0;i<4;i++) for (let j=0;j<i+1;j++) {
+    addEdgeToModel(decideIds[i][j],decideIds[i+1][j]);
+    addEdgeToModel(decideIds[i][j],decideIds[i+1][j+1]);
+  }
+  for (let i=0;i<5;i++) addEdgeToModel(decideIds[4][i],disposeIds[i]);
+
+  addTextToModel(850,100,language.examples.exampleGaltonInfo1,12);
+  addTextToModel(870,100,language.examples.exampleGaltonInfo2,12);
+  addTextToModel(890,100,language.examples.exampleGaltonInfo3,12);
 }

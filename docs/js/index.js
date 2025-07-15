@@ -38,6 +38,7 @@ tabHomeExamples2.innerHTML=" "+language.tabFile.exampleImpatienceRetry;
 tabHomeExamples3.innerHTML=" "+language.tabFile.examplePolicy;
 tabHomeExamples4.innerHTML=" "+language.tabFile.examplePushPull;
 tabHomeExamples5.innerHTML=" "+language.tabFile.exampleBusStopp;
+tabHomeExamples6.innerHTML=" "+language.tabFile.exampleGalton;
 tabHomeExtended.innerHTML=language.tabFile.extended;
 tabHomeParameterSeries.innerHTML=" "+language.tabFile.extendedParameterSeries;
 tabHomeHelp.innerHTML=language.tabFile.help;
@@ -138,6 +139,7 @@ tabHomeExamples2.onclick=()=>loadExample(2);
 tabHomeExamples3.onclick=()=>loadExample(3);
 tabHomeExamples4.onclick=()=>loadExample(4);
 tabHomeExamples5.onclick=()=>loadExample(5);
+tabHomeExamples6.onclick=()=>loadExample(6);
 
 animation_button.onclick=()=>startAnimation();
 animationPlayPauseButtonOuter.onclick=()=>animationPlayPause();
