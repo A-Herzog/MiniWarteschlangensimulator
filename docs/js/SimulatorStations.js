@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimDispose, SimBatch, SimSeparate, SimSignal, SimBarrier};
+export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimDispose, SimBatch, SimSeparate, SimSignal, SimBarrier, SimSignalSource};
 
 import {distributionBuilder} from "./SimulatorBuilder.js";
 import {statcore} from "./StatCore.js";
@@ -1121,5 +1121,61 @@ class SimBarrier extends SimElement {
     /* Record queue length */
     this.nq--;
     statistics.NQ.set(time,this.nq);
+  }
+}
+
+
+/**
+ * Simulation signal source station
+ */
+class SimSignalSource extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
+  constructor(editElement) {
+    super(editElement);
+  }
+
+    /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @returns Error message or null in case of success
+   */
+  build(globalStatistics, allElements) {
+    const superError=super.build(globalStatistics,allElements);
+    if (superError!=null) return superError;
+
+    if (this.nextSimElements.length!=1) return language.builderSource.edge;
+
+    const setup=this.editElement.setup;
+
+    this.b=getPositiveInt(setup.b);
+    if (this.b==null) return language.builderSource.b;
+
+    if (setup.signal=='') {
+      const signalNumbers=allElements.filter(element=>element.type=='Signal').map(element=>element.nr);
+      if (signalNumbers.length>0) setup.signal=signalNumbers[0];
+    }
+    this.signalNr=getPositiveInt(setup.signal);
+    if (this.signalNr==null) return language.builderProcess.signal;
+
+    return null;
+  }
+
+  /**
+   * Notifies the station that a signal has been fired.
+   * @param {Object} simulator Simulator object
+   * @param {Number} nr Number of the signal
+   */
+  signal(simulator, nr) {
+    if (nr!=this.signalNr) return;
+    const b=this.b;
+    this.n=b;
+    for (let i=1;i<=b;i++) {
+      this._sendClient(simulator,new Client(),this.nextSimElements[0]);
+    }
+    simulator.arrivalCount+=b;
   }
 }
