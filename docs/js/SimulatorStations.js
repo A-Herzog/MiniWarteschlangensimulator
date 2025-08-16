@@ -182,6 +182,8 @@ class SimSource extends SimElement {
     this.b=getPositiveInt(setup.b);
     if (this.b==null) return language.builderSource.b;
 
+    this._initStatistics(globalStatistics,2,{n: new statcore.Counter()});
+
     return null;
   }
 
@@ -206,6 +208,7 @@ class SimSource extends SimElement {
       this._sendClient(simulator,new Client(),this.nextSimElements[0]);
     }
     simulator.arrivalCount+=b;
+    this.statistics.n.add(b);
   }
 }
 
@@ -263,7 +266,6 @@ class SimDelay extends SimElement {
    */
   processArrival(simulator, client) {
     const statistics=this.statistics;
-
     statistics.n.add();
 
     const delta=this.distS();
@@ -1161,6 +1163,8 @@ class SimSignalSource extends SimElement {
     this.signalNr=getPositiveInt(setup.signal);
     if (this.signalNr==null) return language.builderProcess.signal;
 
+    this._initStatistics(globalStatistics,2,{n: new statcore.Counter()});
+
     return null;
   }
 
@@ -1177,5 +1181,6 @@ class SimSignalSource extends SimElement {
       this._sendClient(simulator,new Client(),this.nextSimElements[0]);
     }
     simulator.arrivalCount+=b;
+    this.statistics.n.add(b);
   }
 }

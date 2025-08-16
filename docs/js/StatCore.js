@@ -51,10 +51,11 @@ statcore.Counter=class Counter {
   }
 
   /**
-   * Adds +1 to counter.
+   * Adds n to counter.
+   * @param {Number} n Number to be added to the counter (default: 1)
    */
-  add() {
-    this.fieldCount++;
+  add(n=1) {
+    this.fieldCount+=n;
   }
 
   /**
