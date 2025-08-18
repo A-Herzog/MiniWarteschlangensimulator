@@ -4,6 +4,7 @@
 
 .modal-header {
   cursor: default;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -13,6 +14,10 @@
 
 #modalConfirmationBody {
   cursor: default;
+}
+
+#animationStepButtonOuter, #animationFastForwardButton {
+  margin-left: 5px;
 }
 
 .progress-bar {
@@ -31,22 +36,40 @@
   min-height: 100vh;
 }
 
+#canvas_outer {
+  position: relative;
+  overflow: scroll;
+  border-radius: 5px;
+}
+
 .canvas_area {
   background-color: #F0F0F0;
   position: relative;
   transform-origin: left top;
   transition: all .25s ease-in-out;
+  -webkit-user-select: none;
   user-select: none;
 }
 
 #sidebar {
   min-width: 250px;
   max-width: 250px;
+  -webkit-user-select: none;
   user-select: none;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 #template_outer {
   margin: 5px 20px 5px 20px;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-radius: 5px;
+}
+
+#templates_area {
+  width: 100%;
 }
 
 #sidebar h1 {
@@ -56,6 +79,28 @@
   font-weight: 500;
   margin: 10px 20px;
   padding: 5px;
+  cursor: pointer;
+}
+
+#sidebar .pageinner {
+  padding: 5px 20px 20px 20px;
+  color: white;
+}
+
+#sidebar .pageinner h5 {
+  margin-top: 30px;
+}
+
+#HomepageLink {
+  color: white;
+}
+
+#helpInfoText1, #helpInfoText2 {
+  font-size: 90%;
+}
+
+#helpInfoText3 {
+  font-size: 80%;
 }
 
 @media only screen and (max-width: 700px) {
