@@ -30,10 +30,12 @@ class SimModelBuilder {
    * Constructor
    * @param {Array} editElements List of the edit model elements
    * @param {Array} editEdges List of the edit model edges
+   * @param {Object} math Math.js object to be used
    */
-  constructor(editElements, editEdges) {
+  constructor(editElements, editEdges, math) {
     this.editElements=editElements;
     this.editEdges=editEdges;
+    this.math=math;
   }
 
   /**
@@ -122,7 +124,7 @@ class SimModelBuilder {
 
     /* Load data into stations */
     for (let station of this.stationsList) {
-      const stationError=station.build(globalStatistics,this.editElements);
+      const stationError=station.build(globalStatistics,this.editElements,this);
       if (stationError!=null) return language.builder.stationError+" <b style='color: "+templates.filter(template=>template.type==station.editElement.type)[0].color+"'>"+station.name+"</b>:<br>"+stationError;
     }
 

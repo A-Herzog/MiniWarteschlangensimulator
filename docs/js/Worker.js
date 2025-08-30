@@ -17,17 +17,23 @@ limitations under the License.
 import {setLanguage} from './Language.js';
 import {WebSimulator} from './Simulator.js';
 
+// Waiting for regular ESM version:
+// https://github.com/josdejong/mathjs/issues/1841
+// import {create, all} from 'https://esm.run/mathjs';
+// const config = { }
+// const math=create(all, config);
+
 /**
  * Web worker for executing parallel simulations.
  */
-onmessage = function(e) {
+onmessage=function(e) {
   const request=JSON.parse(e.data.model);
   const useLanguage=e.data.useLanguage;
 
   setLanguage(useLanguage);
 
   const simulator=new WebSimulator(false);
-  simulator.build(request.elements,request.edges);
+  simulator.build(request.elements,request.edges,null); // null -> math
 
   const targetArrivalCount=request.count;
   while (true) {

@@ -21,6 +21,7 @@ import {fixModel} from './FixModel.js';
 import {SimulatorWorker, WebSimulator} from './Simulator.js';
 import {language, getCharacteristicsInfo} from "./Language.js";
 import {formatTime} from './SimCore.js';
+import {loadMathJs} from './MathTools.js';
 
 /**
  * Start animation.
@@ -44,10 +45,19 @@ function startAnimation() {
   /* Stop function for adding edges if needed */
   if (addEdgeActive) addEdgeClick();
 
+  /* Load math library */
+  loadMathJs(startAnimationPart2);
+}
+
+/**
+ * Second part of starting the animation - after loading the math.js library.
+ * @see startAnimation()
+ */
+function startAnimationPart2() {
   /* Check and generate model */
   fixModel(elements,edges);
   simulator=new WebSimulator(true);
-  const buildResult=simulator.build(elements,edges);
+  const buildResult=simulator.build(elements,edges,math);
   if (buildResult!=null) {
     showMessage(language.builder.invalidModelTitle,language.builder.invalidModelText+"<br>"+buildResult);
     return;

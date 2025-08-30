@@ -21,6 +21,7 @@ import {statcore} from "./StatCore.js";
 import {SendEvent, ArrivalEvent, ServiceDoneEvent, WaitingCancelEvent} from "./Events.js";
 import {getPositiveFloat, getNotNegativeFloat, getPositiveInt, getNotNegativeInt} from './Tools.js';
 import {language} from "./Language.js";
+import {complileCondition} from "./MathTools.js";
 
 
 /**
@@ -77,9 +78,10 @@ class SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
+  build(globalStatistics, allElements, builder) {
     return null;
   }
 
@@ -163,10 +165,11 @@ class SimSource extends SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
-    const superError=super.build(globalStatistics,allElements);
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length!=1) return language.builderSource.edge;
@@ -229,10 +232,11 @@ class SimDelay extends SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
-    const superError=super.build(globalStatistics,allElements);
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length!=1) return language.builderSource.edge;
@@ -306,10 +310,11 @@ class SimProcess extends SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
-    const superError=super.build(globalStatistics,allElements);
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderProcess.edge;
@@ -560,10 +565,11 @@ class SimDecide extends SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
-    const superError=super.build(globalStatistics,allElements);
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1) return language.builderDecide.edge;
@@ -571,14 +577,9 @@ class SimDecide extends SimElement {
     const setup=this.editElement.setup;
 
     this.mode=setup.mode;
-    if (this.mode<0 || this.mode>4) return language.builderDecide.mode;
+    if (this.mode<0 || this.mode>5) return language.builderDecide.mode;
 
-    if (this.mode==1 || this.mode==2 || this.mode==3 || this.mode==4) for (let i=0;i<this.nextSimElements.length;i++) {
-      if (this.nextSimElements[i].constructor.name!='SimProcess') {
-        return language.builderDecide.nextMin1+this.nextSimElements[i].name+language.builderDecide.nextMin2;
-      }
-    }
-
+    /* Decide by rates */
     if (this.mode==0) {
       const rateStrings=setup.rates.split(';');
       while (rateStrings.length<this.nextSimElements.length) rateStrings.push("0");
@@ -589,6 +590,26 @@ class SimDecide extends SimElement {
         if (rate==null) return language.builderDecide.nextRandom1+" "+(i+1)+" "+language.builderDecide.nextRandom2+" "+this.nextSimElements[i].name+" "+language.builderDecide.nextRandom3;
         this.rates.push(rate);
         this.ratesSum+=rate;
+      }
+    }
+
+    /* Decide be shortest/longest queues etc. */
+    if (this.mode==1 || this.mode==2 || this.mode==3 || this.mode==4) for (let i=0;i<this.nextSimElements.length;i++) {
+      if (this.nextSimElements[i].constructor.name!='SimProcess') {
+        return language.builderDecide.nextMin1+this.nextSimElements[i].name+language.builderDecide.nextMin2;
+      }
+    }
+
+    /* Decide by condition */
+    if (this.mode==5) {
+      const conditionStrings=setup.rates.split(';');
+      while (conditionStrings.length<this.nextSimElements.length-1) conditionStrings.push("0");
+      if (conditionStrings.length>this.nextSimElements.length-1) return language.builderDecide.tooManryConditions;
+      this.conditions=[];
+      for (let str of conditionStrings) try {
+        this.conditions.push(complileCondition(str,builder.math));
+      } catch (error) {
+        return error;
       }
     }
 
@@ -681,6 +702,18 @@ class SimDecide extends SimElement {
       }
     }
 
+    if (this.mode==5) {
+      /* Condition */
+      const scope=simulator.scope;
+      next=this.nextSimElements.length-1;
+      for (let i=0;i<this.conditions.length;i++) try {
+        if (this.conditions[i].evaluate(scope)) {
+          next=i;
+          break;
+        }
+      } catch (error) {}
+    }
+
     this._sendClient(simulator,client,this.nextSimElements[next],0);
   }
 }
@@ -702,10 +735,11 @@ class SimDuplicate extends SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
-    const superError=super.build(globalStatistics,allElements);
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1) return language.builderDuplicate.edge;
@@ -751,10 +785,11 @@ class SimCounter extends SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
-    const superError=super.build(globalStatistics,allElements);
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1) return language.builderDuplicate.edge;
@@ -792,10 +827,11 @@ class SimDispose extends SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
-    const superError=super.build(globalStatistics,allElements);
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
     this._initStatistics(globalStatistics,1,{W: new statcore.Values(), S: new statcore.Values(), V: new statcore.Values(), n: new statcore.Counter()});
@@ -856,10 +892,11 @@ class SimBatch extends SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
-    const superError=super.build(globalStatistics,allElements);
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderBatch.edge;
@@ -930,10 +967,11 @@ class SimSeparate extends SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
-    const superError=super.build(globalStatistics,allElements);
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderSeparate.edge;
@@ -988,10 +1026,11 @@ class SimSignal extends SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
-    const superError=super.build(globalStatistics,allElements);
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderSeparate.edge;
@@ -1029,10 +1068,11 @@ class SimBarrier extends SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
-    const superError=super.build(globalStatistics,allElements);
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderSeparate.edge;
@@ -1143,10 +1183,11 @@ class SimSignalSource extends SimElement {
    * Initializes this simulation station from the editor model station (specified in the constructor).
    * @param {Object} globalStatistics Statistic object to be connected with this station
    * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
    * @returns Error message or null in case of success
    */
-  build(globalStatistics, allElements) {
-    const superError=super.build(globalStatistics,allElements);
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
     if (this.nextSimElements.length!=1) return language.builderSource.edge;

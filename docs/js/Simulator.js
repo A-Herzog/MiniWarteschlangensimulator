@@ -45,10 +45,11 @@ class WebSimulator extends Simulator {
    * Trys to build a simulation model from an editor model.
    * @param {Array} elements List of all stations
    * @param {Array} edges List of the edges connecting the stations
+   * @param {Object} math Math.js object to be used
    * @returns Returns null if building was successful, otherwise an error message.
    */
-  build(elements, edges) {
-    const builder=new SimModelBuilder(elements,edges);
+  build(elements, edges, math) {
+    const builder=new SimModelBuilder(elements,edges,math);
     const buildResult=builder.build(this.statistics);
     if (buildResult!=null) return buildResult;
 
@@ -139,6 +140,49 @@ class WebSimulator extends Simulator {
    */
   fireSignal(nr) {
     for (let station of this.simStations) if (typeof(station.signal)=='function') station.signal(this,nr);
+  }
+
+  #getNQ(name) {
+    const stationData=this.statistics[name];
+    if (typeof(stationData)=='undefined') return -1;
+    const record=stationData["NQ"];
+    if (typeof(record)=='undefined') return -1;
+    const className=record.constructor.name;
+    if (className!='States') return -1;
+    return record.current;
+  }
+
+  #getN(name) {
+    const stationData=this.statistics[name];
+    if (typeof(stationData)=='undefined') return -1;
+    const record=stationData["N"];
+    if (typeof(record)=='undefined') return -1;
+    const className=record.constructor.name;
+    if (className!='States') return -1;
+    return record.current;
+  }
+
+  #getCount(name) {
+    const stationData=this.statistics[name];
+    if (typeof(stationData)=='undefined') return -1;
+    const record=stationData["n"];
+    if (typeof(record)=='undefined') return -1;
+    const className=record.constructor.name;
+    if (className!='States') return -1;
+    return record.current;
+  }
+
+  /**
+   * Scope for calculation expressions.
+   */
+  get scope() {
+    const that=this;
+    return {
+      NQ: name=>that.#getNQ(name),
+      WIP: name=>that.#getN(name),
+      N: name=>that.#getN(name),
+      count: name=>that.#getCount(name)
+    };
   }
 
   /**

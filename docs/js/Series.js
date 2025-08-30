@@ -165,7 +165,7 @@ function processSeries() {
 
   /* Check model */
   const simulator=new WebSimulator(false);
-  const buildResult=simulator.build(elements,edges);
+  const buildResult=simulator.build(elements,edges,math);
   if (buildResult!=null) {
     showMessage(language.builder.invalidModelTitle,language.builder.invalidModelText+"<br>"+buildResult);
     return;
@@ -507,7 +507,7 @@ function loadChartJs(then) {
 
   const script=document.createElement("script");
   script.src="./libs/chart.umd.js";
-  script.async = false;
+  script.async=false;
   script.onload=then;
   document.head.appendChild(script);
 }
