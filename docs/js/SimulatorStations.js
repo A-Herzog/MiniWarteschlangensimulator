@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimDispose, SimBatch, SimSeparate, SimSignal, SimBarrier, SimSignalSource};
+export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimThroughput, SimDispose, SimBatch, SimSeparate, SimSignal, SimBarrier, SimSignalSource};
 
 import {distributionBuilder} from "./SimulatorBuilder.js";
 import {statcore} from "./StatCore.js";
@@ -806,6 +806,52 @@ class SimCounter extends SimElement {
    */
   processArrival(simulator, client) {
     this.statistics.n.add();
+    this._sendClient(simulator,client,this.nextSimElements[0],0);
+  }
+}
+
+
+/**
+ * Simulation throughput station
+ */
+class SimThroughput extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
+  constructor(editElement) {
+    super(editElement);
+  }
+
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
+   * @returns Error message or null in case of success
+   */
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
+    if (superError!=null) return superError;
+
+    if (this.nextSimElements.length<1) return language.builderDuplicate.edge;
+
+    this._initStatistics(globalStatistics,1,{
+      n: new statcore.Counter(),
+      throughput: new statcore.Value()
+    });
+
+    return null;
+  }
+
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
+  processArrival(simulator, client) {
+    this.statistics.n.add();
+    if (simulator.time>0) this.statistics.throughput.value=this.statistics.n.count/simulator.time;
     this._sendClient(simulator,client,this.nextSimElements[0],0);
   }
 }

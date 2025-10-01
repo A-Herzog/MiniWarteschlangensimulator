@@ -167,6 +167,8 @@ lang.templates.duplicate="Duplizieren";
 lang.templates.duplicateHint="Diese Station kann mehrere auslaufende Kanten besitzen. Jeder eintreffende Kunde wird inkl. seiner Eigenschaften vervielfältigt und entlang jeder Ausgangskante weitergeleitet.";
 lang.templates.counter="Zähler";
 lang.templates.counterHint="Zählt alle Kunden, die diese Station passieren."
+lang.templates.throughput="Durchsatz";
+lang.templates.throughputHint="Erfasst den Durchsatz in Kunden pro Zeiteinheit an der Station."
 lang.templates.dispose="Ausgang";
 lang.templates.disposeHint="Endpunkt der Kunden in einem Modell. Alle Kunden müssen am Ende zu einer Ausgangsstation geleitet werden.";
 lang.templates.batch="Batch";
@@ -392,6 +394,11 @@ lang.statisticsInfo.N='Aktuelle Anzahl an Kunden an der Station';
 lang.statisticsInfo.NQ='Aktuelle Anzahl an Kunden in der Warteschlange an der Station';
 lang.statisticsInfo.cBusy='Aktuelle Anzahl an belegten Bedienern';
 lang.statisticsInfo.n='Anzahl an Ankünften an der Station';
+lang.statisticsInfo.throughput='Durchsatz in Kunden pro Zeiteinheit an der Station';
+lang.statisticsInfo.throughputName='Durchsatz';
+lang.statisticsInfo.throughputPerSecond='Kunden/Sekunde';
+lang.statisticsInfo.throughputPerMinute='Kunden/Minute';
+lang.statisticsInfo.throughputPerHour='Kunden/Stunde';
 
 /* English */
 
@@ -539,6 +546,8 @@ lang.templates.duplicate="Duplicate";
 lang.templates.duplicateHint="This station can have several outgoing edges. Each incoming customer is duplicated, including its properties, and forwarded along each outgoing edge.";
 lang.templates.counter="Counter";
 lang.templates.counterHint="Counts all customers passing this station."
+lang.templates.throughput="Throughtput";
+lang.templates.throughputHint="Records the throughput of customers per unit of time at the station."
 lang.templates.dispose="Exit";
 lang.templates.disposeHint="End point of the customers in a model. All customers must be routed to an exit station at the end.";
 lang.templates.batch="Batch";
@@ -765,6 +774,11 @@ lang.statisticsInfo.N='Current number of clients at the station';
 lang.statisticsInfo.NQ='Current number of clients in the queue at the station';
 lang.statisticsInfo.cBusy='Current number of busy operators';
 lang.statisticsInfo.n='Number of arrivals at the station';
+lang.statisticsInfo.throughput='Throughput in customers per unit of time at the station';
+lang.statisticsInfo.throughputName='Throughput';
+lang.statisticsInfo.throughputPerSecond='customers/second';
+lang.statisticsInfo.throughputPerMinute='customers/minute';
+lang.statisticsInfo.throughputPerHour='customers/hour';
 
 /* Activate language */
 
@@ -839,5 +853,6 @@ function getCharacteristicsInfo(str) {
   if (str=='NQ') return buildAbbr(str,language.statisticsInfo.NQ);
   if (str=='cBusy') return buildAbbr(str,language.statisticsInfo.cBusy);
   if (str=='n') return buildAbbr(str,language.statisticsInfo.n);
+  if (str=='throughput') return buildAbbr(language.statisticsInfo.throughputName,language.statisticsInfo.throughput);
   return str;
 }

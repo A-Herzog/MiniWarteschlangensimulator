@@ -33,6 +33,34 @@ statcore.formatShorter=function(num) {
 
 
 /**
+ * Keeps a value
+ */
+statcore.Value=class Value {
+  /**
+   * Constructor
+   * @param {Number} value Initial value, optional, default: 0
+   */
+  constructor(value=0) {
+    this.fieldValue=value;
+  }
+
+  /**
+   * Returns the current value.
+   */
+  get value() {
+    return this.fieldValue;
+  }
+
+  /**
+   * Sets the value to a new value.
+   */
+  set value(value) {
+    this.fieldValue=value;
+  }
+}
+
+
+/**
  * A simple counter
  */
 statcore.Counter=class Counter {

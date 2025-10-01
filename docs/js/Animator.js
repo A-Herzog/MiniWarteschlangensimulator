@@ -488,7 +488,7 @@ function animationFastForwardShowFullData() {
   content+='<meta name="viewport" content="width=device-width, initial-scale=1">';
   content+='<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">';
   content+='<link href="./libs/bootstrap.min.css" rel="stylesheet">';
-  content+='<link href="./libs/bootstrap-icons.css" rel="stylesheet">';
+  content+='<link href="./libs/bootstrap-icons.min.css" rel="stylesheet">';
   content+='</head>';
   content+='<body style="background-color: #E7E7E7;">';
 
@@ -543,8 +543,23 @@ function animationFastForwardShowFullData() {
             plainLine+=", rho="+(rho*100).toLocaleString()+"%";
           }
         } else {
-          content+=getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
-          plainLine+="n="+recordData.count.toLocaleString();
+          if (typeof(recordData.throughput)!='undefined') {
+            let value=recordData.throughput;
+            let unit=language.statisticsInfo.throughputPerSecond;
+            if (value<1) {
+              value*=60;
+              unit=language.statisticsInfo.throughputPerMinute;
+            }
+            if (value<1) {
+              value*=60;
+              unit=language.statisticsInfo.throughputPerHour;
+            }
+            content+=getCharacteristicsInfo("throughput")+"="+value.toLocaleString()+" "+unit;
+            plainLine+=language.statisticsInfo.throughputName+"="+value.toLocaleString()+" "+unit;
+          } else {
+            content+=getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
+            plainLine+="n="+recordData.count.toLocaleString();
+          }
         }
         contentPlain.push(plainLine);
         content+="</li>";

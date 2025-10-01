@@ -129,6 +129,23 @@ class WebSimulator extends Simulator {
         count++;
         status+=getCharacteristicsInfo(recordName)+"="+stationData[recordName].count.toLocaleString();
       }
+      if (className=='Value') {
+        if (count>0) status+=", ";
+        if (count>0 && count%2==0) status+="<br>";
+        count++;
+        let value=stationData[recordName].value;
+        let unit=language.statisticsInfo.throughputPerSecond;
+        if (value<1) {
+          value*=60;
+          unit=language.statisticsInfo.throughputPerMinute;
+        }
+        if (value<1) {
+          value*=60;
+          unit=language.statisticsInfo.throughputPerHour;
+        }
+
+        status+=getCharacteristicsInfo(recordName)+"="+statcore.formatShorter(value)+" "+unit;
+      }
     }
     status+="</small></p>";
     return status;
@@ -214,6 +231,7 @@ class WebSimulator extends Simulator {
          const className=stationData[recordName].constructor.name;
          if (className=='Values' || className=='States') value=stationData[recordName].mean;
          if (className=='Counter') value=stationData[recordName].count;
+         if (className=='Value') value=stationData[recordName].value;
          if (value!=null) data[recordName]=value;
        }
        raw[stationName]=data;
@@ -253,6 +271,11 @@ class WebSimulator extends Simulator {
         }
         if (className=='Counter') {
           rawData[recordName]={count: stat.count};
+          rawData[recordName].name=recordName;
+          continue;
+        }
+        if (className=='Value') {
+          rawData[recordName]={throughput: stat.value};
           rawData[recordName].name=recordName;
           continue;
         }
@@ -380,8 +403,25 @@ class SimulatorWorker {
           if (count>0) status+=",&nbsp;&nbsp;";
           if (count>0 && count%4==0) status+="<br>";
           count++;
-          const value=(typeof(recordData.mean)=='undefined')?recordData.count:recordData.mean;
-          status+=getCharacteristicsInfo(recordName)+"=<span title='"+value.toLocaleString()+"'>"+statcore.formatShorter(value)+"</span>";
+          let value=null;
+          let isThroughput=false;
+          if (typeof(recordData.mean)!='undefined') value=recordData.mean;
+          if (typeof(recordData.throughput)!='undefined') {value=recordData.throughput; isThroughput=true;}
+          if (value===null) value=recordData.count;
+          let unit="";
+          if (isThroughput) {
+            unit=language.statisticsInfo.throughputPerSecond;
+            if (value<1) {
+              value*=60;
+              unit=language.statisticsInfo.throughputPerMinute;
+            }
+            if (value<1) {
+              value*=60;
+              unit=language.statisticsInfo.throughputPerHour;
+            }
+            unit=" "+unit
+          }
+          status+=getCharacteristicsInfo(recordName)+"=<span title='"+value.toLocaleString()+unit+"'>"+statcore.formatShorter(value)+unit+"</span>";
 
           if (recordData.name=="W" && typeof(recordData.cv)!='undefined') {
             if (count>0) status+=",&nbsp;&nbsp;";
@@ -419,17 +459,24 @@ class SimulatorWorker {
       result.time+=r.time;
       result.eventCount+=r.eventCount;
       for (let stationName in r.stations) {
-        for (let recordName in r.stations[stationName].records) {
-          const recordData=r.stations[stationName].records[recordName];
-          const resultData=result.stations[stationName].records[recordName];
+        const records=r.stations[stationName].records;
+        const resultRecords=result.stations[stationName].records;
+        for (let recordName in records) {
+          const recordData=records[recordName];
+          const resultData=resultRecords[recordName];
           if (typeof(recordData)=='number') {
-            result.stations[stationName].records[recordName]=recordData;
+            resultRecords[recordName]=recordData;
             continue;
           }
           if (typeof(resultData.mean)!='undefined') {
             if (resultData.count+recordData.count>0) resultData.mean=(resultData.mean*resultData.count+recordData.mean*recordData.count)/(resultData.count+recordData.count);
           }
-          resultData.count+=recordData.count;
+          if (typeof(resultData.throughput)!='undefined' && typeof(resultRecords.n)!='undefined') {
+            if (resultRecords.n.count+records.n.count>0) resultData.throughput=(resultData.throughput*resultRecords.n.count+recordData.throughput*records.n.count)/(resultRecords.n.count+records.n.count);
+          }
+          if (typeof(resultData.count)!='undefined') {
+            resultData.count+=recordData.count;
+          }
           if (typeof(resultData.sum)!='undefined') {
             resultData.sum+=recordData.sum;
             resultData.sum2+=recordData.sum2;

@@ -294,6 +294,14 @@ templates.push({
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Counter",id,language.templates.counter+"<br>"+nr,language.templates.counterHint,"#BBB","#DDD",top,left,isTemplate)
 });
 templates.push({
+  type: 'Throughput',
+  color: "#BBB",
+  name: language.templates.throughput,
+  maxEdgesIn: 999,
+  maxEdgesOut: 1,
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Throughput",id,language.templates.throughput+"<br>"+nr,language.templates.throughputHint,"#BBB","#DDD",top,left,isTemplate)
+});
+templates.push({
   type: 'Dispose',
   color: "red",
   name: language.templates.dispose,
