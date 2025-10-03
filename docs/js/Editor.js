@@ -864,6 +864,14 @@ function addEditorElements(element, parent) {
       continue;
     }
 
+    if (name=="text") {
+      const info2=document.createElement("div");
+      form.appendChild(info2);
+      info2.style.marginBottom="15px";
+      info2.style.fontSize="80%";
+      info2.innerHTML=language.editor.textInfo;
+    }
+
     if (name=="policy") {
       const select=document.createElement("select");
       div.appendChild(select);
@@ -940,7 +948,7 @@ function addEditorElements(element, parent) {
         if (element.visibleSetup) updateModelOnCanvas();
       }
       element.setup[name]=select.value;
-        if (element.visibleSetup) updateModelOnCanvas();
+      if (element.visibleSetup) updateModelOnCanvas();
       continue;
     }
 
@@ -1168,7 +1176,7 @@ function addEdgeToModel(boxId1, boxId2) {
   let template2=null;
   for (let i=0;i<templates.length;i++) if (templates[i].type==element2.type) {template2=templates[i]; break;}
 
-  /* Count outgoing and incomoing edges */
+  /* Count outgoing and incoming edges */
   let edgesOut=0;
   let edgesIn=0;
   for (let i=0;i<edges.length;i++) {
