@@ -45,7 +45,12 @@ function fixModel(elements, edges) {
         dispose=element;
         continue;
     }
-    return; /* Station type unsupported for auto fix */
+  }
+
+  /* Add source station if needed */
+  if (source==null && (process!=null || dispose!=null)) {
+    if (process!=null) addElementToModel("Source",process.top,process.left-200); else addElementToModel("Source",dispose.top,dispose.left-200);
+    source=elements[elements.length-1];
   }
 
   /* Add process station if needed */
@@ -54,10 +59,10 @@ function fixModel(elements, edges) {
     process=elements[elements.length-1];
   }
 
-
   /* Add dispose station if needed */
   if (dispose==null && (source!=null || process!=null)) {
-    if (process!=null) addElementToModel("Dispose",process.top,process.left+200); else addElementToModel("Dispose",source.top,source.left+200);
+    const maxLeft=elements.map(e=>e.left).reduce((a,b)=>Math.max(a,b),0);
+    if (process!=null) addElementToModel("Dispose",process.top,maxLeft+200); else addElementToModel("Dispose",source.top,maxLeft+200);
     dispose=elements[elements.length-1];
   }
 
@@ -89,5 +94,15 @@ function fixModel(elements, edges) {
     if (source!=null && dispose!=null && !sourceOut && !disposeIn) {
       addEdgeToModel(source.boxId,dispose.boxId);
     }
+  }
+
+  /* Find stations with input edge but no output edge */
+  for (let element of elements) {
+    const boxId=element.boxId;
+    if (edges.filter(edge=>edge.boxId2==boxId).length==0) continue; /* No input edge */
+    if (edges.filter(edge=>edge.boxId1==boxId).length>0) continue; /* Has output edge */
+    if (element.type=="Source" || element.type=="SignalSource") continue; /* No direct source to dispose connections */
+    if (element.type=="Dispose") continue; /* Dispose station */
+    addEdgeToModel(boxId,dispose.boxId);
   }
 }
