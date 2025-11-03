@@ -1334,10 +1334,13 @@ function updateModelOnCanvas() {
 
   if (elements.length==0) {
     let infoText="";
-    if (language.canvasInfoLang!=null && language.canvasInfoLang!="") {
-      infoText+="<span style='font-size: 90%; border: 1px solid #CCC; color: #111; background-color: #FAFAFA; padding: 5px 10px; border-radius: 3px; cursor: default;'>"+language.canvasInfoLang+"</span><br><br><br>";
-    }
     infoText+='<span style="cursor: default;">'+language.canvasInfo+"</span>";
+    if (language.canvasInfoLang!=null && language.canvasInfoLang!="") {
+      infoText+="<br><br>";
+      infoText+="<span style='font-size: 90%; border: 1px solid #CCC; color: #111; background-color: #F5F5F5; padding: 5px 10px; border-radius: 3px; cursor: default;'>"
+      infoText+=language.canvasInfoLang;
+      infoText+="</span>";
+    }
 
     const info=document.createElement("div");
     canvas.appendChild(info);

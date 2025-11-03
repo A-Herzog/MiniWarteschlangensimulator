@@ -152,6 +152,13 @@ Dann verknüpfen Sie diese über <b><i class='bi bi-share-fill' role='img' aria-
 <u>Möglichkeit 2:</u><br>
 Klicken Sie auf <b><i class='bi bi-house-door' role='img' aria-hidden='true'></i> Datei</b> und wählen Sie dort ein Beispielmodell aus.<br><br>
 Nach dem Erstellen oder Laden eines Modells kann dieses über<br>die <b><i class='bi bi-play-circle' role='img' aria-hidden='true'></i> Animation</b>-Schaltfläche simuliert werden.
+<br><br><br>
+<u>Hilfe und Unterstützung:</u><br>
+<ul>
+  <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpTutorial.click();">Einführung zum Mini Warteschlangensimulator</button></li>
+  <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpQT.click();">Grundkonzepte der Warteschlangentheorie</button></li>
+  <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpGlossary.click();">Glossar der Warteschlangentheorie</button></li>
+</ul>
 </small>`;
 
 lang.templates={};
@@ -532,6 +539,13 @@ Then link them using <b><i class='bi bi-share-fill' role='img' aria-hidden='true
 <u>Option 2:</u><br>
 Click on <b><i class='bi bi-house-door' role='img' aria-hidden='true'></i> File</b> and select an example model there.<br><br>
 After creating or loading a model, it can be simulated using the<br><b><i class='bi bi-play-circle' role='img' aria-hidden='true'></i> Animation</b> button.
+<br><br><br>
+<u>Help and support:</u><br>
+<ul>
+  <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpTutorial.click();">Introduction to Mini Warteschlangensimulator</button></li>
+  <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpQT.click();">Basic concepts of queueing theory</button></li>
+  <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpGlossary.click();">Glossary of queueing theory</button></li>
+</ul>
 </small>`;
 
 lang.templates={};
