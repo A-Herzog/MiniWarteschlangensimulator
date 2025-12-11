@@ -2,6 +2,8 @@
 
 Mini Warteschlangensimulator is a web service for simulating queueing models.
 
+[![Screenshot of Mini Warteschlangensimulator](Screenshot.png)](https://a-herzog.github.io/MiniWarteschlangensimulator)
+
 ## Usage
 
 To use simulator just go to
