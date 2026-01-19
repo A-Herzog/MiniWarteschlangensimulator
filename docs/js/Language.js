@@ -404,6 +404,8 @@ lang.statisticsInfo.cBusy='Aktuelle Anzahl an belegten Bedienern';
 lang.statisticsInfo.n='Anzahl an Ankünften an der Station';
 lang.statisticsInfo.throughput='Durchsatz in Kunden pro Zeiteinheit an der Station';
 lang.statisticsInfo.throughputName='Durchsatz';
+lang.statisticsInfo.flowfactor="Quotient aus Verweilzeit und Bediendauer";
+lang.statisticsInfo.flowfactorName="Flussgrad";
 lang.statisticsInfo.throughputPerSecond='Kunden/Sekunde';
 lang.statisticsInfo.throughputPerMinute='Kunden/Minute';
 lang.statisticsInfo.throughputPerHour='Kunden/Stunde';
@@ -792,6 +794,8 @@ lang.statisticsInfo.cBusy='Current number of busy operators';
 lang.statisticsInfo.n='Number of arrivals at the station';
 lang.statisticsInfo.throughput='Throughput in customers per unit of time at the station';
 lang.statisticsInfo.throughputName='Throughput';
+lang.statisticsInfo.flowfactor="Quotient of residence time and service time";
+lang.statisticsInfo.flowfactorName="Flow factor";
 lang.statisticsInfo.throughputPerSecond='customers/second';
 lang.statisticsInfo.throughputPerMinute='customers/minute';
 lang.statisticsInfo.throughputPerHour='customers/hour';
@@ -870,5 +874,6 @@ function getCharacteristicsInfo(str) {
   if (str=='cBusy') return buildAbbr(str,language.statisticsInfo.cBusy);
   if (str=='n') return buildAbbr(str,language.statisticsInfo.n);
   if (str=='throughput') return buildAbbr(language.statisticsInfo.throughputName,language.statisticsInfo.throughput);
+  if (str=='flowfactor') return buildAbbr(language.statisticsInfo.flowfactorName,language.statisticsInfo.flowfactor);
   return str;
 }

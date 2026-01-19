@@ -513,12 +513,16 @@ function animationFastForwardShowFullData() {
       content+="<h4>"+stationName+"</h4>";
       content+="<ul>";
       contentPlain.push(stationName);
+      let ES=null;
+      let EV=null;
       for (let recordName in stationData.records) {
         const recordData=stationData.records[recordName];
         if (typeof(recordData)=='number') continue;
         content+="<li>";
         let plainLine="";
         if (typeof(recordData.mean)!='undefined') {
+          if (recordData.name=='S') ES=recordData.mean;
+          if (recordData.name=='V') EV=recordData.mean;
           content+=getCharacteristicsInfo("E["+recordData.name+"]")+"="+recordData.mean.toLocaleString();
           plainLine+="E["+recordData.name+"]="+recordData.mean.toLocaleString();
           if (typeof(recordData.sd)!='undefined') {
@@ -541,6 +545,13 @@ function animationFastForwardShowFullData() {
             const rho=recordData.mean/stationData.records.c;
             content+=", "+getCharacteristicsInfo("rho")+"="+(rho*100).toLocaleString()+"%";
             plainLine+=", rho="+(rho*100).toLocaleString()+"%";
+          }
+          if (ES!=null && EV!=null && ES>0) {
+            const flowFactor=EV/ES;
+            content+=", "+getCharacteristicsInfo("flowfactor")+"="+flowFactor.toLocaleString();
+            plainLine+=", "+language.statisticsInfo.flowfactorName+"="+flowFactor.toLocaleString();
+            ES=null;
+            EV=null;
           }
         } else {
           if (typeof(recordData.throughput)!='undefined') {
