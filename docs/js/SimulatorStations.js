@@ -559,6 +559,7 @@ class SimDecide extends SimElement {
    */
   constructor(editElement) {
     super(editElement);
+    this.lastOption=-1;
   }
 
   /**
@@ -577,7 +578,7 @@ class SimDecide extends SimElement {
     const setup=this.editElement.setup;
 
     this.mode=setup.mode;
-    if (this.mode<0 || this.mode>5) return language.builderDecide.mode;
+    if (this.mode<0 || this.mode>6) return language.builderDecide.mode;
 
     /* Decide by rates */
     if (this.mode==0) {
@@ -600,8 +601,13 @@ class SimDecide extends SimElement {
       }
     }
 
-    /* Decide by condition */
+    /* Use options in turn */
     if (this.mode==5) {
+      /* Nothing to check */
+    }
+
+    /* Decide by condition */
+    if (this.mode==6) {
       const conditionStrings=setup.rates.split(';');
       while (conditionStrings.length<this.nextSimElements.length-1) conditionStrings.push("0");
       if (conditionStrings.length>this.nextSimElements.length-1) return language.builderDecide.tooManryConditions;
@@ -703,6 +709,12 @@ class SimDecide extends SimElement {
     }
 
     if (this.mode==5) {
+      /* Use options in turn */
+      this.lastOption=(this.lastOption+1)%this.nextSimElements.length;
+      next=this.lastOption;
+    }
+
+    if (this.mode==6) {
       /* Condition */
       const scope=simulator.scope;
       next=this.nextSimElements.length-1;
