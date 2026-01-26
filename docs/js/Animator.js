@@ -33,6 +33,9 @@ function startAnimation() {
     return;
   }
 
+  /* Stop editor */
+  showTemplatesSidebar();
+
   /* If the last animation was terminated in pause mode, do visual reset */
   animationPause=false;
   const playPauseButton=document.getElementById('animationPlayPauseButton');
@@ -41,9 +44,6 @@ function startAnimation() {
 
   const stepButton=document.getElementById('animationStepButtonOuter');
   stepButton.classList.add("disabled");
-
-  /* Stop function for adding edges if needed */
-  if (addEdgeActive) addEdgeClick();
 
   /* Load math library */
   loadMathJs(startAnimationPart2);
