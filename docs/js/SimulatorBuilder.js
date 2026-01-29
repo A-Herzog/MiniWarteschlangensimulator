@@ -17,7 +17,7 @@ limitations under the License.
 export {SimModelBuilder, distributionBuilder};
 
 import {templates, getRecordByType} from "./Templates.js";
-import {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimThroughput, SimDispose, SimBatch, SimSeparate, SimSignal, SimBarrier, SimSignalSource} from './SimulatorStations.js';
+import {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimThroughput, SimDispose, SimBatch, SimSeparate, SimSignal, SimBarrier, SimSignalSource, SimVertex} from './SimulatorStations.js';
 import {distcore} from "./DistCore.js";
 import {language} from "./Language.js";
 
@@ -95,6 +95,7 @@ class SimModelBuilder {
       if (simElement==null && type=='Signal') simElement=new SimSignal(editElement);
       if (simElement==null && type=='Barrier') simElement=new SimBarrier(editElement);
       if (simElement==null && type=='SignalSource') simElement=new SimSignalSource(editElement);
+      if (simElement==null && type=='Vertex') simElement=new SimVertex(editElement);
 
       if (simElement==null) return language.builder.unknownStationType+": "+editElement.type;
       this.stationsList.push(simElement);

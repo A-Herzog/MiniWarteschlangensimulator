@@ -59,6 +59,43 @@ function addBox(type, id, name, hint ,color1, color2, top, left, isTemplate) {
 }
 
 /**
+ * Generates and adds a vertex html element.
+ * @param {String} type Station type
+ * @param {Number} id Station id
+ * @param {String} name Name of the station to be displayed in the station box
+ * @param {String} hint Content of option tooltip for the template (can be null)
+ * @param {String} color1 Color for the left side of the box
+ * @param {String} color2 Color for the right side of the box
+ * @param {Number} top Y coordinate of the upper left corner of the station box
+ * @param {Number} left X coordinate of the upper left corner of the station box
+ * @param {Boolean} isTemplate Is the box to be added to the canvas (false) or to the templates bar (true)
+ * @returns Station html element
+ */
+function addVertex(type, id, name, hint ,color1, color2, top, left, isTemplate) {
+  const box=document.createElement("div");
+  box.className="vertex draggable";
+  box.id=id;
+  box.style.zIndex=1;
+  box.style.top=top+"px";
+  box.style.left=left+"px";
+  box.style.color="white";
+  box.style.background=color1+" linear-gradient(to right, "+color1+", "+color2+")";
+  box.draggable=true;
+  box.dataset.type=type;
+  box.innerHTML=name;
+  if (hint) box.title=hint;
+  if (isTemplate) {
+    document.getElementById("templates_area").appendChild(box);
+    box.ondragstart=dragTemplate;
+  } else {
+    document.getElementById("canvas_area").appendChild(box);
+    box.ondragstart=dragElement;
+    box.ondrag=dragElementProgress;
+  }
+  return box;
+}
+
+/**
  * Generates and adds a text line html element.
  * @param {String} type Element type
  * @param {Number} id Element id
@@ -351,6 +388,14 @@ templates.push({
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("SignalSource",id,language.templates.signalSource+"<br>"+nr,language.templates.signalSourceHint,"#FB3","#FD7",top,left,isTemplate),
   setup: {signal: '', b: 1}
+});
+templates.push({
+  type: 'Vertex',
+  color: "#CCC",
+  name: language.templates.vertex,
+  maxEdgesIn: 999,
+  maxEdgesOut: 1,
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addVertex("Vertex",id,"",language.templates.vertexHint,"#CCC","#CCC",top,left,isTemplate),
 });
 templates.push({
   type: 'Text',

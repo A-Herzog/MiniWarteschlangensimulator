@@ -164,6 +164,19 @@
   cursor: pointer;
 }
 
+.vertex {
+  border: 1px solid gray;
+  border-radius: 4px;
+  color: white;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  display: block;
+  box-shadow: 3px 3px 8px #777;
+  cursor: pointer;
+}
+
 .box_diagram {
   border: 1px solid lightgray;
   color: white;
