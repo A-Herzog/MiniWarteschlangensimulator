@@ -102,6 +102,8 @@ class WebSimulator extends Simulator {
     status+="<p><u>"+stationName+"</u><br>";
     status+="<small>";
     let count=0;
+    let ES=null;
+    let EV=null;
     for (let recordName in stationData) {
       const className=stationData[recordName].constructor.name;
       if (className=='States') {
@@ -115,12 +117,20 @@ class WebSimulator extends Simulator {
         if (count>0 && count%2==0) status+="<br>";
         count++;
         status+=getCharacteristicsInfo("E["+recordName+"]")+"=<span title='"+stationData[recordName].mean.toLocaleString()+"'>"+statcore.formatShorter(stationData[recordName].mean)+"</span>";
+        if (recordName=='S') ES=stationData[recordName].mean;
+        if (recordName=='V') EV=stationData[recordName].mean;
         if (recordName=='cBusy' && stationData.c) {
           if (count>0) status+=", ";
           if (count>0 && count%2==0) status+="<br>";
           count++;
           const rho=stationData[recordName].mean/stationData.c;
           status+=getCharacteristicsInfo("rho")+"=<span title='"+(rho*100).toLocaleString()+"%'>"+statcore.formatShorter(rho*100)+"%</span>";
+        }
+        if (ES!=null && EV!=null && ES>0) {
+          const flowFactor=EV/ES;
+          status+=", "+getCharacteristicsInfo("flowfactor")+"="+statcore.formatShorter(flowFactor);
+          ES=null;
+          EV=null;
         }
       }
       if (className=='Counter') {
