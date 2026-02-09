@@ -478,30 +478,31 @@ function animationFastForwardStep2(arrivalMio) {
  */
 function animationFastForwardShowFullData() {
   const statistics=worker.full;
-  let content="";
+
+  let head="";
+  let body="";
   const contentPlain=[];
 
-  content+='<!DOCTYPE html>';
-  content+='<head>';
-  content+='<meta charset="utf-8">';
-  content+='<title>Mini Warteschlangensimulator</title>';
-  content+='<meta name="viewport" content="width=device-width, initial-scale=1">';
-  content+='<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">';
-  content+='<link href="./libs/bootstrap.min.css" rel="stylesheet">';
-  content+='<link href="./libs/bootstrap-icons.min.css" rel="stylesheet">';
-  content+='</head>';
-  content+='<body style="background-color: #E7E7E7;">';
+  let baseURL=document.location.toLocaleString();
+  baseURL=baseURL.substring(0,baseURL.lastIndexOf('/')+1);
 
-  content+='<nav class="navbar navbar-expand-lg navbar-light bg-success" style="padding: 10px 20px; cursor: default; user-select: none;"><h3 class="text-light">'+language.tabAnimation.simulationResults+'</h3></nav>';
-  content+='<div class="wrapper" style="padding: 20px;">';
+  head+='<meta charset="utf-8">';
+  head+='<title>Mini Warteschlangensimulator</title>';
+  head+='<meta name="viewport" content="width=device-width, initial-scale=1">';
+  head+='<link rel="shortcut icon" type="image/x-icon" href="'+baseURL+'favicon.ico">';
+  head+='<link href="'+baseURL+'libs/bootstrap.min.css" rel="stylesheet">';
+  head+='<link href="'+baseURL+'libs/bootstrap-icons.min.css" rel="stylesheet">';
 
-  content+="<p>";
-  content+=language.tabAnimation.time+": "+formatTime(statistics.time)+"<br>";
-  content+=language.tabAnimation.events+": "+statistics.eventCount.toLocaleString()+"<br>";
-  content+=language.tabAnimation.threads+": "+statistics.threads+"<br>";
-  content+=language.tabAnimation.runTime+": "+statistics.runTime.toLocaleString()+" ms<br>";
-  content+=language.tabAnimation.eventsPerThreadPerSecond+": "+Math.round(statistics.eventCount/statistics.runTime/statistics.threads*1000).toLocaleString();
-  content+="</p>"
+  body+='<nav class="navbar navbar-expand-lg navbar-light bg-success" style="padding: 10px 20px; cursor: default; user-select: none;"><h3 class="text-light">'+language.tabAnimation.simulationResults+'</h3></nav>';
+  body+='<div class="wrapper" style="padding: 20px;">';
+
+  body+="<p>";
+  body+=language.tabAnimation.time+": "+formatTime(statistics.time)+"<br>";
+  body+=language.tabAnimation.events+": "+statistics.eventCount.toLocaleString()+"<br>";
+  body+=language.tabAnimation.threads+": "+statistics.threads+"<br>";
+  body+=language.tabAnimation.runTime+": "+statistics.runTime.toLocaleString()+" ms<br>";
+  body+=language.tabAnimation.eventsPerThreadPerSecond+": "+Math.round(statistics.eventCount/statistics.runTime/statistics.threads*1000).toLocaleString();
+  body+="</p>"
 
   contentPlain.push(language.tabAnimation.time+": "+formatTime(statistics.time));
   contentPlain.push(language.tabAnimation.threads+": "+statistics.threads);
@@ -510,45 +511,45 @@ function animationFastForwardShowFullData() {
   for (let priority=3;priority>=1;priority--) for (let stationName in statistics.stations) {
     const stationData=statistics.stations[stationName];
     if (stationData.priority==priority) {
-      content+="<h4>"+stationName+"</h4>";
-      content+="<ul>";
+      body+="<h4>"+stationName+"</h4>";
+      body+="<ul>";
       contentPlain.push(stationName);
       let ES=null;
       let EV=null;
       for (let recordName in stationData.records) {
         const recordData=stationData.records[recordName];
         if (typeof(recordData)=='number') continue;
-        content+="<li>";
+        body+="<li>";
         let plainLine="";
         if (typeof(recordData.mean)!='undefined') {
           if (recordData.name=='S') ES=recordData.mean;
           if (recordData.name=='V') EV=recordData.mean;
-          content+=getCharacteristicsInfo("E["+recordData.name+"]")+"="+recordData.mean.toLocaleString();
+          body+=getCharacteristicsInfo("E["+recordData.name+"]")+"="+recordData.mean.toLocaleString();
           plainLine+="E["+recordData.name+"]="+recordData.mean.toLocaleString();
           if (typeof(recordData.sd)!='undefined') {
-            content+=", "+getCharacteristicsInfo("SD["+recordData.name+"]")+"="+recordData.sd.toLocaleString();
-            content+=", "+getCharacteristicsInfo("CV["+recordData.name+"]")+"="+recordData.cv.toLocaleString();
+            body+=", "+getCharacteristicsInfo("SD["+recordData.name+"]")+"="+recordData.sd.toLocaleString();
+            body+=", "+getCharacteristicsInfo("CV["+recordData.name+"]")+"="+recordData.cv.toLocaleString();
             plainLine+=", SD["+recordData.name+"]="+recordData.sd.toLocaleString();
             plainLine+=", CV["+recordData.name+"]="+recordData.cv.toLocaleString();
           }
           if (typeof(recordData.max)!='undefined') {
-            content+=", "+getCharacteristicsInfo("Min["+recordData.name+"]")+"="+recordData.min.toLocaleString();
-            content+=", "+getCharacteristicsInfo("Max["+recordData.name+"]")+"="+recordData.max.toLocaleString();
+            body+=", "+getCharacteristicsInfo("Min["+recordData.name+"]")+"="+recordData.min.toLocaleString();
+            body+=", "+getCharacteristicsInfo("Max["+recordData.name+"]")+"="+recordData.max.toLocaleString();
             plainLine+=", Min["+recordData.name+"]="+recordData.min.toLocaleString();
             plainLine+=", Max["+recordData.name+"]="+recordData.max.toLocaleString();
           }
           if (typeof(recordData.sd)!='undefined') {
-            content+=", "+getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
+            body+=", "+getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
             plainLine+=", n="+recordData.count.toLocaleString();
           }
           if (recordData.name=='cBusy' && stationData.records.c) {
             const rho=recordData.mean/stationData.records.c;
-            content+=", "+getCharacteristicsInfo("rho")+"="+(rho*100).toLocaleString()+"%";
+            body+=", "+getCharacteristicsInfo("rho")+"="+(rho*100).toLocaleString()+"%";
             plainLine+=", rho="+(rho*100).toLocaleString()+"%";
           }
           if (ES!=null && EV!=null && ES>0) {
             const flowFactor=EV/ES;
-            content+=", "+getCharacteristicsInfo("flowfactor")+"="+flowFactor.toLocaleString();
+            body+=", "+getCharacteristicsInfo("flowfactor")+"="+flowFactor.toLocaleString();
             plainLine+=", "+language.statisticsInfo.flowfactorName+"="+flowFactor.toLocaleString();
             ES=null;
             EV=null;
@@ -565,32 +566,31 @@ function animationFastForwardShowFullData() {
               value*=60;
               unit=language.statisticsInfo.throughputPerHour;
             }
-            content+=getCharacteristicsInfo("throughput")+"="+value.toLocaleString()+" "+unit;
+            body+=getCharacteristicsInfo("throughput")+"="+value.toLocaleString()+" "+unit;
             plainLine+=language.statisticsInfo.throughputName+"="+value.toLocaleString()+" "+unit;
           } else {
-            content+=getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
+            body+=getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
             plainLine+="n="+recordData.count.toLocaleString();
           }
         }
         contentPlain.push(plainLine);
-        content+="</li>";
+        body+="</li>";
       }
-      content+="</ul>";
+      body+="</ul>";
       contentPlain.push("");
     }
   }
 
-  content+='<p style="margin-top: 20px;">';
-  content+='<button type="button" class="btn btn-primary bi-x-circle" onclick="window.close()"> '+language.dialog.CloseWindow+'</button>';
-  content+='<button type="button" class="btn btn-primary bi-clipboard" style="margin-left: 10px;" onclick="navigator.clipboard.writeText(atob(\''+btoa(contentPlain.join("\n"))+'\'));"> '+language.tabAnimation.copy+'</button>';
-  content+='</p>';
+  body+='<p style="margin-top: 20px;">';
+  body+='<button type="button" class="btn btn-primary bi-x-circle" onclick="window.close()"> '+language.dialog.CloseWindow+'</button>';
+  body+='<button type="button" class="btn btn-primary bi-clipboard" style="margin-left: 10px;" onclick="navigator.clipboard.writeText(atob(\''+btoa(contentPlain.join("\n"))+'\'));"> '+language.tabAnimation.copy+'</button>';
+  body+='</p>';
 
-  content+='</div>';
-
-  content+='</body>';
-  content+='</html>';
+  body+='</div>';
 
   const newWindow=window.open('');
-  newWindow.document.write(content);
+  newWindow.document.head.innerHTML=head;
+  newWindow.document.body.innerHTML=body;
+  newWindow.document.body.style.backgroundColor='#E7E7E7';
   newWindow.focus()
 }
