@@ -603,7 +603,16 @@ class SimDecide extends SimElement {
 
     /* Use options in turn */
     if (this.mode==5) {
-      /* Nothing to check */
+      const countStrings=setup.rates.split(';');
+      while (countStrings.length<this.nextSimElements.length) rateStrings.push("1");
+      this.counts=[];
+      this.countsSum=0;
+      for (let i=0;i<this.nextSimElements.length;i++) {
+        const count=getNotNegativeInt(countStrings[i]);
+        if (count==null) return language.builderDecide.nextCount1+" "+(i+1)+" "+language.builderDecide.nextCount2+" "+this.nextSimElements[i].name+" "+language.builderDecide.nextCount3;
+        this.counts.push(count);
+        this.countsSum+=count;
+      }
     }
 
     /* Decide by condition */
@@ -710,8 +719,12 @@ class SimDecide extends SimElement {
 
     if (this.mode==5) {
       /* Use options in turn */
-      this.lastOption=(this.lastOption+1)%this.nextSimElements.length;
-      next=this.lastOption;
+      this.lastOption=(this.lastOption+1)%this.countsSum;
+      let s=0;
+      for (let i=0;i<this.counts.length;i++) {
+        s+=this.counts[i];
+        if (s>this.lastOption) {next=i; break;}
+      }
     }
 
     if (this.mode==6) {
