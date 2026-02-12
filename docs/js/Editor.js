@@ -757,6 +757,7 @@ function descriptionForParameter(parameter) {
   if (parameter=="SuccessNextBox") return language.editor.SuccessNextBox;
   if (parameter=='release') return language.editor.release;
   if (parameter=='signal') return language.editor.signal;
+  if (parameter=='signalRelease') return language.editor.signalRelease;
   if (parameter=='storeSignals') return language.editor.storeSignals;
   if (parameter=='source') return language.editor.source;
   if (parameter=='xrange') return language.editor.xrange;
@@ -783,6 +784,7 @@ function nameForParameter(parameter) {
   if (parameter=="SuccessNextBox") return "";
   if (parameter=='release') return language.editor.releaseLabel;
   if (parameter=='signal') return language.editor.signalLabel;
+  if (parameter=='signalRelease') return language.editor.signalReleaseLabel;
   if (parameter=='storeSignals') return language.editor.storeSignalsLabel;
   if (parameter=='source') return language.editor.sourceLabel;
   if (parameter=='xrange') return language.editor.xrangeLabel;

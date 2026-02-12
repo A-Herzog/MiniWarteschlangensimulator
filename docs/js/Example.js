@@ -285,6 +285,7 @@ function loadBusStopp() {
   const barrierBoxId=addElementToModel("Barrier",180,300);
   setup=getElementByBoxId(barrierBoxId).setup;
   setup.signal='1';
+  setup.release='0';
   setup.storeSignals=false;
 
   const disposeBoxId1=addElementToModel("Dispose",130,500);

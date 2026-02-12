@@ -1160,6 +1160,9 @@ class SimBarrier extends SimElement {
     this.signalNr=getPositiveInt(setup.signal);
     if (this.signalNr==null) return language.builderProcess.signal;
 
+    this.signalRelease=getPositiveInt(setup.signalRelease);
+    if (this.signalRelease==null) return language.builderProcess.signalRelease;
+
     this.storeStignals=setup.storeSignals;
 
     this._initStatistics(globalStatistics,2,{W: new statcore.Values(), NQ: new statcore.States(), n: new statcore.Counter()});
@@ -1203,7 +1206,7 @@ class SimBarrier extends SimElement {
    */
   signal(simulator, nr) {
     if (nr!=this.signalNr) return;
-    this.release++; /* Increase release counter */
+    this.release+=this.signalRelease; /* Increase release counter */
     this.#testRelease(simulator);
     if (!this.storeStignals) this.release=0;
   }
@@ -1214,26 +1217,27 @@ class SimBarrier extends SimElement {
    */
   #testRelease(simulator) {
     /* Release possible? */
-    if (this.queue.length==0 || this.release==0) return;
-    this.release--; /* Decrease release counter */
+    while (this.queue.length>0 && this.release>0) {
+      this.release--; /* Decrease release counter */
 
-    const statistics=this.statistics;
-    const time=simulator.time;
+      const statistics=this.statistics;
+      const time=simulator.time;
 
-    /* Remove client from queue */
-    const client=this.queue.shift();
+      /* Remove client from queue */
+      const client=this.queue.shift();
 
-    /* Record statistics for client and for station */
-    const W=time-client.startWaiting;
-    statistics.W.add(W);
-    client.w+=W;
+      /* Record statistics for client and for station */
+      const W=time-client.startWaiting;
+      statistics.W.add(W);
+      client.w+=W;
 
-    /* Setup forwarding */
-    this._sendClient(simulator,client,this.nextSimElements[0],0);
+      /* Setup forwarding */
+      this._sendClient(simulator,client,this.nextSimElements[0],0);
 
-    /* Record queue length */
-    this.nq--;
-    statistics.NQ.set(time,this.nq);
+      /* Record queue length */
+      this.nq--;
+      statistics.NQ.set(time,this.nq);
+    }
   }
 }
 
