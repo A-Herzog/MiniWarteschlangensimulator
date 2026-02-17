@@ -155,8 +155,8 @@ Nach dem Erstellen oder Laden eines Modells kann dieses über<br>die <b><i class
 <br><br><br>
 <u>Hilfe und Unterstützung:</u><br>
 <ul>
-  <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpTutorial.click();">Einführung zum Mini Warteschlangensimulator</button></li>
-  <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpQT.click();">Grundkonzepte der Warteschlangentheorie</button></li>
+  <li class="mb-2"><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpTutorial.click();">Einführung zum Mini Warteschlangensimulator</button></li>
+  <li class="mb-2"><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpQT.click();">Grundkonzepte der Warteschlangentheorie</button></li>
   <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpGlossary.click();">Glossar der Warteschlangentheorie</button></li>
 </ul>
 </small>`;
@@ -553,8 +553,8 @@ After creating or loading a model, it can be simulated using the<br><b><i class=
 <br><br><br>
 <u>Help and support:</u><br>
 <ul>
-  <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpTutorial.click();">Introduction to Mini Warteschlangensimulator</button></li>
-  <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpQT.click();">Basic concepts of queueing theory</button></li>
+  <li class="mb-2"><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpTutorial.click();">Introduction to Mini Warteschlangensimulator</button></li>
+  <li class="mb-2"><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpQT.click();">Basic concepts of queueing theory</button></li>
   <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpGlossary.click();">Glossary of queueing theory</button></li>
 </ul>
 </small>`;
