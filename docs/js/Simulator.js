@@ -395,7 +395,7 @@ class SimulatorWorker {
   /**
    * Generates a text from a statistic object.
    * @param {Object} statistics Station statistics
-   * @returns Statistics results as (html formated) text
+   * @returns Statistics results as (html formatted) text
    * @see info
    */
   #buildTextFromStatistics(statistics) {
@@ -407,9 +407,13 @@ class SimulatorWorker {
       if (stationData.priority==priority) {
         status+="<p><u>"+stationName+"</u><br><small>";
         let count=0;
+        let ES=null;
+        let EV=null;
         for (let recordName in stationData.records) {
           const recordData=stationData.records[recordName];
           if (typeof(recordData)=='number') continue;
+          if (recordName=='E[S]') ES=recordData.mean;
+          if (recordName=='E[V]') EV=recordData.mean;
           if (count>0) status+=",&nbsp;&nbsp;";
           if (count>0 && count%4==0) status+="<br>";
           count++;
@@ -446,6 +450,15 @@ class SimulatorWorker {
             count++;
             status+=getCharacteristicsInfo("rho")+"=<span title='"+(rho*100).toLocaleString()+"%'>"+statcore.formatShorter(rho*100)+"%</span>";
           }
+          if (ES!=null && EV!=null && ES>0) {
+            if (count>0) status+=",&nbsp;&nbsp;";
+            if (count>0 && count%4==0) status+="<br>";
+            count++;
+            const flowFactor=EV/ES;
+            status+=getCharacteristicsInfo("flowfactor")+"=<span title='"+flowFactor.toLocaleString()+"'>"+statcore.formatShorter(flowFactor)+"</span>";
+            ES=null;
+            EV=null;
+          }
         }
         status+="</small></p>";
       }
@@ -457,7 +470,7 @@ class SimulatorWorker {
   /**
    * Joins the statistics from the threads to a single statistic object.
    * @param {Array} results Statistic results of the individual web workers
-   * @returns Joined statstics
+   * @returns Joined statistics
    * @see info
    * @see full
    */
