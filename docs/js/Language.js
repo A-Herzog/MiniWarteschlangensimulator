@@ -155,7 +155,7 @@ Nach dem Erstellen oder Laden eines Modells kann dieses über<br>die <b><i class
 <br><br><br>
 <u>Hilfe und Unterstützung:</u><br>
 <ul>
-  <li class="mb-2"><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpTutorial.click();">Einführung zum Mini Warteschlangensimulator</button></li>
+  <li class="mb-2 mt-2"><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpTutorial.click();">Einführung zum Mini Warteschlangensimulator</button></li>
   <li class="mb-2"><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpQT.click();">Grundkonzepte der Warteschlangentheorie</button></li>
   <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpGlossary.click();">Glossar der Warteschlangentheorie</button></li>
 </ul>
@@ -418,6 +418,35 @@ lang.statisticsInfo.flowfactorName="Flussgrad";
 lang.statisticsInfo.throughputPerSecond='Kunden/Sekunde';
 lang.statisticsInfo.throughputPerMinute='Kunden/Minute';
 lang.statisticsInfo.throughputPerHour='Kunden/Stunde';
+lang.statisticsInfo.simulationSystem="Simulationssystem";
+
+lang.statisticsInfo.infoColumn=`
+<h4>Erklärungen</h4>
+<ul>
+  <li><b>n</b>=Gibt die Gesamtanzahl der an einer Station eingetroffenen Kunden an.</li>
+</ul>
+<ul>
+  <li><b>E[&middot;]</b>=Erwartungswert der empirischen Verteilung der aufgezeichneten Daten, d.h. konkret der Mittelwert.</li>
+  <li><b>SD[&middot;]</b>=Standardabweichung (Maß für die absolute Streuung der Werte).</li>
+  <li><b>CV[&middot;]</b>=Variationskoeffizient (Maß für die relative Streuung der Werte), der Quotient aus der Standardabweichung und dem Erwartungswert.</li>
+  <li><b>Min[&middot;]</b>=Kleinster aufgezeichneter Wert.</li>
+  <li><b>Max[&middot;]</b>=Größter aufgezeichneter Wert.</li>
+  <li><b>Flussgrad</b>=Quotient aus Verweilzeit und Bedienzeit. Der Flussgrad ist im Minimalfall 1 (wenn keine Wartezeiten auftreten). Größere Flussgrade deuten im Verhältnis zur Bediendauer lange Wartezeiten hin.</li>
+</ul>
+<ul>
+  <li><b>W</b>=Wartezeit, d.h. E[W] ist die mittlere Wartezeit, CV[W] der Variationskoeffizient der Wartezeiten usw.</li>
+  <li><b>S</b>=Bedienzeit, d.h. E[S] ist die mittlere Bedienzeit, CV[S] der Variationskoeffizient der Bedienzeiten usw.</li>
+  <li><b>V</b>=Verweilzeit (=Summe aus Warte- und Bedienzeit), d.h. E[V] ist die mittlere Verweilzeit, CV[V] der Variationskoeffizient der Verweilzeiten usw.</li>
+  <li><b>N</b>=Anzahl an Kunden im System (wartend und in Bedienung), d.h. E[N] ist die mittlere Anzahl an Kunden im System, CV[N] der Variationskoeffizient der Anzahl an Kunden im System usw.</li>
+  <li><b>NQ</b>=Anzahl an Kunden in der Warteschlange, d.h. E[NQ] ist die mittlere Anzahl an Kunden in der Warteschlange, CV[NQ] der Variationskoeffizient der Anzahl an Kunden in der Warteschlange usw.</li>
+  <li><b>cBusy</b>=Anzahl an belegten Bedienern, d.h. E[cBusy] ist die mittlere Anzahl an belegten Bedienern, CV[cBusy] der Variationskoeffizient der Anzahl an belegten Bedienern usw.</li>
+  <li><b>&rho;</b>=Mittlere Auslastung des Systems (=Quotient aus im Mittel belegten Bedienern und der Anzahl an Bedienern)</li>
+</ul>
+<ul>
+  <li>An den <b>Bedienstationen</b> werden die Daten (Warte-, Bedien- und Verweilzeiten) der Kunden, die die betreffende Station passieren, erfasst.</li>
+  <li>An den <b>Ausgängen</b> selbst entstehen natürlich weder Warte- noch Bedienzeiten. Hier werden die Werte der Kunden, die das System über den betreffenden Ausgang verlassen, erfasst. Dabei kann es sich um Warte- und Bedienzeiten, die der Kunde auf seinem Weg über mehrere Stationen hinweg akkumuliert hat, handeln.</li>
+</ul>
+`;
 
 /* English */
 
@@ -553,7 +582,7 @@ After creating or loading a model, it can be simulated using the<br><b><i class=
 <br><br><br>
 <u>Help and support:</u><br>
 <ul>
-  <li class="mb-2"><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpTutorial.click();">Introduction to Mini Warteschlangensimulator</button></li>
+  <li class="mb-2 mt-2"><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpTutorial.click();">Introduction to Mini Warteschlangensimulator</button></li>
   <li class="mb-2"><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpQT.click();">Basic concepts of queueing theory</button></li>
   <li><button class="btn btn-link btn-sm" style="color: blue; padding: 0;" onclick="tabHomeHelpGlossary.click();">Glossary of queueing theory</button></li>
 </ul>
@@ -817,6 +846,36 @@ lang.statisticsInfo.flowfactorName="Flow factor";
 lang.statisticsInfo.throughputPerSecond='customers/second';
 lang.statisticsInfo.throughputPerMinute='customers/minute';
 lang.statisticsInfo.throughputPerHour='customers/hour';
+lang.statisticsInfo.simulationSystem="Simulation system";
+
+lang.statisticsInfo.infoColumn=`
+<h4>Explanations</h4>
+<ul>
+  <li><b>n</b>=Indicates the total number of customers who arrived at a station.</li>
+</ul>
+<ul>
+  <li><b>E[&middot;]</b>=Expected value of the empirical distribution of the recorded data, i.e., specifically the mean value.</li>
+  <li><b>SD[&middot;]</b>=Standard deviation (measure of the absolute variation of values).</li>
+  <li><b>CV[&middot;]</b>=Coefficient of variation (measure of the absolute variation of values), the quotient of the standard deviation and the expected value.</li>
+  <li><b>Min[&middot;]</b>=Minimal recorded value.</li>
+  <li><b>Max[&middot;]</b>=Maximal recorded value.</li>
+  <li><b>Flow factor</b>=Quotient of residence time and service time. The flow factor is in the minimal case 1 (if there are no waiting times at all). Higher flow factors indicate long waiting times in relation to the service times.</li>
+</ul>
+<ul>
+  <li><b>W</b>=Waiting time, i.e. E[W] is the average waiting time, CV[W] the coefficient of variation of the waiting times etc.</li>
+  <li><b>S</b>=Service time, i.e. E[S] is the average service time, CV[S] the coefficient of variation of the serice times etc.</li>
+  <li><b>V</b>=Residence time (=sum from waiting and service time), i.e. E[V] is the average residence time, CV[V] the coefficient of variation of the residence times etc.</li>
+  <li><b>N</b>=Number of customers in the system (waiting and in the service process), i.e. E[N] is the average number of customers in the system, CV[N] the coefficient of variation of the number of customers in the system etc.</li>
+  <li><b>NQ</b>=Number of customers in the queue, i.e. E[NQ] is the average number of customers in the queue, CV[NQ] the coefficient of variation of the number of customers in the queue etc.</li>
+  <li><b>cBusy</b>=Number of busy operators, i.e. E[cBusy] is the average number of busy operators, CV[cBusy] the coefficient of variation of the busy operators etc.</li>
+  <li><b>&rho;</b>=Average utilization of the system (=Quotient of the average number of busy operators and the number of operators)</li>
+</ul>
+<ul>
+  <li>The data (waiting, service, and residence times) of customers passing through the respective station is recorded at the <b>process stations</b>.</li>
+  <li>Of course, there are no waiting or service times at the <b>exits</b> themselves. Here, the values of the customers leaving the system via the relevant exit are recorded. These may be waiting and service times that the customer has accumulated on their way through several stations.</li>
+</ul>
+`;
+
 
 /* Activate language */
 

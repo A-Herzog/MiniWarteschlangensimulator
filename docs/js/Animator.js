@@ -494,19 +494,8 @@ function animationFastForwardShowFullData() {
   head+='<link href="'+baseURL+'libs/bootstrap-icons.min.css" rel="stylesheet">';
 
   body+='<nav class="navbar navbar-expand-lg navbar-light bg-success" style="padding: 10px 20px; cursor: default; user-select: none;"><h3 class="text-light">'+language.tabAnimation.simulationResults+'</h3></nav>';
-  body+='<div class="wrapper" style="padding: 20px;">';
-
-  body+="<p>";
-  body+=language.tabAnimation.time+": "+formatTime(statistics.time)+"<br>";
-  body+=language.tabAnimation.events+": "+statistics.eventCount.toLocaleString()+"<br>";
-  body+=language.tabAnimation.threads+": "+statistics.threads+"<br>";
-  body+=language.tabAnimation.runTime+": "+statistics.runTime.toLocaleString()+" ms<br>";
-  body+=language.tabAnimation.eventsPerThreadPerSecond+": "+Math.round(statistics.eventCount/statistics.runTime/statistics.threads*1000).toLocaleString();
-  body+="</p>"
-
-  contentPlain.push(language.tabAnimation.time+": "+formatTime(statistics.time));
-  contentPlain.push(language.tabAnimation.threads+": "+statistics.threads);
-  contentPlain.push("");
+  body+='<div class="row h-100">';
+  body+='<div class="col-lg-8"><div class="p-2">';
 
   for (let priority=3;priority>=1;priority--) for (let stationName in statistics.stations) {
     const stationData=statistics.stations[stationName];
@@ -581,11 +570,32 @@ function animationFastForwardShowFullData() {
     }
   }
 
+  body+="<h4>"+language.statisticsInfo.simulationSystem+"</h4>";
+  body+="<ul>";
+  body+="<li>"+language.tabAnimation.time+": "+formatTime(statistics.time)+"</li>";
+  body+="<li>"+language.tabAnimation.events+": "+statistics.eventCount.toLocaleString()+"</li>";
+  body+="<li>"+language.tabAnimation.threads+": "+statistics.threads+"</li>";
+  body+="<li>"+language.tabAnimation.runTime+": "+statistics.runTime.toLocaleString()+" ms</li>";
+  body+="<li>"+language.tabAnimation.eventsPerThreadPerSecond+": "+Math.round(statistics.eventCount/statistics.runTime/statistics.threads*1000).toLocaleString()+"</li>";
+  body+="</ul>";
+
+  contentPlain.push(language.statisticsInfo.simulationSystem);
+  contentPlain.push(language.tabAnimation.time+": "+formatTime(statistics.time));
+  contentPlain.push(language.tabAnimation.events+": "+statistics.eventCount.toLocaleString());
+  contentPlain.push(language.tabAnimation.threads+": "+statistics.threads);
+  contentPlain.push(language.tabAnimation.runTime+": "+statistics.runTime.toLocaleString()+" ms");
+  contentPlain.push(language.tabAnimation.eventsPerThreadPerSecond+": "+Math.round(statistics.eventCount/statistics.runTime/statistics.threads*1000).toLocaleString());
+  contentPlain.push("");
+
   body+='<p style="margin-top: 20px;">';
   body+='<button type="button" class="btn btn-primary bi-x-circle" onclick="window.close()"> '+language.dialog.CloseWindow+'</button>';
   body+='<button type="button" class="btn btn-primary bi-clipboard" style="margin-left: 10px;" onclick="navigator.clipboard.writeText(atob(\''+btoa(contentPlain.join("\n"))+'\'));"> '+language.tabAnimation.copy+'</button>';
   body+='</p>';
 
+  body+='</div></div>';
+  body+='<div class="col-lg-4" style="background-color: #E0E0E0;"><div class="p-2">';
+  body+=language.statisticsInfo.infoColumn;
+  body+='</div></div>';
   body+='</div>';
 
   const newWindow=window.open('');
