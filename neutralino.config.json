@@ -5,7 +5,7 @@
   "defaultMode": "window",
   "port": 0,
   "documentRoot": "/docs/",
-  "url": "/",
+  "url": "/index_app.html",
   "enableServer": true,
   "enableNativeAPI": true,
   "tokenSecurity": "none",
@@ -47,7 +47,7 @@
     "binaryName": "MiniWarteschlangensimulator",
     "resourcesPath": "/docs/",
     "clientLibrary": "docs/libs/neutralino.js",
-    "binaryVersion": "6.2.0",
-    "clientVersion": "6.2.0"
+    "binaryVersion": "6.5.0",
+    "clientVersion": "6.5.0"
   }
 }
