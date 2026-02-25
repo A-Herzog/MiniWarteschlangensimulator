@@ -553,6 +553,15 @@ class SimulatorWorker {
   }
 
   /**
+   * Returns full simulation statistics in raw format (for later processing in parameter series).
+   */
+  get rawFull() {
+    let data=[];
+    for (let i=0;i<this.results.length;i++) data.push(this.results[i].resultFull);
+    return data;
+  }
+
+  /**
    * Returns detailed simulation statistics.
    */
   get full() {

@@ -21,6 +21,7 @@ import {WebSimulator} from './Simulator.js';
 import {language} from './Language.js';
 import {getPositiveFloat, getNotNegativeFloat, getPositiveInt} from './Tools.js';
 import {SimulatorWorker} from './Simulator.js';
+import {loadMathJs} from './MathTools.js';
 
 
 let seriesParameters;
@@ -161,6 +162,15 @@ function getParameters() {
  * Shows a dialog for selecting the parameter to be changed in the parameter series.
  */
 function processSeries() {
+  /* Load math library */
+    loadMathJs(processSeriesWithMath);
+}
+
+/**
+ * Start parameter series system.
+ * Shows a dialog for selecting the parameter to be changed in the parameter series.
+ */
+function processSeriesWithMath() {
   showTemplatesSidebar();
 
   /* Check model */
@@ -448,28 +458,102 @@ function seriesParameterStart() {
 const seriesParameterColors=["blue", "red", "green", "orange", "black", "gray", "magenta"]
 
 /**
- * Generates a results table for export.
- * @param {String} inputName  Headingfor the first column
+ * Setup for toLocaleString(...) when exporting table data.
+ * @see buildTableShort(inputName, inputValues, results)
+ * @see buildTableLong(inputName, inputValues, results)
+ */
+const exportSetup={maximumFractionDigits: 10, useGrouping: false};
+
+/**
+ * Generates a short results table for export.
+ * @param {String} inputName  Heading for the first column
  * @param {Array} inputValues Values in the first column
  * @param {Array} results Values in the other columns
  * @returns Table for export
  */
-function buildTable(inputName, inputValues, results) {
+function buildTableShort(inputName, inputValues, results) {
   let table="";
+
+  /* Generate list of export data (to ensure same order on all models) */
+  const outputStations=[];
+  const outputStationRecords={};
+  for (let stationName in results[0]) {
+    outputStations.push(stationName);
+    const records=[];
+    for (let valueName in results[0][stationName]) records.push(valueName);
+    outputStationRecords[stationName]=records;
+  }
 
   /* Heading */
   table+=inputName;
-  for (let stationName in results[0]) for (let valueName in results[0][stationName]) {
+  for (let stationName of outputStations) for (let valueName of outputStationRecords[stationName]) {
     table+="\t"+stationName+" - "+((valueName=='n')?valueName:("E["+valueName+"]"));
   }
   table+="\n";
 
   /* Data lines */
   for (let i=0;i<results.length;i++) {
-    table+=inputValues[i].toLocaleString();
-    for (let stationName in results[i]) for (let valueName in results[i][stationName]) {
+    table+=inputValues[i].toLocaleString(undefined,exportSetup);
+    for (let stationName of outputStations) for (let valueName of outputStationRecords[stationName]) {
       const value=results[i][stationName][valueName];
-      table+="\t"+value.toLocaleString();
+      table+="\t"+value.toLocaleString(undefined,exportSetup);
+    }
+    table+="\n";
+  }
+
+  return table;
+}
+
+/**
+ * Generates a long results table for export.
+ * @param {String} inputName  Heading for the first column
+ * @param {Array} inputValues Values in the first column
+ * @param {Array} results Values in the other columns
+ * @returns Table for export
+ */
+function buildTableLong(inputName, inputValues, results) {
+  let table="";
+
+  /* Generate list of export data (to ensure same order on all models) */
+  const outputStations=[];
+  const outputStationRecords={};
+  for (let stationName in results[0].stations) {
+    outputStations.push(stationName);
+    const records=[];
+    for (let valueName in results[0].stations[stationName].records) if (valueName=='n' || valueName.startsWith("E[")) records.push(valueName);
+    outputStationRecords[stationName]=records;
+  }
+
+  /* Heading */
+  table+=inputName;
+  for (let stationName of outputStations) for (let valueName of outputStationRecords[stationName]) {
+    table+="\t"+stationName+" - "+valueName;
+    if (valueName.startsWith("E[")) {
+      const value=results[0].stations[stationName].records[valueName];
+      const shortName=valueName.substr(2,valueName.length-3);
+      if (typeof(value.sd)!='undefined') table+="\t"+stationName+" - SD["+shortName+"]";
+      if (typeof(value.cv)!='undefined') table+="\t"+stationName+" - CV["+shortName+"]";
+      if (typeof(value.min)!='undefined') table+="\t"+stationName+" - Min["+shortName+"]";
+      if (typeof(value.max)!='undefined') table+="\t"+stationName+" - Max["+shortName+"]";
+    }
+  }
+  table+="\n";
+
+  /* Data lines */
+  for (let i=0;i<results.length;i++) {
+    table+=inputValues[i].toLocaleString(undefined,exportSetup);
+    for (let stationName of outputStations) for (let valueName of outputStationRecords[stationName]) {
+      const value=results[i].stations[stationName].records[valueName];
+      if (valueName.startsWith("E[")) {
+        table+="\t"+value.mean.toLocaleString(undefined,exportSetup);
+        if (typeof(value.sd)!='undefined') table+="\t"+value.sd.toLocaleString(undefined,exportSetup);
+        if (typeof(value.sd)!='undefined') table+="\t"+value.cv.toLocaleString(undefined,exportSetup);
+        if (typeof(value.min)!='undefined') table+="\t"+value.min.toLocaleString(undefined,exportSetup);
+        if (typeof(value.max)!='undefined') table+="\t"+value.max.toLocaleString(undefined,exportSetup);
+      }
+      if (valueName=='n') {
+        table+="\t"+value.count.toLocaleString(undefined,exportSetup);
+      }
     }
     table+="\n";
   }
@@ -518,7 +602,8 @@ function loadChartJs(then) {
 function seriesParameterResults() {
   const results=parameterSeriesSimWorker.raw;
   const param=seriesParameters[parameterNr];
-  const table=buildTable(param.name1+" - "+param.name2,parameterSeriesSimValues,results);
+  const table=buildTableShort(param.name1+" - "+param.name2,parameterSeriesSimValues,results);
+  const tableLong=buildTableLong(param.name1+" - "+param.name2,parameterSeriesSimValues,parameterSeriesSimWorker.rawFull);
 
   /* Determine data series */
   const datasetNames=[];
@@ -560,6 +645,13 @@ function seriesParameterResults() {
   li.appendChild(a=document.createElement('a'));
   a.className='dropdown-item';
   a.style.cursor='pointer';
+  a.innerHTML=language.series.copyDiagramTableLong;
+  a.onclick=()=>navigator.clipboard.writeText(tableLong);
+
+  ul.appendChild(li=document.createElement('li'));
+  li.appendChild(a=document.createElement('a'));
+  a.className='dropdown-item';
+  a.style.cursor='pointer';
   a.innerHTML=language.series.copyDiagramImage;
   a.onclick=()=>{
     if (typeof(ClipboardItem)!="undefined") {
@@ -590,6 +682,13 @@ function seriesParameterResults() {
   a.style.cursor='pointer';
   a.innerHTML=language.series.saveDiagramTable;
   a.onclick=()=>download(table,language.tabAnimation.resultsFile);
+
+  ul.appendChild(li=document.createElement('li'));
+  li.appendChild(a=document.createElement('a'));
+  a.className='dropdown-item';
+  a.style.cursor='pointer';
+  a.innerHTML=language.series.saveDiagramTableLong;
+  a.onclick=()=>download(tableLong,language.tabAnimation.resultsFile);
 
   ul.appendChild(li=document.createElement('li'));
   li.appendChild(a=document.createElement('a'));

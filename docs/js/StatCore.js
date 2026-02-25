@@ -24,7 +24,7 @@ const statcore={};
 
 /**
  * Converts a number to a locale string with one digit
- * @param {Number} num Number to be formated as a locale string
+ * @param {Number} num Number to be formatted as a locale string
  * @returns Number as locale string with one digit
  */
 statcore.formatShorter=function(num) {
