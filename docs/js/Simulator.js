@@ -467,6 +467,68 @@ class SimulatorWorker {
     return status;
   }
 
+    /**
+   * Generates a plain text from a statistic object.
+   * @param {Object} statistics Station statistics
+   * @returns Statistics results as plain text
+   * @see info
+   */
+  #buildPlainTextFromStatistics(statistics) {
+    let status="";
+    status+=language.tabAnimation.time+": "+formatTime(statistics.time)+"\n";
+
+    for (let priority=3;priority>=1;priority--) for (let stationName in statistics.stations) {
+      const stationData=statistics.stations[stationName];
+      if (stationData.priority==priority) {
+        status+="\n";
+        status+=stationName+"\n";
+        let ES=null;
+        let EV=null;
+        for (let recordName in stationData.records) {
+          const recordData=stationData.records[recordName];
+          if (typeof(recordData)=='number') continue;
+          if (recordName=='E[S]') ES=recordData.mean;
+          if (recordName=='E[V]') EV=recordData.mean;
+          let value=null;
+          let isThroughput=false;
+          if (typeof(recordData.mean)!='undefined') value=recordData.mean;
+          if (typeof(recordData.throughput)!='undefined') {value=recordData.throughput; isThroughput=true;}
+          if (value===null) value=recordData.count;
+          let unit="";
+          if (isThroughput) {
+            unit=language.statisticsInfo.throughputPerSecond;
+            if (value<1) {
+              value*=60;
+              unit=language.statisticsInfo.throughputPerMinute;
+            }
+            if (value<1) {
+              value*=60;
+              unit=language.statisticsInfo.throughputPerHour;
+            }
+            unit=" "+unit
+          }
+          status+=recordName+"="+statcore.formatShorter(value)+unit+"\n";
+
+          if (recordData.name=="W" && typeof(recordData.cv)!='undefined') {
+            status+="CV[W]"+"="+statcore.formatShorter(recordData.cv)+"\n";
+          }
+          if (recordData.name=="cBusy" && typeof(stationData.records.c)!='undefined') {
+            const rho=recordData.mean/stationData.records.c;
+            status+="rho="+statcore.formatShorter(rho*100)+"%\n";
+          }
+          if (ES!=null && EV!=null && ES>0) {
+            const flowFactor=EV/ES;
+            status+=language.statisticsInfo.flowfactorName+"="+statcore.formatShorter(flowFactor)+"\n";
+            ES=null;
+            EV=null;
+          }
+        }
+      }
+    }
+
+    return status;
+  }
+
   /**
    * Joins the statistics from the threads to a single statistic object.
    * @param {Array} results Statistic results of the individual web workers
@@ -528,7 +590,7 @@ class SimulatorWorker {
   }
 
   /**
-   * Returns short simulation statistics.
+   * Returns short simulation statistics (as HTML).
    */
   get info() {
     const data=[];
@@ -540,6 +602,22 @@ class SimulatorWorker {
     } else {
       const result=this.#joinResults(data);
       return this.#buildTextFromStatistics(result);
+    }
+  }
+
+  /**
+   * Returns short simulation statistics (as text).
+   */
+  get infoText() {
+    const data=[];
+    data.threads=this.results.length;
+    for (let i=0;i<this.results.length;i++) data.push(this.results[i].resultFull);
+    if (data.length==1) {
+      data[0].threads=1;
+      return this.#buildPlainTextFromStatistics(data[0]);
+    } else {
+      const result=this.#joinResults(data);
+      return this.#buildPlainTextFromStatistics(result);
     }
   }
 

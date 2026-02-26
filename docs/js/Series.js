@@ -569,7 +569,7 @@ function buildTableLong(inputName, inputValues, results) {
 function download(content, filename) {
   const a=document.createElement('a');
   const blob=new Blob([content], {type: 'text/plain'});
-  a.href = window.URL.createObjectURL(blob);
+  a.href=window.URL.createObjectURL(blob);
   a.download=filename;
   a.click();
 }

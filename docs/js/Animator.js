@@ -430,7 +430,7 @@ function animationFastForward(arrivalMio) {
 function animationFastForwardStep2(arrivalMio) {
   stopAnimation();
 
-  let button;
+  let button, div, ul, li, a;
 
   const body=document.getElementById('modalAreaBody');
   const footer=document.getElementById('modalAreaFooter');
@@ -458,87 +458,127 @@ function animationFastForwardStep2(arrivalMio) {
   worker=new SimulatorWorker(models,body,progress,()=>{
     body.innerHTML=worker.info;
     footer.innerHTML="";
+
+    /* Ok button */
     footer.appendChild(button=document.createElement("button"));
     button.type="button";
     button.className="btn btn-primary bi-check";
     button.dataset.bsDismiss="modal";
     button.innerHTML=" "+language.dialog.Ok;
+
+    /* Show details button */
     footer.appendChild(button=document.createElement("button"));
     button.type="button";
     button.className="btn btn-success bi-file-earmark-text";
     button.onclick=()=>animationFastForwardShowFullData();
     button.innerHTML=" "+language.tabAnimation.allData;
+
+    /* Save options */
+    footer.appendChild(div=document.createElement('div'));
+    div.className='dropdown';
+    div.style.display='inline-block';
+
+    div.appendChild(button=document.createElement('button'));
+    button.type="button";
+    button.className="btn btn-success bi-download dropdown-toggle";
+    button.dataset.bsToggle='dropdown';
+    button.ariaExpanded='false';
+    button.innerHTML="&nbsp;"+language.tabAnimation.export;
+
+    div.appendChild(ul=document.createElement('ul'));
+    ul.className='dropdown-menu';
+
+    ul.appendChild(li=document.createElement('li'));
+    li.appendChild(a=document.createElement('a'));
+    a.className='dropdown-item';
+    a.style.cursor='pointer';
+    a.innerHTML=language.tabAnimation.exportCopyShort;
+    a.onclick=()=>navigator.clipboard.writeText(worker.infoText);
+
+    ul.appendChild(li=document.createElement('li'));
+    li.appendChild(a=document.createElement('a'));
+    a.className='dropdown-item';
+    a.style.cursor='pointer';
+    a.innerHTML=language.tabAnimation.exportCopyLong;
+    a.onclick=()=>navigator.clipboard.writeText(getFullResultsText(worker.full).text);
+
+    ul.appendChild(li=document.createElement('li'));
+    li.appendChild(a=document.createElement('a'));
+    a.className='dropdown-item';
+    a.style.cursor='pointer';
+    a.innerHTML=language.tabAnimation.exportSaveShort;
+    a.onclick=()=>downloadText(worker.infoText,language.tabAnimation.resultsFile);
+
+    ul.appendChild(li=document.createElement('li'));
+    li.appendChild(a=document.createElement('a'));
+    a.className='dropdown-item';
+    a.style.cursor='pointer';
+    a.innerHTML=language.tabAnimation.exportSaveLong;
+    a.onclick=()=>downloadText(getFullResultsText(worker.full).text,language.tabAnimation.resultsFile);
   },
   ()=>workerDialog.hide());
   worker.start();
 }
 
 /**
- * Shows the simulation results.
+ * Downloads some string as a file.
+ * @param {String} content Content for the file download
+ * @param {String} filename Destination file name
  */
-function animationFastForwardShowFullData() {
-  const statistics=worker.full;
+function downloadText(content, filename) {
+  const a=document.createElement('a');
+  const blob=new Blob([content], {type: 'text/plain'});
+  a.href=window.URL.createObjectURL(blob);
+  a.download=filename;
+  a.click();
+}
 
-  let head="";
-  let body="";
-  const contentPlain=[];
-
-  let baseURL=document.location.toLocaleString();
-  baseURL=baseURL.substring(0,baseURL.lastIndexOf('/')+1);
-
-  head+='<meta charset="utf-8">';
-  head+='<title>Mini Warteschlangensimulator</title>';
-  head+='<meta name="viewport" content="width=device-width, initial-scale=1">';
-  head+='<link rel="shortcut icon" type="image/x-icon" href="'+baseURL+'favicon.ico">';
-  head+='<link href="'+baseURL+'libs/bootstrap.min.css" rel="stylesheet">';
-  head+='<link href="'+baseURL+'libs/bootstrap-icons.min.css" rel="stylesheet">';
-
-  body+='<nav class="navbar navbar-expand-lg navbar-light bg-success" style="padding: 10px 20px; cursor: default; user-select: none;"><h3 class="text-light">'+language.tabAnimation.simulationResults+'</h3></nav>';
-  body+='<div class="row h-100">';
-  body+='<div class="col-lg-8"><div class="p-2">';
+function getFullResultsText(statistics) {
+  let html="";
+  let contentPlain=[];
 
   for (let priority=3;priority>=1;priority--) for (let stationName in statistics.stations) {
     const stationData=statistics.stations[stationName];
     if (stationData.priority==priority) {
-      body+="<h4>"+stationName+"</h4>";
-      body+="<ul>";
+      html+="<h4>"+stationName+"</h4>";
+      html+="<ul>";
       contentPlain.push(stationName);
       let ES=null;
       let EV=null;
       for (let recordName in stationData.records) {
         const recordData=stationData.records[recordName];
         if (typeof(recordData)=='number') continue;
-        body+="<li>";
+        html+="<li>";
         let plainLine="";
         if (typeof(recordData.mean)!='undefined') {
           if (recordData.name=='S') ES=recordData.mean;
           if (recordData.name=='V') EV=recordData.mean;
-          body+=getCharacteristicsInfo("E["+recordData.name+"]")+"="+recordData.mean.toLocaleString();
+          html+=getCharacteristicsInfo("E["+recordData.name+"]")+"="+recordData.mean.toLocaleString();
           plainLine+="E["+recordData.name+"]="+recordData.mean.toLocaleString();
           if (typeof(recordData.sd)!='undefined') {
-            body+=", "+getCharacteristicsInfo("SD["+recordData.name+"]")+"="+recordData.sd.toLocaleString();
-            body+=", "+getCharacteristicsInfo("CV["+recordData.name+"]")+"="+recordData.cv.toLocaleString();
+            html+=", "+getCharacteristicsInfo("SD["+recordData.name+"]")+"="+recordData.sd.toLocaleString();
+            html+=", "+getCharacteristicsInfo("CV["+recordData.name+"]")+"="+recordData.cv.toLocaleString();
             plainLine+=", SD["+recordData.name+"]="+recordData.sd.toLocaleString();
             plainLine+=", CV["+recordData.name+"]="+recordData.cv.toLocaleString();
           }
           if (typeof(recordData.max)!='undefined') {
-            body+=", "+getCharacteristicsInfo("Min["+recordData.name+"]")+"="+recordData.min.toLocaleString();
-            body+=", "+getCharacteristicsInfo("Max["+recordData.name+"]")+"="+recordData.max.toLocaleString();
+            html+=", "+getCharacteristicsInfo("Min["+recordData.name+"]")+"="+recordData.min.toLocaleString();
+            html+=", "+getCharacteristicsInfo("Max["+recordData.name+"]")+"="+recordData.max.toLocaleString();
             plainLine+=", Min["+recordData.name+"]="+recordData.min.toLocaleString();
             plainLine+=", Max["+recordData.name+"]="+recordData.max.toLocaleString();
           }
           if (typeof(recordData.sd)!='undefined') {
-            body+=", "+getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
+            html+=", "+getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
             plainLine+=", n="+recordData.count.toLocaleString();
           }
           if (recordData.name=='cBusy' && stationData.records.c) {
             const rho=recordData.mean/stationData.records.c;
-            body+=", "+getCharacteristicsInfo("rho")+"="+(rho*100).toLocaleString()+"%";
+            html+=", "+getCharacteristicsInfo("rho")+"="+(rho*100).toLocaleString()+"%";
             plainLine+=", rho="+(rho*100).toLocaleString()+"%";
           }
           if (ES!=null && EV!=null && ES>0) {
             const flowFactor=EV/ES;
-            body+=", "+getCharacteristicsInfo("flowfactor")+"="+flowFactor.toLocaleString();
+            html+=", "+getCharacteristicsInfo("flowfactor")+"="+flowFactor.toLocaleString();
             plainLine+=", "+language.statisticsInfo.flowfactorName+"="+flowFactor.toLocaleString();
             ES=null;
             EV=null;
@@ -555,29 +595,29 @@ function animationFastForwardShowFullData() {
               value*=60;
               unit=language.statisticsInfo.throughputPerHour;
             }
-            body+=getCharacteristicsInfo("throughput")+"="+value.toLocaleString()+" "+unit;
+            html+=getCharacteristicsInfo("throughput")+"="+value.toLocaleString()+" "+unit;
             plainLine+=language.statisticsInfo.throughputName+"="+value.toLocaleString()+" "+unit;
           } else {
-            body+=getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
+            html+=getCharacteristicsInfo("n")+"="+recordData.count.toLocaleString();
             plainLine+="n="+recordData.count.toLocaleString();
           }
         }
         contentPlain.push(plainLine);
-        body+="</li>";
+        html+="</li>";
       }
-      body+="</ul>";
+      html+="</ul>";
       contentPlain.push("");
     }
   }
 
-  body+="<h4>"+language.statisticsInfo.simulationSystem+"</h4>";
-  body+="<ul>";
-  body+="<li>"+language.tabAnimation.time+": "+formatTime(statistics.time)+"</li>";
-  body+="<li>"+language.tabAnimation.events+": "+statistics.eventCount.toLocaleString()+"</li>";
-  body+="<li>"+language.tabAnimation.threads+": "+statistics.threads+"</li>";
-  body+="<li>"+language.tabAnimation.runTime+": "+statistics.runTime.toLocaleString()+" ms</li>";
-  body+="<li>"+language.tabAnimation.eventsPerThreadPerSecond+": "+Math.round(statistics.eventCount/statistics.runTime/statistics.threads*1000).toLocaleString()+"</li>";
-  body+="</ul>";
+  html+="<h4>"+language.statisticsInfo.simulationSystem+"</h4>";
+  html+="<ul>";
+  html+="<li>"+language.tabAnimation.time+": "+formatTime(statistics.time)+"</li>";
+  html+="<li>"+language.tabAnimation.events+": "+statistics.eventCount.toLocaleString()+"</li>";
+  html+="<li>"+language.tabAnimation.threads+": "+statistics.threads+"</li>";
+  html+="<li>"+language.tabAnimation.runTime+": "+statistics.runTime.toLocaleString()+" ms</li>";
+  html+="<li>"+language.tabAnimation.eventsPerThreadPerSecond+": "+Math.round(statistics.eventCount/statistics.runTime/statistics.threads*1000).toLocaleString()+"</li>";
+  html+="</ul>";
 
   contentPlain.push(language.statisticsInfo.simulationSystem);
   contentPlain.push(language.tabAnimation.time+": "+formatTime(statistics.time));
@@ -587,9 +627,41 @@ function animationFastForwardShowFullData() {
   contentPlain.push(language.tabAnimation.eventsPerThreadPerSecond+": "+Math.round(statistics.eventCount/statistics.runTime/statistics.threads*1000).toLocaleString());
   contentPlain.push("");
 
+  return {html: html, list: contentPlain, text: contentPlain.join("\n")};
+}
+
+/**
+ * Shows the simulation results.
+ */
+function animationFastForwardShowFullData() {
+  const statistics=worker.full;
+
+  let head="";
+  let body="";
+
+  let baseURL=document.location.toLocaleString();
+  baseURL=baseURL.substring(0,baseURL.lastIndexOf('/')+1);
+
+  head+='<!DOCTYPE html>';
+  head+='<meta charset="utf-8">';
+  head+='<title>Mini Warteschlangensimulator</title>';
+  head+='<meta name="viewport" content="width=device-width, initial-scale=1">';
+  head+='<link rel="shortcut icon" type="image/x-icon" href="'+baseURL+'favicon.ico">';
+  head+='<link href="'+baseURL+'libs/bootstrap.min.css" rel="stylesheet">';
+  head+='<link href="'+baseURL+'libs/bootstrap-icons.min.css" rel="stylesheet">';
+
+  body+='<nav class="navbar navbar-expand-lg navbar-light bg-success" style="padding: 10px 20px; cursor: default; user-select: none;"><h3 class="text-light">'+language.tabAnimation.simulationResults+'</h3></nav>';
+  body+='<div class="row h-100">';
+  body+='<div class="col-lg-8"><div class="p-2">';
+
+  const results=getFullResultsText(statistics);
+  body+=results.html;
+  const text=results.text;
+
   body+='<p style="margin-top: 20px;">';
   body+='<button type="button" class="btn btn-primary bi-x-circle" onclick="window.close()"> '+language.dialog.CloseWindow+'</button>';
-  body+='<button type="button" class="btn btn-primary bi-clipboard" style="margin-left: 10px;" onclick="navigator.clipboard.writeText(atob(\''+btoa(contentPlain.join("\n"))+'\'));"> '+language.tabAnimation.copy+'</button>';
+  body+='<button type="button" class="btn btn-primary bi-clipboard" style="margin-left: 10px;" onclick="navigator.clipboard.writeText(atob(\''+btoa(text)+'\'));"> '+language.tabAnimation.copy+'</button>';
+  body+='<button type="button" class="btn btn-primary bi-download" style="margin-left: 10px;" onclick="const a=document.createElement(\'a\'); const blob=new Blob([atob(\''+btoa(text)+'\')], {type: \'text/plain\'}); a.href=window.URL.createObjectURL(blob); a.download=\''+language.tabAnimation.resultsFile+'\'; a.click();"> '+language.tabAnimation.save+'</button>';
   body+='</p>';
 
   body+='</div></div>';
