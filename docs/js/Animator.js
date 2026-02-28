@@ -506,6 +506,13 @@ function animationFastForwardStep2(arrivalMio) {
     li.appendChild(a=document.createElement('a'));
     a.className='dropdown-item';
     a.style.cursor='pointer';
+    a.innerHTML=language.tabAnimation.exportCopyTable;
+    a.onclick=()=>navigator.clipboard.writeText(getFullResultsTable(worker.full));
+
+    ul.appendChild(li=document.createElement('li'));
+    li.appendChild(a=document.createElement('a'));
+    a.className='dropdown-item';
+    a.style.cursor='pointer';
     a.innerHTML=language.tabAnimation.exportSaveShort;
     a.onclick=()=>downloadText(worker.infoText,language.tabAnimation.resultsFile);
 
@@ -515,6 +522,13 @@ function animationFastForwardStep2(arrivalMio) {
     a.style.cursor='pointer';
     a.innerHTML=language.tabAnimation.exportSaveLong;
     a.onclick=()=>downloadText(getFullResultsText(worker.full).text,language.tabAnimation.resultsFile);
+
+    ul.appendChild(li=document.createElement('li'));
+    li.appendChild(a=document.createElement('a'));
+    a.className='dropdown-item';
+    a.style.cursor='pointer';
+    a.innerHTML=language.tabAnimation.exportSaveTable;
+    a.onclick=()=>downloadText(getFullResultsTable(worker.full),language.tabAnimation.resultsFile);
   },
   ()=>workerDialog.hide());
   worker.start();
@@ -628,6 +642,70 @@ function getFullResultsText(statistics) {
   contentPlain.push("");
 
   return {html: html, list: contentPlain, text: contentPlain.join("\n")};
+}
+
+function getFullResultsTable(statistics) {
+  const rows=[];
+
+  for (let priority=3;priority>=1;priority--) for (let stationName in statistics.stations) {
+    const stationData=statistics.stations[stationName];
+    if (stationData.priority==priority) {
+      let ES=null;
+      let EV=null;
+      for (let recordName in stationData.records) {
+        const recordData=stationData.records[recordName];
+        if (typeof(recordData)=='number') continue;
+        if (typeof(recordData.mean)!='undefined') {
+          if (recordData.name=='S') ES=recordData.mean;
+          if (recordData.name=='V') EV=recordData.mean;
+
+          rows.push([stationName,"E["+recordData.name+"]",recordData.mean.toLocaleString()]);
+          if (typeof(recordData.sd)!='undefined') {
+            rows.push([stationName,"SD["+recordData.name+"]",recordData.sd.toLocaleString()]);
+            rows.push([stationName,"CV["+recordData.name+"]",recordData.cv.toLocaleString()]);
+          }
+          if (typeof(recordData.max)!='undefined') {
+            rows.push([stationName,"Min["+recordData.name+"]",recordData.min.toLocaleString()]);
+            rows.push([stationName,"Max["+recordData.name+"]",recordData.max.toLocaleString()]);
+          }
+          if (recordData.name=='cBusy' && stationData.records.c) {
+            const rho=recordData.mean/stationData.records.c;
+            rows.push([stationName,"rho=",(rho*100).toLocaleString()+"%"]);
+          }
+          if (ES!=null && EV!=null && ES>0) {
+            const flowFactor=EV/ES;
+            rows.push([stationName,language.statisticsInfo.flowfactorName,flowFactor.toLocaleString()]);
+            ES=null;
+            EV=null;
+          }
+        } else {
+          if (typeof(recordData.throughput)!='undefined') {
+            let value=recordData.throughput;
+            let unit=language.statisticsInfo.throughputPerSecond;
+            if (value<1) {
+              value*=60;
+              unit=language.statisticsInfo.throughputPerMinute;
+            }
+            if (value<1) {
+              value*=60;
+              unit=language.statisticsInfo.throughputPerHour;
+            }
+            rows.push([stationName,language.statisticsInfo.throughputName,value.toLocaleString()+" "+unit]);
+          } else {
+            rows.push([stationName,"n",recordData.count.toLocaleString()]);
+          }
+        }
+      }
+    }
+  }
+
+  rows.push([language.statisticsInfo.simulationSystem,language.tabAnimation.time,formatTime(statistics.time)]);
+  rows.push([language.statisticsInfo.simulationSystem,language.tabAnimation.events,statistics.eventCount.toLocaleString()]);
+  rows.push([language.statisticsInfo.simulationSystem,language.tabAnimation.threads,statistics.threads]);
+  rows.push([language.statisticsInfo.simulationSystem,language.tabAnimation.runTime,statistics.runTime.toLocaleString()+" ms"]);
+  rows.push([language.statisticsInfo.simulationSystem,language.tabAnimation.eventsPerThreadPerSecond,Math.round(statistics.eventCount/statistics.runTime/statistics.threads*1000).toLocaleString()]);
+
+  return rows.map(row=>row.join("\t")).join("\n");
 }
 
 /**
