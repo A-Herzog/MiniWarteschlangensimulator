@@ -22,6 +22,7 @@ import {SimulatorWorker, WebSimulator} from './Simulator.js';
 import {language, getCharacteristicsInfo} from "./Language.js";
 import {formatTime} from './SimCore.js';
 import {loadMathJs} from './MathTools.js';
+import {isDesktopApp} from "./Tools.js";
 
 /**
  * Start animation.
@@ -713,44 +714,10 @@ function getFullResultsTable(statistics) {
  */
 function animationFastForwardShowFullData() {
   const statistics=worker.full;
-
-  let head="";
-  let body="";
-
-  let baseURL=document.location.toLocaleString();
-  baseURL=baseURL.substring(0,baseURL.lastIndexOf('/')+1);
-
-  head+='<!DOCTYPE html>';
-  head+='<meta charset="utf-8">';
-  head+='<title>Mini Warteschlangensimulator</title>';
-  head+='<meta name="viewport" content="width=device-width, initial-scale=1">';
-  head+='<link rel="shortcut icon" type="image/x-icon" href="'+baseURL+'favicon.ico">';
-  head+='<link href="'+baseURL+'libs/bootstrap.min.css" rel="stylesheet">';
-  head+='<link href="'+baseURL+'libs/bootstrap-icons.min.css" rel="stylesheet">';
-
-  body+='<nav class="navbar navbar-expand-lg navbar-light bg-success" style="padding: 10px 20px; cursor: default; user-select: none;"><h3 class="text-light">'+language.tabAnimation.simulationResults+'</h3></nav>';
-  body+='<div class="row h-100">';
-  body+='<div class="col-lg-8"><div class="p-2">';
-
   const results=getFullResultsText(statistics);
-  body+=results.html;
-  const text=results.text;
+  localStorage.setItem("results-html",results.html);
+  localStorage.setItem("results-text",results.text);
 
-  body+='<p style="margin-top: 20px;">';
-  body+='<button type="button" class="btn btn-primary bi-x-circle" onclick="window.close()"> '+language.dialog.CloseWindow+'</button>';
-  body+='<button type="button" class="btn btn-primary bi-clipboard" style="margin-left: 10px;" onclick="navigator.clipboard.writeText(atob(\''+btoa(text)+'\'));"> '+language.tabAnimation.copy+'</button>';
-  body+='<button type="button" class="btn btn-primary bi-download" style="margin-left: 10px;" onclick="const a=document.createElement(\'a\'); const blob=new Blob([atob(\''+btoa(text)+'\')], {type: \'text/plain\'}); a.href=window.URL.createObjectURL(blob); a.download=\''+language.tabAnimation.resultsFile+'\'; a.click();"> '+language.tabAnimation.save+'</button>';
-  body+='</p>';
-
-  body+='</div></div>';
-  body+='<div class="col-lg-4" style="background-color: #E0E0E0;"><div class="p-2">';
-  body+=language.statisticsInfo.infoColumn;
-  body+='</div></div>';
-  body+='</div>';
-
-  const newWindow=window.open('');
-  newWindow.document.head.innerHTML=head;
-  newWindow.document.body.innerHTML=body;
-  newWindow.document.body.style.backgroundColor='#E7E7E7';
-  newWindow.focus()
+  const infoPageUrl='info'+((document.documentElement.lang=='de')?'_de':'')+'.html';
+  if (isDesktopApp) Neutralino.window.create('/'+infoPageUrl+'?results'); else window.open(infoPageUrl+'?results');
 }
