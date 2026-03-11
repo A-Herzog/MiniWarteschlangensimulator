@@ -366,9 +366,13 @@ function testRange() {
     if (value2==null) {info.innerHTML=language.series.rangeEndError+" "+language.series.rangeIntError; info.style.display=""; return false;}
     const step=getPositiveInt(stepStr);
     if (step==null) {info.innerHTML=language.series.rangeStepError+" "+language.series.rangeIntError; info.style.display=""; return false;}
-    if (value2<=value1) {info.innerHTML=language.series.rangeStartEndError; info.style.display=""; return false;}
-    parameterValue1=value1;
-    parameterValue2=value2;
+    if (value2<=value1) {
+      parameterValue1=value2;
+      parameterValue2=value1;
+    } else {
+      parameterValue1=value1;
+      parameterValue2=value2;
+    }
     parameterValueStep=step;
   } else {
     let value1, value2;
@@ -385,9 +389,13 @@ function testRange() {
     }
     const step=getPositiveFloat(stepStr);
     if (step==null) {info.innerHTML=language.series.rangeStepError+" "+language.series.rangeFloatError; info.style.display=""; return false;}
-    if (value2<=value1) {info.innerHTML=language.series.rangeStartEndError; info.style.display=""; return false;}
-    parameterValue1=value1;
-    parameterValue2=value2;
+    if (value2<=value1) {
+      parameterValue1=value2;
+      parameterValue2=value1;
+    } else {
+      parameterValue1=value1;
+      parameterValue2=value2;
+    }
     parameterValueStep=step;
   }
 
