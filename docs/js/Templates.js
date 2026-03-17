@@ -21,6 +21,25 @@ import {getPositiveFloat} from './Tools.js';
 import {dragElement, dragElementProgress, dragTemplate} from "./Editor.js";
 
 
+function getReduceBoxFontSize() {
+  const longestStationName="Bedienstation";
+  try {
+    const canvasArea=document.getElementById("canvas_area");
+    const testCanvas=document.createElement("canvas");
+    canvasArea.appendChild(testCanvas);
+    try {
+      const testCanvasContext=testCanvas.getContext("2d");
+      if (testCanvasContext.measureText(longestStationName).width>62) return true;
+    } finally {
+      canvasArea.removeChild(testCanvas);
+    }
+  } catch {
+    return false;
+  }
+}
+
+const reduceBoxFontSize=getReduceBoxFontSize();
+
 /**
  * Generates and adds a station box html element.
  * @param {String} type Station type
@@ -55,6 +74,17 @@ function addBox(type, id, name, hint ,color1, color2, top, left, isTemplate) {
     box.ondragstart=dragElement;
     box.ondrag=dragElementProgress;
   }
+
+  if (reduceBoxFontSize) {
+    try {
+      let fontSize=window.getComputedStyle(box, null).getPropertyValue('font-size');
+      if (fontSize.endsWith("px")) {
+        fontSize=parseInt(fontSize.substring(0,fontSize.length-2));
+        box.style.fontSize=(fontSize-2)+"px";
+      }
+    } catch {}
+  }
+
   return box;
 }
 
