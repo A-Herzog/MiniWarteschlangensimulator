@@ -8,6 +8,24 @@
   user-select: none;
 }
 
+.modal-body {
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#modalAreaBody {
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.infopage main {
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 #modalMessageBody {
   cursor: default;
 }
