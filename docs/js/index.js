@@ -29,7 +29,7 @@ modalConfirmationNoButton.innerHTML=" "+language.dialog.No;
 
 tabHome.innerHTML=" "+language.tabFile.title;
 tabHomeFileNew.innerHTML=" "+language.tabFile.modelNew;
-fileLoadDropTarget.innerHTML=" "+language.tabFile.modelLoad+"<br><small>"+language.tabFile.modelLoadDragDrop+"</small>";
+fileLoadDropTarget.innerHTML=" "+language.tabFile.modelLoad+"<br><small style='font-size: 9pt;'>"+language.tabFile.modelLoadDragDrop+"</small>";
 tabHomeFileSave.innerHTML=" "+language.tabFile.modelSave;
 tabHomeExamples.innerHTML=language.tabFile.examples;
 tabHomeExamples0.innerHTML=" "+language.tabFile.exampleSimple;

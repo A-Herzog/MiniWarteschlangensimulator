@@ -241,9 +241,8 @@ function fileLoadDrop(event) {
  * (in desktop app version; in web app version only drag and drop loading is possible)
  */
 function fileLoad() {
-  if (!isDesktopApp) return;
-
-  Neutralino.os.showOpenDialog(language.tabFile.modelLoad,{filters: [
+  if (isDesktopApp) {
+    Neutralino.os.showOpenDialog(language.tabFile.modelLoad,{filters: [
       {name: language.tabFile.modelFiles+' (*.json)', extensions: ['json']}
     ]}).then(file=>{
       if (file==null || file.length!=1) return;
@@ -251,6 +250,16 @@ function fileLoad() {
       if (file=='') return;
       Neutralino.filesystem.readFile(file).then(text=>fileLodeJSON(text));
     });
+  } else {
+    const fileSelect=document.createElement('input');
+    fileSelect.type='file';
+    fileSelect.onchange=e=>{
+      const reader=new FileReader();
+      reader.onloadend=()=>fileLodeJSON(reader.result);
+      reader.readAsText(e.target.files[0]);
+    }
+    fileSelect.click();
+  }
 }
 
 /**
