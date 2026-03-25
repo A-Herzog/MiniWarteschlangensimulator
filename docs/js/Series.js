@@ -389,13 +389,8 @@ function testRange() {
     }
     const step=getPositiveFloat(stepStr);
     if (step==null) {info.innerHTML=language.series.rangeStepError+" "+language.series.rangeFloatError; info.style.display=""; return false;}
-    if (value2<=value1) {
-      parameterValue1=value2;
-      parameterValue2=value1;
-    } else {
-      parameterValue1=value1;
-      parameterValue2=value2;
-    }
+    parameterValue1=value1;
+    parameterValue2=value2;
     parameterValueStep=step;
   }
 
@@ -430,12 +425,22 @@ function seriesParameterStart() {
   parameterSeriesSimSetups=[];
   const arrivalCount=parseInt(document.getElementById('seriesParameterArrivalCount').value);
   const baseModel=JSON.stringify({elements: elements, edges: edges, count: arrivalCount});
-  for (let value=parameterValue1;value<=parameterValue2;value+=parameterValueStep) {
-    const useValue=Math.round(value*1_000_000_000)/1_000_000_000;
-    const model=JSON.parse(baseModel);
-    for (let i=0;i<model.elements.length;i++) if (model.elements[i].id==param.id1) model.elements[i].setup[param.id2]=useValue;
-    parameterSeriesSimValues.push(useValue);
-    parameterSeriesSimSetups.push(model);
+  if (parameterValue1<parameterValue2) {
+    for (let value=parameterValue1;value<=parameterValue2;value+=parameterValueStep) {
+      const useValue=Math.round(value*1_000_000_000)/1_000_000_000;
+      const model=JSON.parse(baseModel);
+      for (let i=0;i<model.elements.length;i++) if (model.elements[i].id==param.id1) model.elements[i].setup[param.id2]=useValue;
+      parameterSeriesSimValues.push(useValue);
+      parameterSeriesSimSetups.push(model);
+    }
+  } else {
+    for (let value=parameterValue1;value>=parameterValue2;value-=parameterValueStep) {
+      const useValue=Math.round(value*1_000_000_000)/1_000_000_000;
+      const model=JSON.parse(baseModel);
+      for (let i=0;i<model.elements.length;i++) if (model.elements[i].id==param.id1) model.elements[i].setup[param.id2]=useValue;
+      parameterSeriesSimValues.push(useValue);
+      parameterSeriesSimSetups.push(model);
+    }
   }
 
   /* Show progress dialog */
