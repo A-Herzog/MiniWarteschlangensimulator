@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragElementProgress, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas, deleteSelectedElement};
+export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, fileBrowserStorage, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragElementProgress, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas, deleteSelectedElement};
 
 import {language} from "./Language.js";
 import {animationActive} from "./Animator.js";
@@ -82,7 +82,7 @@ function updateZoomButtons() {
 }
 
 /**
- * Decreate zoom level.
+ * Decrease zoom level.
  */
 function zoomOut() {
   if (canvasScale<=60) return;
@@ -287,6 +287,81 @@ function fileSave() {
     element.click();
     document.body.removeChild(element);
   }
+}
+
+/*
+* Menu function: File | Browser storage
+*/
+function fileBrowserStorage() {
+  document.getElementById('modalAreaTitle').innerHTML=language.tabFile.modelBrowserStorage;
+  const body=document.getElementById('modalAreaBody');
+  const footer=document.getElementById('modalAreaFooter');
+  body.innerHTML="";
+  footer.innerHTML="";
+  let button;
+
+  const div=document.createElement("div");
+  div.innerHTML=language.tabFile.modelBrowserStorageInfo;
+  div.className="mb-3";
+  body.appendChild(div);
+
+  /* Slots */
+  const table=document.createElement("table");
+  body.appendChild(table);
+  for (let i=0;i<5;i++) {
+    const nr=i;
+    const available=(localStorage.getItem("model"+i)!=null);
+    const date=localStorage.getItem("date"+i);
+    const tr=document.createElement("tr");
+    table.appendChild(tr);
+    let td;
+    tr.appendChild(td=document.createElement("td"));
+    td.innerHTML=(i+1);
+    td.style.fontWeight="bold";
+    tr.appendChild(td=document.createElement("td"));
+    td.innerHTML="("+(available?date:language.tabFile.modelBrowserStorageSlotEmpty)+")";
+    tr.appendChild(td=document.createElement("td"));
+    if (available) {
+      td.appendChild(button=document.createElement("button"));
+      button.type="button";
+      button.className="btn btn-sm btn-success bi bi-file-arrow-up ms-1";
+      button.dataset.bsDismiss="modal";
+      button.innerHTML=" "+language.tabFile.modelBrowserStorageLoad;
+      button.onclick=()=>{
+        showConfirmationMessage(language.restore.title,language.restore.questionBrowserStorage,()=>fileLodeJSON(localStorage.getItem("model"+nr)));
+      };
+      td.appendChild(button=document.createElement("button"));
+      button.type="button";
+      button.className="btn btn-sm btn-danger bi-x-circle ms-1";
+      button.dataset.bsDismiss="modal";
+      button.innerHTML=" "+language.tabFile.modelBrowserStorageDelete;
+      button.onclick=()=>{
+        localStorage.removeItem("model"+nr);
+        localStorage.removeItem("date"+nr);
+      };
+    }
+    td.appendChild(button=document.createElement("button"));
+    button.type="button";
+    button.className="btn btn-sm btn-primary bi bi-file-arrow-down ms-1";
+    button.dataset.bsDismiss="modal";
+    button.innerHTML=" "+language.tabFile.modelBrowserStorageSave;
+    button.onclick=()=>{
+      const model={elements: elements, edges: edges};
+      const json=JSON.stringify(model);
+      localStorage.setItem("model"+nr,json);
+      localStorage.setItem("date"+nr,new Date().toLocaleString());
+    };
+  }
+
+  /* Cancel button */
+  footer.appendChild(button=document.createElement("button"));
+  button.type="button";
+  button.className="btn btn-danger bi-x-circle";
+  button.dataset.bsDismiss="modal";
+  button.innerHTML=" "+language.dialog.Cancel;
+
+  const browserDialog=new bootstrap.Modal(document.getElementById('modalArea'),{});
+  browserDialog.show();
 }
 
 

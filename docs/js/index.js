@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import {language} from './Language.js';
-import {zoomIn, zoomOut, showConfirmationMessage, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick, deleteSelectedElement} from "./Editor.js";
+import {zoomIn, zoomOut, showConfirmationMessage, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, fileBrowserStorage, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick, deleteSelectedElement} from "./Editor.js";
 import {loadExample} from "./Example.js";
 import {startAnimation, animationPlayPause, animationSingleTimeStep, animationFastForward} from "./Animator.js";
 import {processSeries} from "./Series.js";
@@ -31,6 +31,7 @@ tabHome.innerHTML=" "+language.tabFile.title;
 tabHomeFileNew.innerHTML=" "+language.tabFile.modelNew;
 fileLoadDropTarget.innerHTML=" "+language.tabFile.modelLoad+"<br><small style='font-size: 9pt;'>"+language.tabFile.modelLoadDragDrop+"</small>";
 tabHomeFileSave.innerHTML=" "+language.tabFile.modelSave;
+if (tabHomeFileBrowser) tabHomeFileBrowser.innerHTML=" "+language.tabFile.modelBrowserStorage;
 tabHomeExamples.innerHTML=language.tabFile.examples;
 tabHomeExamples0.innerHTML=" "+language.tabFile.exampleSimple;
 tabHomeExamples1.innerHTML=" "+language.tabFile.exampleControl;
@@ -120,6 +121,7 @@ fileLoadDropTarget.ondragenter=e=>fileLoadDragEnter(e);
 fileLoadDropTarget.ondragleave=e=>fileLoadDragLeave(e);
 fileLoadDropTarget.ondrop=e=>fileLoadDrop(e);
 tabHomeFileSave.onclick=()=>fileSave();
+if (tabHomeFileBrowser) tabHomeFileBrowser.onclick=()=>fileBrowserStorage();
 
 file_button.onclick=()=>showFileSidebar();
 add_station.onclick=()=>showTemplatesSidebar();
