@@ -33,8 +33,21 @@
   <link href="./css/index.css" rel="stylesheet" media="none" onload="if(media!='all')media='all'">
   <script src="./libs/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"></script>
   <script src="./libs/neutralino.js"></script>
-  <script src="./js/LanguageTools.js"></script>
-  <script>selectLanguage([{name: "default", file: "index_app.html"}, {name: "de", file: "index_app_de.html"}]);</script>
+  <script>
+    function selectLanguage(languages) {
+      let selectedLanguage=localStorage.getItem('selectedLanguage');
+      let preferredFile;
+      if (selectedLanguage==null) {
+        const userLang=(navigator.language || navigator.userLanguage).toLocaleLowerCase();
+        preferredFile=languages.find(language=>language.name=='default').file;
+        for (let language of languages) if (userLang.startsWith(language.name)) {preferredFile=language.file; break;}
+      } else {
+        preferredFile=languages.find(language=>language.name==selectedLanguage).file;
+      }
+      if (!window.location.pathname.endsWith(preferredFile)) window.location.href='./'+preferredFile+window.location.search;
+    }
+    selectLanguage([{name: "default", file: "index_app.html"}, {name: "de", file: "index_app_de.html"}]);
+  </script>
 </head>
 
 <body>
