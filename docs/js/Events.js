@@ -96,6 +96,8 @@ class ArrivalEvent extends Event {
   static scheduleNext(simulator, station) {
     const time=simulator.time;
     const delta=station.distI();
+    const isLimited=typeof(station.isLimited)!='undefined' && station.isLimited;
+    if (isLimited && station.limit<=station.arrivalCount) return;
     simulator.addEvent(new ArrivalEvent(time+delta,station));
   }
 }

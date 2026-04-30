@@ -424,6 +424,15 @@ function animationFastForward(arrivalMio) {
 }
 
 /**
+ * Checks if multiple threads are allowed to be used for the simulation.
+ * @returns true if multiple threads are allowed, false otherwise
+ */
+function allowMultipleThreads() {
+  for (let e of elements) if (e.type=="Source" && e.setup.limited) return false;
+  return true;
+}
+
+/**
  * Cancels the animation and starts a simulation (without confirmation message).
  * @param {Number} arrivalMio Arrivals (in millions) to be simulated
  * @see animationFastForward
@@ -453,6 +462,7 @@ function animationFastForwardStep2(arrivalMio) {
   const countSum=arrivalMio*1_000_000;
   let cpuCount=navigator.hardwareConcurrency;
   if (navigator.userAgent.toLocaleLowerCase().indexOf("firefox")>=0 && cpuCount==16) cpuCount=24; /* Firefox will never report more than 16 threads; having more threads than logical core is of no (big) disadvantage, to guessing here. */
+  if (!allowMultipleThreads()) cpuCount=1;
   const model={elements: elements, edges: edges, count: Math.ceil(countSum/cpuCount)};
   const models=[];
   for (let i=0;i<cpuCount;i++) models.push(model);

@@ -457,7 +457,14 @@ function seriesParameterStart() {
   workerDialog.show();
 
   /* Run simulations */
-  parameterSeriesSimWorker=new SimulatorWorker(parameterSeriesSimSetups,body,progress,()=>{workerDialog.hide(); seriesParameterResults();},()=>workerDialog.hide());
+  parameterSeriesSimWorker=new SimulatorWorker(parameterSeriesSimSetups,body,progress,()=>{
+    setTimeout(()=>{ /* Needed to avoid problems with very fast simulations, where the dialog is closed before it is fully shown */
+      workerDialog.hide();
+    },100);
+    seriesParameterResults();
+  },()=>{
+    workerDialog.hide();
+  });
   parameterSeriesSimWorker.start();
 }
 

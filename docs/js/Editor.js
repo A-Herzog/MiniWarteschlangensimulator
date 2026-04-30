@@ -845,11 +845,13 @@ function descriptionForParameter(parameter) {
   if (parameter=='storeSignals') return language.editor.storeSignals;
   if (parameter=='source') return language.editor.source;
   if (parameter=='xrange') return language.editor.xrange;
+  if (parameter=='limited') return language.editor.limited;
+  if (parameter=='limit') return language.editor.limit;
   return "";
 }
 
 /**
- * Returns the formula smybol for a station parameter to be shown on the left of the input field for the parameter.
+ * Returns the formula symbol for a station parameter to be shown on the left of the input field for the parameter.
  * @param {String} parameter Station parameter name
  * @returns Formula symbol for the parameter
  */
@@ -872,6 +874,8 @@ function nameForParameter(parameter) {
   if (parameter=='storeSignals') return language.editor.storeSignalsLabel;
   if (parameter=='source') return language.editor.sourceLabel;
   if (parameter=='xrange') return language.editor.xrangeLabel;
+  if (parameter=='limited') return language.editor.limitedLabel;
+  if (parameter=='limit') return language.editor.limitLabel;
   return parameter;
 }
 
@@ -926,6 +930,32 @@ function addEditorElements(element, parent) {
       div.appendChild(span);
       span.className="input-group-text";
       span.innerHTML=labelName+":=";
+    }
+
+    if (name=="limit") {
+      const info2=document.createElement("div");
+      form.appendChild(info2);
+      info2.style.marginBottom="15px";
+      info2.style.fontSize="80%";
+      info2.innerHTML=language.editor.limitInfo;
+    }
+
+    if (name=="limited") {
+      div.classList.add("form-switch");
+      const checkBox=document.createElement("input");
+      div.appendChild(checkBox);
+      checkBox.type="checkbox";
+      checkBox.className="form-check-input";
+      checkBox.checked=element.setup[name];
+      checkBox.onchange=function(){element.setup[name]=checkBox.checked;}
+      checkBox.style.borderRadius=".25em";
+      const checkBoxLabel=document.createElement("label");
+      div.appendChild(checkBoxLabel);
+      checkBoxLabel.className="form-check-label";
+      checkBoxLabel.innerHTML=language.editor.limitedLabel2;
+      checkBoxLabel.style.paddingLeft="10px";
+      checkBoxLabel.htmlFor=checkBox;
+      continue;
     }
 
     if (name=="mode") {

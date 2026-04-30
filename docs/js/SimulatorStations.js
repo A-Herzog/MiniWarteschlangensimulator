@@ -185,6 +185,13 @@ class SimSource extends SimElement {
     this.b=getPositiveInt(setup.b);
     if (this.b==null) return language.builderSource.b;
 
+    this.isLimited=typeof(setup.limited)!='undefined' && setup.limited;
+    if (this.isLimited) {
+      this.limit=getPositiveInt(setup.limit);
+      if (this.limit==null) return language.builderSource.arrivallimit;
+    }
+    this.arrivalCount=0;
+
     this._initStatistics(globalStatistics,2,{n: new statcore.Counter()});
 
     return null;
@@ -196,7 +203,9 @@ class SimSource extends SimElement {
    * @param {Object} simulator Statistic object
    */
   generateInitialEvents(simulator) {
-    ArrivalEvent.scheduleNext(simulator,this);
+    if (!this.isLimited || this.limit>0) {
+      ArrivalEvent.scheduleNext(simulator,this);
+    }
   }
 
   /**
@@ -210,6 +219,7 @@ class SimSource extends SimElement {
     for (let i=1;i<=b;i++) {
       this._sendClient(simulator,new Client(),this.nextSimElements[0]);
     }
+    this.arrivalCount+=b;
     simulator.arrivalCount+=b;
     this.statistics.n.add(b);
   }

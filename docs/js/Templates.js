@@ -315,7 +315,7 @@ templates.push({
   maxEdgesIn: 0,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Source",id,language.templates.source+"<br>"+nr,language.templates.sourceHint,"green","#1C1",top,left,isTemplate),
-  setup: {EI: 100, CVI: 1, b: 1}
+  setup: {EI: 100, CVI: 1, b: 1, limited: false, limit: 10}
 });
 templates.push({
   type: 'Delay',

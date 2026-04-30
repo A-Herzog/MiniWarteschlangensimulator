@@ -37,7 +37,7 @@ onmessage=function(e) {
 
   const targetArrivalCount=request.count;
   while (true) {
-    simulator.executeNext();
+    if (!simulator.executeNext()) break;
     const arrivalCount=simulator.arrivalCount;
     if (arrivalCount%20000==0) postMessage(JSON.stringify({progress: arrivalCount/targetArrivalCount}));
     if (arrivalCount>targetArrivalCount) break;
