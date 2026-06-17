@@ -851,6 +851,24 @@ function descriptionForParameter(parameter) {
 }
 
 /**
+ * Returns the tooltip for a station parameter to be shown above the input field for the parameter.
+ * @param {String} parameter Station parameter name
+ * @returns Tooltip for the parameter
+ */
+function tooltipForParameter(name) {
+  if (name=="EI") return language.editor.EITooltip;
+  if (name=="CVI") return language.editor.CVITooltip;
+  if (name=="ES") return language.editor.ESTooltip;
+  if (name=="CVS") return language.editor.CVSTooltip;
+  if (name=="EWT") return language.editor.EWTTooltip;
+  if (name=="CVWT") return language.editor.CVWTTooltip;
+  if (name=="c") return language.editor.cTooltip;
+  if (name=="b") return language.editor.bTooltip;
+  if (name=="policy") return language.editor.policyTooltip;
+  return "";
+}
+
+/**
  * Returns the formula symbol for a station parameter to be shown on the left of the input field for the parameter.
  * @param {String} parameter Station parameter name
  * @returns Formula symbol for the parameter
@@ -915,13 +933,18 @@ function addEditorElements(element, parent) {
 
     const value=element.setup[name];
 
+    const span=document.createElement("span");
+    form.appendChild(span);
+    const tooltip=tooltipForParameter(name);
+    if (typeof(tooltip)!='undefined' && tooltip!='') span.title=tooltip;;
+
     const info=document.createElement("div");
-    form.appendChild(info);
+    span.appendChild(info);
     info.style.fontSize="90%";
     info.innerHTML=descriptionForParameter(name);
 
     const div=document.createElement("div");
-    form.appendChild(div);
+    span.appendChild(div);
     div.className="input-group";
 
     const labelName=nameForParameter(name);
