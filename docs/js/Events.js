@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {SendEvent, ArrivalEvent, ServiceDoneEvent, WaitingCancelEvent};
+export {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent};
 
 import {Event} from "./SimCore.js";
 
@@ -119,6 +119,26 @@ class ServiceDoneEvent extends Event {
 
   execute(simulator) {
     this.station.serviceEnded(simulator);
+  }
+}
+
+
+/**
+ * This event is executed when a post processing time at a process station has ended.
+ */
+class PostProcessingDoneEvent extends Event {
+  /**
+   * Constructor
+   * @param {Number} time Simulation time at which the event is to be executed
+   * @param {Object} station Station at which the post processing time is finished
+   */
+  constructor(time, station) {
+    super(time);
+    this.station=station;
+  }
+
+  execute(simulator) {
+    this.station.postProcessingEnded(simulator);
   }
 }
 

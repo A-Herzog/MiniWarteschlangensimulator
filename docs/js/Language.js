@@ -223,6 +223,10 @@ lang.editor.EWT="Mittlere Wartezeittoleranz";
 lang.editor.EWTTooltip="Die mittlere Zeit, die ein Kunde bereit ist, in der Warteschlange zu warten. Kürzere Wartezeittoleranzen führen zu mehr Kunden, die die Station verlassen, längere Wartezeittoleranzen zu weniger Kunden, die die Station als Warteabbrecher verlassen.";
 lang.editor.CVWT="Variationskoeffizient";
 lang.editor.CVWTTooltip="Der Variationskoeffizient der Wartezeittoleranzen. Ein Variationskoeffizient von 0 bedeutet, dass die Wartezeittoleranzen konstant sind. Je höher der Variationskoeffizient, desto stärker schwanken die Wartezeittoleranzen.";
+lang.editor.ES2="Mittlere Nachbearbeitungszeit";
+lang.editor.ES2Tooltip="Die mittlere Zeit, die ein Bediener nach dem Abschluss der Kundenbedienung weiter als belegt gilt, bevor er den nächsten Kunden annehmen kann.";
+lang.editor.CVS2="Variationskoeffizient";
+lang.editor.CVS2Tooltip="Der Variationskoeffizient der Nachbearbeitungszeit. Ein Variationskoeffizient von 0 bedeutet, dass die Nachbearbeitungszeit konstant sind. Je höher der Variationskoeffizient, desto stärker schwanken die Nachbearbeitungszeiten.";
 lang.editor.c="Anzahl an Bedienern";
 lang.editor.cTooltip="Die Anzahl an Bedienern, die an der Station zur Verfügung stehen. Mehr Bediener führen zu mehr bedienten Kunden pro Zeiteinheit, weniger Bediener zu weniger bedienten Kunden pro Zeiteinheit.";
 lang.editor.b="Batch-Größe";
@@ -297,6 +301,8 @@ lang.builderProcess={};
 lang.builderProcess.edge="Die Bedienstation muss eine oder zwei auslaufende Kanten besitzen.<br>Klicken Sie auf <b><i class='bi bi-share-fill'></i> Kanten hinzufügen</b>, um die Station mit einer weiteren Station zu verbinden.";
 lang.builderProcess.ES="Die angegebene mittlere Bediendauer <b>E[S]</b> ist ungültig.<br>Es muss eine <b>positive Zahl</b> angegeben werden.";
 lang.builderProcess.CVS="Der angegebene Variationskoeffizient der Bediendauern <b>CV[S]</b> ist ungültig.<br>Es muss eine <b>nichtnegative Zahl</b> angegeben werden.";
+lang.builderProcess.ES2="Die angegebene mittlere Nachbearbeitungszeit <b>E[S2]</b> ist ungültig.<br>Es muss eine <b>nichtnegative Zahl</b> angegeben werden.";
+lang.builderProcess.CVS2="Der angegebene Variationskoeffizient der Nachbearbeitungszeiten <b>CV[S2]</b> ist ungültig.<br>Es muss eine <b>nichtnegative Zahl</b> angegeben werden.";
 lang.builderProcess.b="Die angegebene Batch-Größe <b>b</b> ist ungültig.<br>Es muss eine <b>positive Ganzzahl</b> angegeben werden.";
 lang.builderProcess.c="Die angegebene Anzahl an Bedienern <b>c</b> ist ungültig.<br>Es muss eine <b>positive Ganzzahl</b> angegeben werden.";
 lang.builderProcess.EWT="Die angegebene mittlere Wartezeittolerant <b>E[WT]</b> ist ungültig.<br>Es muss eine <b>positive Zahl</b> angegeben werden.";
@@ -410,6 +416,7 @@ lang.series.saveDiagramImage="Diagramm als Bild speichern";
 lang.statisticsInfo={};
 lang.statisticsInfo.EW='Mittlere Wartezeit';
 lang.statisticsInfo.ES='Mittlere Bediendauer';
+lang.statisticsInfo.ES2='Mittlere Nachbearbeitungszeit';
 lang.statisticsInfo.EV='Mittlere Verweilzeit';
 lang.statisticsInfo.EN='Mittlere Anzahl an Kunden an der Station';
 lang.statisticsInfo.ENQ='Mittlere Anzahl an Kunden in der Warteschlange an der Station';
@@ -468,6 +475,7 @@ lang.statisticsInfo.infoColumn=`
 <ul>
   <li><b>W</b>=Wartezeit, d.h. E[W] ist die mittlere Wartezeit, CV[W] der Variationskoeffizient der Wartezeiten usw.</li>
   <li><b>S</b>=Bedienzeit, d.h. E[S] ist die mittlere Bedienzeit, CV[S] der Variationskoeffizient der Bedienzeiten usw.</li>
+  <li><b>S2</b>=Nachbearbeitungszeit, d.h. E[S2] ist die mittlere Zeitspanne, die ein Bediener nach dem Abschluss der Bearbeitung eines Kunden noch nicht bereit für die nächste Bedienung ist, CV[S2] der Variationskoeffizient der Nachbearbeitungszeiten usw.</li>
   <li><b>V</b>=Verweilzeit (=Summe aus Warte- und Bedienzeit), d.h. E[V] ist die mittlere Verweilzeit, CV[V] der Variationskoeffizient der Verweilzeiten usw.</li>
   <li><b>N</b>=Anzahl an Kunden im System (wartend und in Bedienung), d.h. E[N] ist die mittlere Anzahl an Kunden im System, CV[N] der Variationskoeffizient der Anzahl an Kunden im System usw.</li>
   <li><b>NQ</b>=Anzahl an Kunden in der Warteschlange, d.h. E[NQ] ist die mittlere Anzahl an Kunden in der Warteschlange, CV[NQ] der Variationskoeffizient der Anzahl an Kunden in der Warteschlange usw.</li>
@@ -682,6 +690,10 @@ lang.editor.EWT="Average waiting time tolerance";
 lang.editor.EWTTooltip="The average time a customer is willing to wait in the queue. Shorter waiting time tolerances lead to more customers leaving the station, longer waiting time tolerances to fewer customers leaving the station as waiting abandoners.";
 lang.editor.CVWT="Coefficient of variation";
 lang.editor.CVWTTooltip="The coefficient of variation of the waiting time tolerances. A coefficient of variation of 0 means that the waiting time tolerances are constant. The higher the coefficient of variation, the more the waiting time tolerances fluctuate.";
+lang.editor.ES2="Average post processing time";
+lang.editor.ES2Tooltip="The average the an operator needed after processing a client before he is ready for the next service process.";
+lang.editor.CVS2="Coefficient of variation";
+lang.editor.CVS2Tooltip="The coefficient of variation of the post processing times at the station. A coefficient of variation of 0 means that the post processing times are constant. The higher the coefficient of variation, the more the post processing times fluctuate.";
 lang.editor.c="Number of operators";
 lang.editor.cTooltip="The number of operators available at the station. More operators lead to more customers served per unit of time, fewer operators to fewer customers served per unit of time.";
 lang.editor.b="Batch size";
@@ -751,6 +763,8 @@ lang.builderProcess={};
 lang.builderProcess.edge="The process station has to have one or two outgoing edges.<br>Click on <b><i class='bi bi-share-fill'></i> Add edge</b> to connect the station to another station.";
 lang.builderProcess.ES="The specified average process time <b>E[S]</b> is invalid.<br>A <b>positive number</b> has to be entered.";
 lang.builderProcess.CVS="The specified coefficient of variation of the process times <b>CV[S]</b> is invalid.<br>A <b>non-negative number</b> has to be entered.";
+lang.builderProcess.ES="The specified average post processing time <b>E[S2]</b> is invalid.<br>A <b>non-negative number</b> has to be entered.";
+lang.builderProcess.CVS="The specified coefficient of variation of the post processinb times <b>CV[S2]</b> is invalid.<br>A <b>non-negative number</b> has to be entered.";
 lang.builderProcess.b="The specified batch size <b>b</b> is invalid.<br>A <b>positive integer number</b> has to be entered.";
 lang.builderProcess.c="The specified number of operators <b>c</b> is invalid.<br>A <b>positive integer number</b> has to be entered.";
 lang.builderProcess.EWT="The specified average waiting time tolerance <b>E[WT]</b> is invalid.<br>A <b>positive number</b> has to be entered.";
@@ -865,6 +879,7 @@ lang.series.saveDiagramImage="Save diagram image";
 lang.statisticsInfo={};
 lang.statisticsInfo.EW='Mean waiting time';
 lang.statisticsInfo.ES='Mean service time';
+lang.statisticsInfo.ES2='Mean post processing time';
 lang.statisticsInfo.EV='Mean residence time';
 lang.statisticsInfo.EN='Mean number of clients at the station';
 lang.statisticsInfo.ENQ='Mean number of clients in the queue at the station';
@@ -923,6 +938,7 @@ lang.statisticsInfo.infoColumn=`
 <ul>
   <li><b>W</b>=Waiting time, i.e. E[W] is the average waiting time, CV[W] the coefficient of variation of the waiting times etc.</li>
   <li><b>S</b>=Service time, i.e. E[S] is the average service time, CV[S] the coefficient of variation of the serice times etc.</li>
+  <li><b>S2</b>=Post processing time, i.e. E[S2] is the average time an operator is still not available for processing the next customer after a service process has ended, CV[S2] the coefficient of variation of the post processing times etc.</li>
   <li><b>V</b>=Residence time (=sum from waiting and service time), i.e. E[V] is the average residence time, CV[V] the coefficient of variation of the residence times etc.</li>
   <li><b>N</b>=Number of customers in the system (waiting and in the service process), i.e. E[N] is the average number of customers in the system, CV[N] the coefficient of variation of the number of customers in the system etc.</li>
   <li><b>NQ</b>=Number of customers in the queue, i.e. E[NQ] is the average number of customers in the queue, CV[NQ] the coefficient of variation of the number of customers in the queue etc.</li>
@@ -976,6 +992,7 @@ function buildAbbr(str,info) {
 function getCharacteristicsInfo(str) {
   if (str=='E[W]') return buildAbbr(str,language.statisticsInfo.EW);
   if (str=='E[S]') return buildAbbr(str,language.statisticsInfo.ES);
+  if (str=='E[S2]') return buildAbbr(str,language.statisticsInfo.ES2);
   if (str=='E[V]') return buildAbbr(str,language.statisticsInfo.EV);
   if (str=='E[N]') return buildAbbr(str,language.statisticsInfo.EN);
   if (str=='E[NQ]') return buildAbbr(str,language.statisticsInfo.ENQ);
@@ -989,6 +1006,7 @@ function getCharacteristicsInfo(str) {
   if (str=='SD[cBusy]') return buildAbbr(str,language.statisticsInfo.SDeBusy);
   if (str=='CV[W]') return buildAbbr(str,language.statisticsInfo.CVW);
   if (str=='CV[S]') return buildAbbr(str,language.statisticsInfo.CVS);
+  if (str=='CV[S2]') return buildAbbr(str,language.statisticsInfo.CVS2);
   if (str=='CV[V]') return buildAbbr(str,language.statisticsInfo.CVV);
   if (str=='CV[N]') return buildAbbr(str,language.statisticsInfo.CVN);
   if (str=='CV[NQ]') return buildAbbr(str,language.statisticsInfo.CVNQ);

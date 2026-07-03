@@ -573,6 +573,7 @@ function getFullResultsText(statistics) {
       for (let recordName in stationData.records) {
         const recordData=stationData.records[recordName];
         if (typeof(recordData)=='number') continue;
+        if (recordData.name=='S2' && recordData.mean==0.0) continue;
         html+="<li>";
         let plainLine="";
         if (typeof(recordData.mean)!='undefined') {
@@ -669,6 +670,8 @@ function getFullResultsTable(statistics) {
         if (typeof(recordData.mean)!='undefined') {
           if (recordData.name=='S') ES=recordData.mean;
           if (recordData.name=='V') EV=recordData.mean;
+
+          if (recordData.name=='S2' && recordData.mean==0.0) continue;
 
           rows.push([stationName,"E["+recordData.name+"]",recordData.mean.toLocaleString()]);
           if (typeof(recordData.sd)!='undefined') {

@@ -831,6 +831,8 @@ function descriptionForParameter(parameter) {
   if (parameter=="CVS") return language.editor.CVS;
   if (parameter=="EWT") return language.editor.EWT;
   if (parameter=="CVWT") return language.editor.CVWT;
+  if (parameter=="ES2") return language.editor.ES2;
+  if (parameter=="CVS2") return language.editor.CVS2;
   if (parameter=="c") return language.editor.c;
   if (parameter=="b") return language.editor.b;
   if (parameter=="mode") return language.editor.mode;
@@ -862,6 +864,8 @@ function tooltipForParameter(name) {
   if (name=="CVS") return language.editor.CVSTooltip;
   if (name=="EWT") return language.editor.EWTTooltip;
   if (name=="CVWT") return language.editor.CVWTTooltip;
+  if (name=="ES2") return language.editor.ES2Tooltip;
+  if (name=="CVS2") return language.editor.CVS2Tooltip;
   if (name=="c") return language.editor.cTooltip;
   if (name=="b") return language.editor.bTooltip;
   if (name=="policy") return language.editor.policyTooltip;
@@ -880,6 +884,8 @@ function nameForParameter(parameter) {
   if (parameter=="CVS") return "CV[S]";
   if (parameter=="EWT") return "E[WT]";
   if (parameter=="CVWT") return "CV[WT]";
+  if (parameter=="ES2") return "E[S2]";
+  if (parameter=="CVS2") return "CV[S2]";
   if (parameter=="mode") return language.editor.modeLabel;
   if (parameter=="policy") return language.editor.policyLabel;
   if (parameter=="rates") return "";

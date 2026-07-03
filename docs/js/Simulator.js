@@ -113,6 +113,7 @@ class WebSimulator extends Simulator {
         status+=getCharacteristicsInfo(recordName)+"="+stationData[recordName].current;
       }
       if (className=='Values' || className=='States') {
+        if (recordName=='S2' && stationData[recordName].mean==0.0) continue;
         if (count>0) status+=", ";
         if (count>0 && count%2==0) status+="<br>";
         count++;
@@ -412,6 +413,7 @@ class SimulatorWorker {
         for (let recordName in stationData.records) {
           const recordData=stationData.records[recordName];
           if (typeof(recordData)=='number') continue;
+          if (recordName=='E[S2]' && recordData.mean==0.0) continue;
           if (recordName=='E[S]') ES=recordData.mean;
           if (recordName=='E[V]') EV=recordData.mean;
           if (count>0) status+=",&nbsp;&nbsp;";
@@ -487,6 +489,7 @@ class SimulatorWorker {
         for (let recordName in stationData.records) {
           const recordData=stationData.records[recordName];
           if (typeof(recordData)=='number') continue;
+          if (recordName=='E[S2]' && recordData.mean==0.0) continue;
           if (recordName=='E[S]') ES=recordData.mean;
           if (recordName=='E[V]') EV=recordData.mean;
           let value=null;

@@ -333,7 +333,7 @@ templates.push({
   maxEdgesIn: 999,
   maxEdgesOut: 2,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Process",id,language.templates.process+"<br>"+nr,language.templates.processHint,"#00C","#33F",top,left,isTemplate),
-  setup: {ES: 80, CVS: 1, c: 1, b: 1, EWT: 300, CVWT: 1, policy: 1, SuccessNextBox: ''}
+  setup: {ES: 80, CVS: 1, c: 1, b: 1, EWT: 300, CVWT: 1, ES2: 0, CVS2: 1, policy: 1, SuccessNextBox: ''}
 });
 templates.push({
   type: 'Decide',

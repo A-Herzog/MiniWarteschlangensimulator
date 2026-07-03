@@ -18,7 +18,7 @@ export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, Si
 
 import {distributionBuilder} from "./SimulatorBuilder.js";
 import {statcore} from "./StatCore.js";
-import {SendEvent, ArrivalEvent, ServiceDoneEvent, WaitingCancelEvent} from "./Events.js";
+import {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent} from "./Events.js";
 import {getPositiveFloat, getNotNegativeFloat, getPositiveInt, getNotNegativeInt} from './Tools.js';
 import {language} from "./Language.js";
 import {complileCondition} from "./MathTools.js";
@@ -337,6 +337,12 @@ class SimProcess extends SimElement {
     if (CVS==null) return language.builderProcess.CVS;
     this.distS=distributionBuilder(ES,CVS);
 
+    const ES2=getNotNegativeFloat(setup.ES2);
+    if (ES2==null) return language.builderDelay.ES2;
+    const CVS2=getNotNegativeFloat(setup.CVS2);
+    if (CVS2==null) return language.builderDelay.CVS2;
+    this.distS2=distributionBuilder(ES2,CVS2);
+
     this.b=getPositiveInt(setup.b);
     if (this.b==null) return language.builderProcess.b;
 
@@ -369,6 +375,7 @@ class SimProcess extends SimElement {
     this._initStatistics(globalStatistics,2,{
       W: new statcore.Values(),
       S: new statcore.Values(),
+      S2: new statcore.Values(),
       V: new statcore.Values(),
       NQ: new statcore.States(),
       N: new statcore.States(),
@@ -442,6 +449,24 @@ class SimProcess extends SimElement {
    * @see ServiceDoneEvent
    */
   serviceEnded(simulator) {
+    /* Calculate post processing time */
+    const postProcessing=this.distS2();
+
+    if (postProcessing==0) {
+      /* No post processing needed */
+      this.postProcessingEnded(simulator);
+    } else {
+      /* Start of post processing time */
+      this.statistics.S2.add(postProcessing);
+      simulator.addEvent(new PostProcessingDoneEvent(simulator.time+postProcessing,this));
+    }
+  }
+
+  /**
+   * Notifies the station that a post processing time has ended.
+   * @param {Object} simulator Simulator object
+   */
+  postProcessingEnded(simulator) {
     /* Define operator as "available" */
     this.freeC++;
     this.statistics.cBusy.set(simulator.time,this.c-this.freeC);
