@@ -90,6 +90,7 @@ animationSpeedLabel.innerHTML=language.tabAnimation.speed;
 animationPlayPauseButtonOuter.title=language.tabAnimation.playPauseInfo;
 animationStepButtonOuter.title=language.tabAnimation.StepInfo;
 animationFastForwardButton.innerHTML=" "+language.tabAnimation.simulation;
+animationFastForwardButton.title=language.tabAnimation.simulationInfo;
 tabAnimationSimInfo.innerHTML=language.tabAnimation.simulationDropDown;
 tabAnimationSim0.innerHTML=language.tabAnimation.simulationDropDown1Mio;
 tabAnimationSim1.innerHTML="<b>"+language.tabAnimation.simulationDropDown5Mio+"</b>";

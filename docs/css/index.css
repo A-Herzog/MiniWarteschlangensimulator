@@ -38,6 +38,10 @@
   margin-left: 5px;
 }
 
+#animationFastForwardButton {
+  font-weight: bold;
+}
+
 .progress-bar {
   transition: none !important;
 }
