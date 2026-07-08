@@ -18,7 +18,7 @@ export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, Si
 
 import {distributionBuilder} from "./SimulatorBuilder.js";
 import {statcore} from "./StatCore.js";
-import {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent} from "./Events.js";
+import {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent, SignalEvent} from "./Events.js";
 import {getPositiveFloat, getNotNegativeFloat, getPositiveInt, getNotNegativeInt} from './Tools.js';
 import {language} from "./Language.js";
 import {complileCondition} from "./MathTools.js";
@@ -338,9 +338,9 @@ class SimProcess extends SimElement {
     this.distS=distributionBuilder(ES,CVS);
 
     const ES2=getNotNegativeFloat(setup.ES2);
-    if (ES2==null) return language.builderDelay.ES2;
+    if (ES2==null) return language.builderProcess.ES2;
     const CVS2=getNotNegativeFloat(setup.CVS2);
-    if (CVS2==null) return language.builderDelay.CVS2;
+    if (CVS2==null) return language.builderProcess.CVS2;
     this.distS2=distributionBuilder(ES2,CVS2);
 
     this.b=getPositiveInt(setup.b);
@@ -1141,6 +1141,9 @@ class SimSignal extends SimElement {
 
     if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderSeparate.edge;
 
+    this.delay=getNotNegativeFloat(this.editElement.setup.delay);
+    if (this.delay==null) return language.builderSignal.delay;
+
     return null;
   }
 
@@ -1150,7 +1153,11 @@ class SimSignal extends SimElement {
    * @param {Object} client Client object
    */
   processArrival(simulator, client) {
-    simulator.fireSignal(this.nr);
+    if (this.delay>0) {
+      simulator.addEvent(new SignalEvent(simulator.time+this.delay,this.nr));
+    } else {
+      simulator.fireSignal(this.nr);
+    }
     this._sendClient(simulator,client,this.nextSimElements[0],0);
   }
 }

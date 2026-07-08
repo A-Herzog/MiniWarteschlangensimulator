@@ -399,7 +399,8 @@ templates.push({
   name: language.templates.signal,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Signal",id,language.templates.signal+"<br>"+nr,language.templates.signalHint,"#FB3","#FD7",top,left,isTemplate)
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Signal",id,language.templates.signal+"<br>"+nr,language.templates.signalHint,"#FB3","#FD7",top,left,isTemplate),
+  setup: {delay: 0}
 });
 templates.push({
   type: 'Barrier',

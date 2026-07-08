@@ -835,6 +835,7 @@ function descriptionForParameter(parameter) {
   if (parameter=="CVS2") return language.editor.CVS2;
   if (parameter=="c") return language.editor.c;
   if (parameter=="b") return language.editor.b;
+  if (parameter=="delay") return language.editor.delay;
   if (parameter=="mode") return language.editor.mode;
   if (parameter=="policy") return language.editor.policy;
   if (parameter=="rates") return language.editor.rates;
@@ -868,6 +869,7 @@ function tooltipForParameter(name) {
   if (name=="CVS2") return language.editor.CVS2Tooltip;
   if (name=="c") return language.editor.cTooltip;
   if (name=="b") return language.editor.bTooltip;
+  if (name=="delay") return language.editor.delayTooltip;
   if (name=="policy") return language.editor.policyTooltip;
   return "";
 }
@@ -886,6 +888,7 @@ function nameForParameter(parameter) {
   if (parameter=="CVWT") return "CV[WT]";
   if (parameter=="ES2") return "E[S2]";
   if (parameter=="CVS2") return "CV[S2]";
+  if (parameter=="delay") return "t&Delta;";
   if (parameter=="mode") return language.editor.modeLabel;
   if (parameter=="policy") return language.editor.policyLabel;
   if (parameter=="rates") return "";

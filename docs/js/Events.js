@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent};
+export {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent, SignalEvent};
 
 import {Event} from "./SimCore.js";
 
@@ -161,5 +161,24 @@ class WaitingCancelEvent extends Event {
 
   execute(simulator) {
     this.station.cancelWaiting(simulator,this.client);
+  }
+}
+
+/**
+ * This event is executed when a signal is to be fired delayed.
+ */
+class SignalEvent extends Event {
+  /**
+   * Constructor
+   * @param {Number} time Simulation time at which the event is to be executed
+   * @param {Number} nr Number of the signal
+   */
+  constructor(time, nr) {
+    super(time);
+    this.nr=nr;
+  }
+
+  execute(simulator) {
+    simulator.fireSignal(this.nr);
   }
 }
