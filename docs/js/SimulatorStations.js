@@ -182,8 +182,16 @@ class SimSource extends SimElement {
     if (CVI==null) return language.builderSource.CVI;
     this.distI=distributionBuilder(EI,CVI);
 
-    this.b=getPositiveInt(setup.b);
-    if (this.b==null) return language.builderSource.b;
+    let b;
+    if (typeof(setup.b)=='number') {
+      b=[setup.b]; /* Is already a number. But test, if positive. */
+    } else {
+      b=setup.b.split(';');
+      if (b.length<1 || b.length>2) return language.builderSource.b;
+    }
+    b=b.map(x=>getPositiveInt(x));
+    if (b.some(x=>x==null)) return language.builderSource.b;
+    this.b=b;
 
     this.isLimited=typeof(setup.limited)!='undefined' && setup.limited;
     if (this.isLimited) {
@@ -214,7 +222,14 @@ class SimSource extends SimElement {
    * @param {Object} client Client object
    */
   processArrival(simulator, client) {
-    const b=this.b;
+    let b;
+    if (this.b.length==2) {
+      const rnd=Math.random();
+      b=this.b[0]+Math.floor(rnd*(this.b[1]-this.b[0]+1));
+    } else {
+      b=this.b[0];
+    }
+
     this.n=b;
     for (let i=1;i<=b;i++) {
       this._sendClient(simulator,new Client(),this.nextSimElements[0]);

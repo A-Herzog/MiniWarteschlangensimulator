@@ -231,7 +231,9 @@ lang.editor.CVS2Tooltip="Der Variationskoeffizient der Nachbearbeitungszeit. Ein
 lang.editor.c="Anzahl an Bedienern";
 lang.editor.cTooltip="Die Anzahl an Bedienern, die an der Station zur Verfügung stehen. Mehr Bediener führen zu mehr bedienten Kunden pro Zeiteinheit, weniger Bediener zu weniger bedienten Kunden pro Zeiteinheit.";
 lang.editor.b="Batch-Größe";
-lang.editor.bTooltip="Die Anzahl an Kunden, die pro Schritt jeweils gemeinsam behandelt werden.";
+lang.editor.bTooltipSource="Die Anzahl an Kunden, die pro Schritt jeweils gemeinsam eintreffen. (Ein Zahlenwert oder aber zwei durch \";\" getrennte Zahlen für Minimum und Maximum. Im zweiten Fall wird gleichvrerteilt eine zufällige Ankunfts-Batch-Größe gewählt.)";
+lang.editor.bTooltipProcess="Die Anzahl an Kunden, die pro Schritt jeweils gemeinsam bedient werden.";
+lang.editor.bTooltipBatch="Die Anzahl an Kunden, die zu einem Batch zusammengefasst werden sollen.";
 lang.editor.mode="Verzweigungsmodus";
 lang.editor.modeLabel="Modus";
 lang.editor.modeRandom="Zufällig";
@@ -292,7 +294,7 @@ lang.builderSource={};
 lang.builderSource.edge="Die Quelle muss eine auslaufende Kante besitzen.<br>Klicken Sie auf <b><i class='bi bi-share-fill'></i> Kanten hinzufügen</b>, um die Quelle mit einer weiteren Station zu verbinden.";
 lang.builderSource.EI="Die angegebene mittlere Zwischenankunftszeit <b>E[I]</b> ist ungültig.<br>Es muss eine <b>positive Zahl</b> angegeben werden.";
 lang.builderSource.CVI="Der angegebene Variationskoeffizient der Zwischenankunftszeiten <b>CV[I]</b> ist ungültig.<br>Es muss eine <b>nichtnegative Zahl</b> angegeben werden.";
-lang.builderSource.b="Die angegebene Batch-Größe <b>b</b> ist ungültig.<br>Es muss eine <b>positive Ganzzahl</b> angegeben werden.";
+lang.builderSource.b="Die angegebene Batch-Größe <b>b</b> ist ungültig.<br>Es müssen eine oder zwei durch Semikolon getrennte <b>positive Ganzzahlen</b> angegeben werden.";
 lang.builderSource.arrivallimit="Das angegebene Anzahl an Ankünften ist ungültig.<br>Es muss eine <b>positive Ganzzahl</b> angegeben werden.";
 
 lang.builderDelay={};
@@ -704,7 +706,9 @@ lang.editor.CVS2Tooltip="The coefficient of variation of the post processing tim
 lang.editor.c="Number of operators";
 lang.editor.cTooltip="The number of operators available at the station. More operators lead to more customers served per unit of time, fewer operators to fewer customers served per unit of time.";
 lang.editor.b="Batch size";
-lang.editor.bTooltip="The number of customers that are processed together in each step.";
+lang.editor.bTooltipSource="The number of customers that arrive together at the source. (One value or two values separated by a semicolon can be specified. In the case of two values, the first value is the minimum and the second value is the maximum batch size. The actual batch size is then randomly selected from this range.)";
+lang.editor.bTooltipProcess="The number of customers that are processed together in each step.";
+lang.editor.bTooltipBatch="The number of customers that are grouped together into a batch.";
 lang.editor.modeMaxNQ="Max NQ";
 lang.editor.modeMaxN="Max N";
 lang.editor.modeSequence="In turn";
@@ -760,7 +764,7 @@ lang.builderSource={};
 lang.builderSource.edge="The source has to have an outgoing edge.<br>Click on <b><i class='bi bi-share-fill'></i> Add edge</b> to connect the source to another station.";
 lang.builderSource.EI="The specified average inter-arrival time <b>E[I]</b> is invalid.<br>A <b>positive number</b> has to be entered.";
 lang.builderSource.CVI="The specified coefficient of variation of the inter-arrival times <b>CV[I]</b> is invalid.<br>A <b>non-negative number</b> has to be entered.";
-lang.builderSource.b="The specified batch size <b>b</b> is invalid.<br>A <b>positive integer number</b> has to be entered.";
+lang.builderSource.b="The specified batch size <b>b</b> is invalid.<br>One or two <b>positive integer number</b> spearated by a semicolon has to be entered.";
 lang.builderSource.arrivallimit="The specified number of arrivals is invalid.<br>A <b>positive integer number</b> has to be entered.";
 
 lang.builderDelay={};

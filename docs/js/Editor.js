@@ -856,9 +856,11 @@ function descriptionForParameter(parameter) {
 /**
  * Returns the tooltip for a station parameter to be shown above the input field for the parameter.
  * @param {String} parameter Station parameter name
+ * @param {Object} element Station object to be edited
  * @returns Tooltip for the parameter
  */
-function tooltipForParameter(name) {
+function tooltipForParameter(name, element) {
+  console.log(element);
   if (name=="EI") return language.editor.EITooltip;
   if (name=="CVI") return language.editor.CVITooltip;
   if (name=="ES") return language.editor.ESTooltip;
@@ -868,7 +870,9 @@ function tooltipForParameter(name) {
   if (name=="ES2") return language.editor.ES2Tooltip;
   if (name=="CVS2") return language.editor.CVS2Tooltip;
   if (name=="c") return language.editor.cTooltip;
-  if (name=="b") return language.editor.bTooltip;
+  if (name=="b" && element.type=="Source") return language.editor.bTooltipSource;
+  if (name=="b" && element.type=="Process") return language.editor.bTooltipProcess;
+  if (name=="b" && element.type=="Batch") return language.editor.bTooltipBatch;
   if (name=="delay") return language.editor.delayTooltip;
   if (name=="policy") return language.editor.policyTooltip;
   return "";
@@ -944,7 +948,7 @@ function addEditorElements(element, parent) {
 
     const span=document.createElement("span");
     form.appendChild(span);
-    const tooltip=tooltipForParameter(name);
+    const tooltip=tooltipForParameter(name,element);
     if (typeof(tooltip)!='undefined' && tooltip!='') span.title=tooltip;;
 
     const info=document.createElement("div");
