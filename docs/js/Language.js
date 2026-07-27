@@ -233,7 +233,7 @@ lang.editor.cTooltip="Die Anzahl an Bedienern, die an der Station zur Verfügung
 lang.editor.b="Batch-Größe";
 lang.editor.bTooltipSource="Die Anzahl an Kunden, die pro Schritt jeweils gemeinsam eintreffen. (Ein Zahlenwert oder aber zwei durch \";\" getrennte Zahlen für Minimum und Maximum. Im zweiten Fall wird gleichvrerteilt eine zufällige Ankunfts-Batch-Größe gewählt.)";
 lang.editor.bTooltipProcess="Die Anzahl an Kunden, die pro Schritt jeweils gemeinsam bedient werden.";
-lang.editor.bTooltipBatch="Die Anzahl an Kunden, die zu einem Batch zusammengefasst werden sollen.";
+lang.editor.bTooltipBatch="Die Anzahl an Kunden, die zu einem Batch zusammengefasst werden sollen. (Ein Zahlenwert oder aber zwei durch \";\" getrennte Zahlen für Minimum und Maximum.)";
 lang.editor.mode="Verzweigungsmodus";
 lang.editor.modeLabel="Modus";
 lang.editor.modeRandom="Zufällig";
@@ -335,7 +335,7 @@ lang.builderDuplicate.edge="Die Duplizieren-Station muss eine oder mehrere ausla
 
 lang.builderBatch={};
 lang.builderBatch.edge="Die Batch-Station muss eine oder zwei auslaufende Kanten besitzen.<br>Klicken Sie auf <b><i class='bi bi-share-fill'></i> Kanten hinzufügen</b>, um die Station mit einer weiteren Station zu verbinden.";
-lang.builderBatch.b="Die angegebene Batch-Größe <b>b</b> ist ungültig.<br>Es muss eine <b>positive Ganzzahl</b> angegeben werden.";
+lang.builderBatch.b="Die angegebene Batch-Größe <b>b</b> ist ungültig.<br>Es müssen eine oder zwei durch Semikolon getrennte <b>positive Ganzzahlen</b> angegeben werden.";
 
 lang.builderSeparate={};
 lang.builderSeparate.edge="Die Trennen-Station muss eine oder zwei auslaufende Kanten besitzen.<br>Klicken Sie auf <b><i class='bi bi-share-fill'></i> Kanten hinzufügen</b>, um die Station mit einer weiteren Station zu verbinden.";
@@ -708,7 +708,7 @@ lang.editor.cTooltip="The number of operators available at the station. More ope
 lang.editor.b="Batch size";
 lang.editor.bTooltipSource="The number of customers that arrive together at the source. (One value or two values separated by a semicolon can be specified. In the case of two values, the first value is the minimum and the second value is the maximum batch size. The actual batch size is then randomly selected from this range.)";
 lang.editor.bTooltipProcess="The number of customers that are processed together in each step.";
-lang.editor.bTooltipBatch="The number of customers that are grouped together into a batch.";
+lang.editor.bTooltipBatch="The number of customers that are grouped together into a batch. (One value or two values separated by a semicolon can be specified. In the case of two values, the first value is the minimum and the second value is the maximum batch size.)";
 lang.editor.modeMaxNQ="Max NQ";
 lang.editor.modeMaxN="Max N";
 lang.editor.modeSequence="In turn";
@@ -805,7 +805,7 @@ lang.builderDuplicate.edge="The duplicate station has to have one or more outgoi
 
 lang.builderBatch={};
 lang.builderBatch.edge="The batch station has to have an outgoing edge.<br>Click on <b><i class='bi bi-share-fill'></i> Add edge</b> to connect the station to another station.";
-lang.builderBatch.b="The specified batch size <b>b</b> is invalid.<br>A <b>positive integer number</b> has to be entered.";
+lang.builderBatch.b="The specified batch size <b>b</b> is invalid.<br>One or two <b>positive integer number</b> spearated by a semicolon has to be entered.";
 
 lang.builderSeparate={};
 lang.builderSeparate.edge="The batch station has to have an outgoing edge.<br>Click on <b><i class='bi bi-share-fill'></i> Add edge</b> to connect the station to another station.";

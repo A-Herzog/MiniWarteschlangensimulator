@@ -18,7 +18,7 @@ export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, Si
 
 import {distributionBuilder} from "./SimulatorBuilder.js";
 import {statcore} from "./StatCore.js";
-import {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent, SignalEvent} from "./Events.js";
+import {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent, SignalEvent, BatchRecheckEvent} from "./Events.js";
 import {getPositiveFloat, getNotNegativeFloat, getPositiveInt, getNotNegativeInt} from './Tools.js';
 import {language} from "./Language.js";
 import {complileCondition} from "./MathTools.js";
@@ -1022,8 +1022,19 @@ class SimBatch extends SimElement {
 
     if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderBatch.edge;
 
-    this.b=getPositiveInt(this.editElement.setup.b);
-    if (this.b==null) return language.builderBatch.b;
+   const setup=this.editElement.setup;
+    let b;
+    if (typeof(setup.b)=='number') {
+      b=[setup.b]; /* Is already a number. But test, if positive. */
+    } else {
+      b=setup.b.split(';');
+      if (b.length<1 || b.length>2) return language.builderBatch.b;
+    }
+    b=b.map(x=>getPositiveInt(x));
+    if (b.some(x=>x==null)) return language.builderBatch.b;
+    if (b.length==1) b.push(b[0]);
+    this.bmin=b[0];
+    this.bmax=b[1];
 
     this._initStatistics(globalStatistics,2,{W: new statcore.Values(), N: new statcore.States()});
     this.statistics.N.set(0,0);
@@ -1037,18 +1048,38 @@ class SimBatch extends SimElement {
    * @param {Object} client Client object
    */
   processArrival(simulator, client) {
-    /* Kunden an Station erfassen */
-    this.statistics.N.set(simulator.time,this.n);
+    if (client!=null) { /* Client can be null in case of a recheck event */
+      /* Count customer at station */
+      this.statistics.N.set(simulator.time,this.n);
 
-    /* Kunde an Warteschlange anstellen */
-    this.queue.push(client);
-    client.startWaiting=simulator.time;
+      /* Add customer to queue */
+      this.queue.push(client);
+      client.startWaiting=simulator.time;
+    }
 
-    /* Prüfen, ob ein Batch gebildet werden kann */
-    if (this.queue.length>=this.b) {
-      const newClient=new Client();
-      newClient.sub=[];
-      for (let i=0;i<this.b;i++) {
+    /* Check if needed batch size is met */
+    if (this.queue.length>=this.bmax) {
+      this.#buildBatch(simulator);
+      return; /* No bmin check */
+    }
+
+    if (this.queue.length>=this.bmin) {
+      if (client==null) {
+        /* Triggered by recheck event, build smaller batch now */
+        this.#buildBatch(simulator);
+      } else {
+        /* Trigger recheck event */
+        simulator.addEvent(new BatchRecheckEvent(simulator.time+0.001,this));
+      }
+    }
+  }
+
+  #buildBatch(simulator) {
+    const batchSize=Math.min(this.bmax,this.queue.length);
+    const newClient=new Client();
+    newClient.sub=[];
+
+    for (let i=0;i<batchSize;i++) {
         const c=this.queue.shift();
         const delta=simulator.time-c.startWaiting;
         c.w+=delta;
@@ -1056,9 +1087,8 @@ class SimBatch extends SimElement {
         newClient.sub.push(c);
       }
       this._sendClient(simulator,newClient,this.nextSimElements[0],0);
-      this.n=this.n-this.b+1;
+      this.n=this.n-batchSize+1;
       if (simulator.withAnimation) simulator.animateStaticClients[this.id]=this.n;
-    }
   }
 
   /**

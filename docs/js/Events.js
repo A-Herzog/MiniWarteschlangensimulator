@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent, SignalEvent};
+export {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent, SignalEvent, BatchRecheckEvent};
 
 import {Event} from "./SimCore.js";
 
@@ -180,5 +180,26 @@ class SignalEvent extends Event {
 
   execute(simulator) {
     simulator.fireSignal(this.nr);
+  }
+}
+
+
+
+/**
+ * Batch building recheck event
+ */
+class BatchRecheckEvent extends Event {
+  /**
+   * Constructor
+   * @param {Number} time Simulation time at which the event is to be executed
+   * @param {Object} batchStation Batch station to notify
+   */
+  constructor(time, batchStation) {
+    super(time);
+    this.batchStation=batchStation;
+  }
+
+  execute(simulator) {
+    this.batchStation.processArrival(simulator,null);
   }
 }
