@@ -135,6 +135,7 @@ function getParameters() {
       if (id2=='EI') name2='E[I]';
       if (id2=='CVI') {name2='CV[I]'; allow0=true;}
       if (id2=='ES') name2='E[S]';
+      if (id2=='ES2') {name2='E[S2]'; allow0=true;}
       if (id2=='CVS') {name2='CV[S]'; allow0=true;}
       if (id2=='EWT' && hasTwoOutgoingEdges(element.boxId)) name2='E[WT]';
       if (id2=='CVWT' && hasTwoOutgoingEdges(element.boxId)) name2='CV[WT]';
