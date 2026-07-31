@@ -216,9 +216,10 @@ function animationStep() {
  * This is the callback for the step button in animation pause mode.
  */
 function animationSingleTimeStep() {
-  const startTime=simulator.time;
-  while (startTime==simulator.time) {
+  let firstStep=true;
+  while (firstStep || simulator.nextEventIsSameTime) {
     animationStep();
+    firstStep=false;
   }
 }
 
