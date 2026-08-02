@@ -29,6 +29,8 @@ function fixModel(elements, edges) {
   let source=null;
   let process=null;
   let dispose=null;
+  let batch=null;
+  let counter=null;
   for (let element of elements) {
     if (element.type=="Source") {
         if (source!=null) return;
@@ -45,6 +47,14 @@ function fixModel(elements, edges) {
         dispose=element;
         continue;
     }
+    if (element.type=="Batch") {
+        if (batch==null) batch=element;
+        continue;
+    }
+    if (element.type=="Counter") {
+        if (counter==null) counter=element;
+        continue;
+    }
   }
 
   /* Add source station if needed */
@@ -55,7 +65,11 @@ function fixModel(elements, edges) {
 
   /* Add process station if needed */
   if (source!=null && process==null && dispose==null) {
-    addElementToModel("Process",source.top,source.left+200);
+    if (batch!=null) {
+      addElementToModel("Process",batch.top,batch.left+200);
+    } else {
+      addElementToModel("Process",source.top,source.left+200);
+    }
     process=elements[elements.length-1];
   }
 
@@ -71,6 +85,10 @@ function fixModel(elements, edges) {
   let processIn=false;
   let processOut=false;
   let disposeIn=false;
+  let batchIn=false;
+  let batchOut=false;
+  let counterIn=false;
+  let counterOut=false;
   for (let edge of edges) {
     const idOut=edge.boxId1;
     const idIn=edge.boxId2;
@@ -80,19 +98,53 @@ function fixModel(elements, edges) {
       if (process.boxId==idOut) processOut=true;
     }
     if (dispose!=null && dispose.boxId==idIn) disposeIn=true;
+    if (batch!=null) {
+      if (batch.boxId==idIn) batchIn=true;
+      if (batch.boxId==idOut) batchOut=true;
+    }
+    if (counter!=null) {
+      if (counter.boxId==idIn) counterIn=true;
+      if (counter.boxId==idOut) counterOut=true;
+    }
   }
 
   /* Add edges */
   if (process!=null) {
     if (source!=null && !sourceOut && !processIn) {
-      addEdgeToModel(source.boxId,process.boxId);
+      if (batch!=null && !batchIn && !batchOut) {
+        addEdgeToModel(source.boxId,batch.boxId);
+        addEdgeToModel(batch.boxId,process.boxId);
+      } else {
+        addEdgeToModel(source.boxId,process.boxId);
+      }
     }
     if (dispose!=null && !processOut && !disposeIn) {
-      addEdgeToModel(process.boxId,dispose.boxId);
+      if (counter!=null && !counterIn && !counterOut) {
+        addEdgeToModel(process.boxId,counter.boxId);
+        addEdgeToModel(counter.boxId,dispose.boxId);
+      } else {
+        addEdgeToModel(process.boxId,dispose.boxId);
+      }
     }
   } else {
     if (source!=null && dispose!=null && !sourceOut && !disposeIn) {
-      addEdgeToModel(source.boxId,dispose.boxId);
+      if (batch && !batchIn && !batchOut) {
+        if (counter!=null && !counterIn && !counterOut) {
+          addEdgeToModel(source.boxId,batch.boxId);
+          addEdgeToModel(batch.boxId,counter.boxId);
+          addEdgeToModel(counter.boxId,dispose.boxId);
+        } else {
+          addEdgeToModel(source.boxId,batch.boxId);
+          addEdgeToModel(batch.boxId,dispose.boxId);
+        }
+      } else {
+        if (counter!=null && !counterIn && !counterOut) {
+          addEdgeToModel(source.boxId,counter.boxId);
+          addEdgeToModel(counter.boxId,dispose.boxId);
+        } else {
+          addEdgeToModel(source.boxId,dispose.boxId);
+        }
+      }
     }
   }
 
