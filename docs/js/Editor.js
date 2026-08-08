@@ -860,7 +860,6 @@ function descriptionForParameter(parameter) {
  * @returns Tooltip for the parameter
  */
 function tooltipForParameter(name, element) {
-  console.log(element);
   if (name=="EI") return language.editor.EITooltip;
   if (name=="CVI") return language.editor.CVITooltip;
   if (name=="ES") return language.editor.ESTooltip;
