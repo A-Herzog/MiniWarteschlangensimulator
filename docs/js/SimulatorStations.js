@@ -18,7 +18,7 @@ export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, Si
 
 import {distributionBuilder} from "./SimulatorBuilder.js";
 import {statcore} from "./StatCore.js";
-import {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent, SignalEvent, BatchRecheckEvent} from "./Events.js";
+import {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent, SignalEvent, BatchRecheckEvent, BatchProcessRecheckEvent} from "./Events.js";
 import {getPositiveFloat, getNotNegativeFloat, getPositiveInt, getNotNegativeInt} from './Tools.js';
 import {language} from "./Language.js";
 import {complileCondition} from "./MathTools.js";
@@ -192,6 +192,7 @@ class SimSource extends SimElement {
     b=b.map(x=>getPositiveInt(x));
     if (b.some(x=>x==null)) return language.builderSource.b;
     this.b=b;
+    if (this.b.length==2 && this.b[0]>this.b[1]) return language.builderSource.b;
 
     this.isLimited=typeof(setup.limited)!='undefined' && setup.limited;
     if (this.isLimited) {
@@ -358,8 +359,19 @@ class SimProcess extends SimElement {
     if (CVS2==null) return language.builderProcess.CVS2;
     this.distS2=distributionBuilder(ES2,CVS2);
 
-    this.b=getPositiveInt(setup.b);
-    if (this.b==null) return language.builderProcess.b;
+    let b;
+    if (typeof(setup.b)=='number') {
+      b=[setup.b]; /* Is already a number. But test, if positive. */
+    } else {
+      b=setup.b.split(';');
+      if (b.length<1 || b.length>2) return language.builderProcess.b;
+    }
+    b=b.map(x=>getPositiveInt(x));
+    if (b.some(x=>x==null)) return language.builderProcess.b;
+    if (b.length==1) b.push(b[0]);
+    this.bmin=b[0];
+    this.bmax=b[1];
+    if (this.bmin>this.bmax) return language.builderProcess.b;
 
     this.c=getPositiveInt(setup.c);
     if (this.c==null) return language.builderProcess.c;
@@ -367,7 +379,7 @@ class SimProcess extends SimElement {
 
     this.policy=parseInt(setup.policy);
 
-    if ((this.policy==-2 || this.policy==2) && (this.b>1)) return language.builderProcess.ServiceTimePriorityAndBatch;
+    if ((this.policy==-2 || this.policy==2) && (this.bmax>1)) return language.builderProcess.ServiceTimePriorityAndBatch;
 
     this.nextSuccess=this.nextSimElements[0];
     if (this.nextSimElements.length==2) {
@@ -446,7 +458,7 @@ class SimProcess extends SimElement {
     }
 
     /* Test if a service process can start */
-    this._testStartService(simulator);
+    this._testStartService(simulator,true);
   }
 
   /**
@@ -487,17 +499,38 @@ class SimProcess extends SimElement {
     this.statistics.cBusy.set(simulator.time,this.c-this.freeC);
 
     /* Test if a service process can start */
-    this._testStartService(simulator);
+    this._testStartService(simulator,false);
+  }
+
+  /**
+   * Processes a batch recheck event.
+   * @param {Object} simulator Simulator object
+   */
+  processBatchRecheck(simulator) {
+    this._testStartService(simulator,false);
   }
 
   /**
    * Tests if a waiting client and a free operator is available so a serivce process can be started
    * (and starts the service process in this case).
    * @param {Object} simulator Simulator object
+   * @param {Boolean} triggeredByArrival  Was this test triggered by a client arrival?
    */
-  _testStartService(simulator) {
-    const b=this.b;
-    if (this.queue.length<b || this.freeC==0) return;
+  _testStartService(simulator, triggeredByArrival) {
+    const bmin=this.bmin;
+    const bmax=this.bmax;
+    if (this.queue.length<bmin || this.freeC==0) return;
+    let b;
+    if (this.queue.length>=bmax) {
+      b=bmax;
+    } else {
+      if (triggeredByArrival) {
+        simulator.addEvent(new BatchProcessRecheckEvent(simulator.time+0.001,this));
+        return;
+      } else {
+        b=this.queue.length;
+      }
+    }
 
     const statistics=this.statistics;
     const time=simulator.time;
@@ -1035,6 +1068,7 @@ class SimBatch extends SimElement {
     if (b.length==1) b.push(b[0]);
     this.bmin=b[0];
     this.bmax=b[1];
+    if (this.bmin>this.bmax) return language.builderBatch.b;
 
     this._initStatistics(globalStatistics,2,{W: new statcore.Values(), N: new statcore.States()});
     this.statistics.N.set(0,0);
