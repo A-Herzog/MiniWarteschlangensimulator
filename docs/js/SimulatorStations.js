@@ -1070,7 +1070,9 @@ class SimBatch extends SimElement {
     this.bmax=b[1];
     if (this.bmin>this.bmax) return language.builderBatch.b;
 
-    this._initStatistics(globalStatistics,2,{W: new statcore.Values(), N: new statcore.States()});
+    this.mode=parseInt(setup.batchMode);
+
+    this._initStatistics(globalStatistics,2,{W: new statcore.Values(), N: new statcore.States(), n: new statcore.Counter()});
     this.statistics.N.set(0,0);
 
     return null;
@@ -1085,6 +1087,7 @@ class SimBatch extends SimElement {
     if (client!=null) { /* Client can be null in case of a recheck event */
       /* Count customer at station */
       this.statistics.N.set(simulator.time,this.n);
+      this.statistics.n.add();
 
       /* Add customer to queue */
       this.queue.push(client);
@@ -1093,18 +1096,45 @@ class SimBatch extends SimElement {
 
     /* Check if needed batch size is met */
     if (this.queue.length>=this.bmax) {
-      this.#buildBatch(simulator);
+      switch (this.mode) {
+        case 0: /* Collect */
+          this.#justForward(simulator);
+          break;
+        case 1: /* Temporary batch */
+          this.#buildBatch(simulator);
+          break;
+      }
       return; /* No bmin check */
     }
 
     if (this.queue.length>=this.bmin) {
       if (client==null) {
         /* Triggered by recheck event, build smaller batch now */
-        this.#buildBatch(simulator);
+        switch (this.mode) {
+          case 0: /* Collect */
+            this.#justForward(simulator);
+            break;
+          case 1: /* Temporary batch */
+            this.#buildBatch(simulator);
+            break;
+      }
       } else {
         /* Trigger recheck event */
         simulator.addEvent(new BatchRecheckEvent(simulator.time+0.001,this));
       }
+    }
+  }
+
+  #justForward(simulator) {
+    const batchSize=Math.min(this.bmax,this.queue.length);
+
+    for (let i=0;i<batchSize;i++) {
+      const c=this.queue.shift();
+      const delta=simulator.time-c.startWaiting;
+      c.w+=delta;
+      this.statistics.W.add(delta);
+
+      this._sendClient(simulator,c,this.nextSimElements[0],0);
     }
   }
 
@@ -1114,15 +1144,15 @@ class SimBatch extends SimElement {
     newClient.sub=[];
 
     for (let i=0;i<batchSize;i++) {
-        const c=this.queue.shift();
-        const delta=simulator.time-c.startWaiting;
-        c.w+=delta;
-        this.statistics.W.add(delta);
-        newClient.sub.push(c);
-      }
-      this._sendClient(simulator,newClient,this.nextSimElements[0],0);
-      this.n=this.n-batchSize+1;
-      if (simulator.withAnimation) simulator.animateStaticClients[this.id]=this.n;
+      const c=this.queue.shift();
+      const delta=simulator.time-c.startWaiting;
+      c.w+=delta;
+      this.statistics.W.add(delta);
+      newClient.sub.push(c);
+    }
+    this._sendClient(simulator,newClient,this.nextSimElements[0],0);
+    this.n=this.n-batchSize+1;
+    if (simulator.withAnimation) simulator.animateStaticClients[this.id]=this.n;
   }
 
   /**

@@ -383,7 +383,7 @@ templates.push({
   maxEdgesIn: 999,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Batch",id,language.templates.batch+"<br>"+nr,language.templates.batchHint,"#F0F","#FAF",top,left,isTemplate),
-  setup: {b: 2}
+  setup: {b: 2, batchMode: 1}
 });
 templates.push({
   type: 'Separate',

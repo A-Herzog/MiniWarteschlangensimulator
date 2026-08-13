@@ -850,6 +850,7 @@ function descriptionForParameter(parameter) {
   if (parameter=='xrange') return language.editor.xrange;
   if (parameter=='limited') return language.editor.limited;
   if (parameter=='limit') return language.editor.limit;
+  if (parameter=='batchMode') return language.editor.batchMode;
   return "";
 }
 
@@ -874,6 +875,7 @@ function tooltipForParameter(name, element) {
   if (name=="b" && element.type=="Batch") return language.editor.bTooltipBatch;
   if (name=="delay") return language.editor.delayTooltip;
   if (name=="policy") return language.editor.policyTooltip;
+  if (name=='batchMode') return language.editor.batchModeTooltip;
   return "";
 }
 
@@ -906,6 +908,7 @@ function nameForParameter(parameter) {
   if (parameter=='xrange') return language.editor.xrangeLabel;
   if (parameter=='limited') return language.editor.limitedLabel;
   if (parameter=='limit') return language.editor.limitLabel;
+  if (parameter=='batchMode') return language.editor.batchModeLabel;
   return parameter;
 }
 
@@ -973,6 +976,7 @@ function addEditorElements(element, parent) {
       info2.style.marginBottom="15px";
       info2.style.fontSize="80%";
       info2.innerHTML=language.editor.limitInfo;
+      continue;
     }
 
     if (name=="limited") {
@@ -1101,6 +1105,24 @@ function addEditorElements(element, parent) {
       }
       element.setup[name]=select.value;
       if (element.visibleSetup) updateModelOnCanvas();
+      continue;
+    }
+
+    if (name=="batchMode") {
+      const select=document.createElement("select");
+      div.appendChild(select);
+      select.className="form-select";
+      let options="";
+      options+="<option value='0'"+((value==0)?' selected':'')+'>'+language.editor.batchModeCollect+'</option>';
+      options+="<option value='1'"+((value==1)?' selected':'')+'>'+language.editor.batchModeTemporary+'</option>';
+      select.innerHTML=options;
+      select.onchange=function(){element.setup[name]=select.value;}
+
+      const info2=document.createElement("div");
+      form.appendChild(info2);
+      info2.style.marginBottom="15px";
+      info2.style.fontSize="80%";
+      info2.innerHTML=language.editor.batchModeInfo;
       continue;
     }
 
