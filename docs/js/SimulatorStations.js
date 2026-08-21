@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimThroughput, SimDispose, SimBatch, SimSeparate, SimSignal, SimBarrier, SimSignalSource, SimVertex};
+export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimThroughput, SimDispose, SimBatch, SimSeparate, SimMatch, SimSignal, SimBarrier, SimSignalSource, SimVertex};
 
 import {distributionBuilder} from "./SimulatorBuilder.js";
 import {statcore} from "./StatCore.js";
@@ -48,6 +48,7 @@ class SimElement {
    */
   constructor(editElement) {
     this.editElement=editElement;
+    this.prevSimElements=[];
     this.nextSimElements=[];
     this.n=0;
   }
@@ -67,7 +68,15 @@ class SimElement {
   }
 
   /**
-   * Add a connecting to the following station.
+   * Adds a connecting from a previous station.
+   * @param {Object} prevSimElement Previous station
+   */
+  addEdgeIn(prevSimElement) {
+    this.prevSimElements.push(prevSimElement);
+  }
+
+  /**
+   * Adds a connecting to a following station.
    * @param {Object} nextSimElement Next station
    */
   addEdgeOut(nextSimElement) {
@@ -116,8 +125,9 @@ class SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
   }
 
   /**
@@ -221,8 +231,9 @@ class SimSource extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     let b;
     if (this.b.length==2) {
       const rnd=Math.random();
@@ -293,8 +304,9 @@ class SimDelay extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     const statistics=this.statistics;
     statistics.n.add();
 
@@ -431,8 +443,9 @@ class SimProcess extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     const time=simulator.time;
     const statistics=this.statistics;
     statistics.n.add();
@@ -720,8 +733,9 @@ class SimDecide extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     this.statistics.n.add();
 
     let next=0;
@@ -861,8 +875,9 @@ class SimDuplicate extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     this.statistics.n.add();
     this._sendClient(simulator,client,this.nextSimElements[0],0);
 
@@ -911,8 +926,9 @@ class SimCounter extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     this.statistics.n.add();
     this._sendClient(simulator,client,this.nextSimElements[0],0);
   }
@@ -956,8 +972,9 @@ class SimThroughput extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     this.statistics.n.add();
     if (simulator.time>0) this.statistics.throughput.value=this.statistics.n.count/simulator.time;
     this._sendClient(simulator,client,this.nextSimElements[0],0);
@@ -1019,8 +1036,9 @@ class SimDispose extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     this.#processClientForStatistics(client);
 
     this.n=0;
@@ -1053,7 +1071,7 @@ class SimBatch extends SimElement {
     const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
-    if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderBatch.edge;
+    if (this.nextSimElements.length!=1) return language.builderBatch.edge;
 
    const setup=this.editElement.setup;
     let b;
@@ -1082,8 +1100,9 @@ class SimBatch extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     if (client!=null) { /* Client can be null in case of a recheck event */
       /* Count customer at station */
       this.statistics.N.set(simulator.time,this.n);
@@ -1189,7 +1208,7 @@ class SimSeparate extends SimElement {
     const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
-    if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderSeparate.edge;
+    if (this.nextSimElements.length!=1) return language.builderSeparate.edge;
 
     return null;
   }
@@ -1198,8 +1217,9 @@ class SimSeparate extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     /* Is the current client a batch? */
     if (typeof(client.sub)=='undefined') {
       /* If no, just forward the client. */
@@ -1222,6 +1242,116 @@ class SimSeparate extends SimElement {
     }
   }
 }
+
+
+
+/**
+ * Simulation match station
+ */
+class SimMatch extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
+  constructor(editElement) {
+    super(editElement);
+    this.queue=[];
+  }
+
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
+   * @returns Error message or null in case of success
+   */
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
+    if (superError!=null) return superError;
+
+    if (this.nextSimElements.length!=1) return language.builderMatch.edge;
+
+    this.mode=parseInt(this.editElement.setup.batchMode);
+
+    this._initStatistics(globalStatistics,2,{W: new statcore.Values(), N: new statcore.States(), n: new statcore.Counter()});
+    this.statistics.N.set(0,0);
+
+    this.queueIds=this.prevSimElements.map(prev=>prev.editElement.id);
+    this.queueCustomers=Array.from({length:this.queueIds.length},()=>[]);
+
+    return null;
+  }
+
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   * @param {Object} source Source station
+   */
+  processArrival(simulator, client, source) {
+      /* Count customer at station */
+      this.statistics.N.set(simulator.time,this.n);
+      this.statistics.n.add();
+
+      /* Add customer to queue */
+      for (let i=0;i<this.queueIds.length;i++) if (this.queueIds[i]==source.editElement.id) {
+        this.queueCustomers[i].push(client);
+        break;
+      }
+      client.startWaiting=simulator.time;
+
+      /* Test if a batch can be built */
+      for (let i=0;i<this.queueIds.length;i++) if (this.queueCustomers[i].length==0) return; /* Not all queues have a customer */
+
+      /* All queues have at least one customer, build batch */
+      switch (this.mode) {
+        case 0: /* Collect */
+          this.#justForward(simulator);
+          break;
+        case 1: /* Temporary batch */
+          this.#buildBatch(simulator);
+          break;
+      }
+  }
+
+  #justForward(simulator) {
+    for (let i=0;i<this.queueCustomers.length;i++) {
+      const c=this.queueCustomers[i].shift();
+      const delta=simulator.time-c.startWaiting;
+      c.w+=delta;
+      this.statistics.W.add(delta);
+
+      this._sendClient(simulator,c,this.nextSimElements[0],0);
+    }
+  }
+
+  #buildBatch(simulator) {
+    const newClient=new Client();
+    newClient.sub=[];
+
+    for (let i=0;i<this.queueCustomers.length;i++) {
+      const c=this.queueCustomers[i].shift();
+      const delta=simulator.time-c.startWaiting;
+      c.w+=delta;
+      this.statistics.W.add(delta);
+      newClient.sub.push(c);
+    }
+
+    this._sendClient(simulator,newClient,this.nextSimElements[0],0);
+    this.n=this.n-this.queueCustomers.length+1;
+    if (simulator.withAnimation) simulator.animateStaticClients[this.id]=this.n;
+  }
+
+  /**
+   * Processes a client leaving this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   */
+  processLeave(simulator, client) {
+    this.statistics.N.set(simulator.time,this.n);
+  }
+}
+
 
 
 /**
@@ -1260,8 +1390,9 @@ class SimSignal extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     if (this.delay>0) {
       simulator.addEvent(new SignalEvent(simulator.time+this.delay,this.nr));
     } else {
@@ -1334,8 +1465,9 @@ class SimBarrier extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     const time=simulator.time;
     const statistics=this.statistics;
     statistics.n.add();
@@ -1483,8 +1615,9 @@ class SimVertex extends SimElement {
    * Processes a client arrival at this station.
    * @param {Object} simulator Simulator object
    * @param {Object} client Client object
+   * @param {Object} source Source station
    */
-  processArrival(simulator, client) {
+  processArrival(simulator, client, source) {
     if (simulator.withAnimation) simulator.animateStaticClients[this.id]=0;
     this._sendClient(simulator,client,this.nextSimElements[0],0);
   }

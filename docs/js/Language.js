@@ -196,6 +196,8 @@ lang.templates.dispose="Ausgang";
 lang.templates.disposeHint="Endpunkt der Kunden in einem Modell. Alle Kunden müssen am Ende zu einer Ausgangsstation geleitet werden.";
 lang.templates.batch="Batch";
 lang.templates.batchHint="Fasst Kunden zu Gruppen einer einstellbaren Größe zusammen. Diese Gruppen bewegen sich danach, bis sie an einer \"Trennen\"-Station wieder aufgelöst werden, wie ein einziger Kunde durch das System.";
+lang.templates.match="Match";
+lang.templates.matchHint="Führt Kunden, die über die verschiedenen Eingänge bei der Station eintreffen, zusammen.";
 lang.templates.separate="Trennen";
 lang.templates.separateHint="Löst Kundengruppen, die an einer \"Batch\"-Station gebildet wurden, wieder auf.";
 lang.templates.signal="Signal";
@@ -340,11 +342,14 @@ lang.builderDuplicate={};
 lang.builderDuplicate.edge="Die Duplizieren-Station muss eine oder mehrere auslaufende Kanten besitzen.<br>Klicken Sie auf <b><i class='bi bi-share-fill'></i> Kanten hinzufügen</b>, um die Station mit einer weiteren Station zu verbinden.";
 
 lang.builderBatch={};
-lang.builderBatch.edge="Die Batch-Station muss eine oder zwei auslaufende Kanten besitzen.<br>Klicken Sie auf <b><i class='bi bi-share-fill'></i> Kanten hinzufügen</b>, um die Station mit einer weiteren Station zu verbinden.";
+lang.builderBatch.edge="Die Batch-Station muss genau eine auslaufende Kanten besitzen.<br>Klicken Sie auf <b><i class='bi bi-share-fill'></i> Kanten hinzufügen</b>, um die Station mit einer weiteren Station zu verbinden.";
 lang.builderBatch.b="Die angegebene Batch-Größe <b>b</b> ist ungültig.<br>Es müssen eine oder zwei durch Semikolon getrennte <b>positive Ganzzahlen</b> angegeben werden.";
 
 lang.builderSeparate={};
-lang.builderSeparate.edge="Die Trennen-Station muss eine oder zwei auslaufende Kanten besitzen.<br>Klicken Sie auf <b><i class='bi bi-share-fill'></i> Kanten hinzufügen</b>, um die Station mit einer weiteren Station zu verbinden.";
+lang.builderSeparate.edge="Die Trennen-Station muss genau eine auslaufende Kanten besitzen.<br>Klicken Sie auf <b><i class='bi bi-share-fill'></i> Kanten hinzufügen</b>, um die Station mit einer weiteren Station zu verbinden.";
+
+lang.builderMatch={};
+lang.builderMatch.edge="Die Match-Station muss genau eine auslaufende Kanten besitzen.<br>Klicken Sie auf <b><i class='bi bi-share-fill'></i> Kanten hinzufügen</b>, um die Station mit einer weiteren Station zu verbinden.";
 
 lang.builderSignal={};
 lang.builderSignal.delay="Die angegebene Verzögerung für die Signal-Station ist ungültig.<br>Es muss eine nichtnegative Zahl angegeben werden.";
@@ -678,6 +683,8 @@ lang.templates.disposeHint="End point of the customers in a model. All customers
 lang.templates.batch="Batch";
 lang.templates.batchHint="Combines customers into groups of an adjustable size. These groups then move through the system as a single customer until they are dissolved again at a \Separate\” station.";
 lang.templates.separate="Separate";
+lang.templates.match="Match";
+lang.templates.matchHint="Combines customers arriving at the station through the various inputs."
 lang.templates.separateHint="Dissolves customer groups that were formed at a \“Batch\” station.";
 lang.templates.signal="Signal";
 lang.templates.signalHint="If a customer passes this station, a signal is triggered on the basis of which customers waiting at a \“barrier\” station can be released.";
@@ -816,11 +823,14 @@ lang.builderDuplicate={};
 lang.builderDuplicate.edge="The duplicate station has to have one or more outgoing edges.<br>Click on <b><i class='bi bi-share-fill'></i> Add edge</b> to connect the station to another station.";
 
 lang.builderBatch={};
-lang.builderBatch.edge="The batch station has to have an outgoing edge.<br>Click on <b><i class='bi bi-share-fill'></i> Add edge</b> to connect the station to another station.";
+lang.builderBatch.edge="The batch station has to have one outgoing edge.<br>Click on <b><i class='bi bi-share-fill'></i> Add edge</b> to connect the station to another station.";
 lang.builderBatch.b="The specified batch size <b>b</b> is invalid.<br>One or two <b>positive integer number</b> spearated by a semicolon has to be entered.";
 
 lang.builderSeparate={};
-lang.builderSeparate.edge="The batch station has to have an outgoing edge.<br>Click on <b><i class='bi bi-share-fill'></i> Add edge</b> to connect the station to another station.";
+lang.builderSeparate.edge="The separate station has to have one outgoing edge.<br>Click on <b><i class='bi bi-share-fill'></i> Add edge</b> to connect the station to another station.";
+
+lang.builderMatch={};
+lang.builderMatch.edge="The batch station has to have one outgoing edge.<br>Click on <b><i class='bi bi-share-fill'></i> Add edge</b> to connect the station to another station.";
 
 lang.builderSignal={};
 lang.builderSignal.delay="The specified delay for the signal station is invalid.<br>A <b>non-negative number</b> has to be entered.";

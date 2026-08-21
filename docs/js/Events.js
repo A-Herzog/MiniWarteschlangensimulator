@@ -50,7 +50,7 @@ class SendEvent extends Event {
       simulator.animateStaticClients[destinationStation.id]=destinationStation.n;
     }
     sourceStation.processLeave(simulator,client);
-    destinationStation.processArrival(simulator,client);
+    destinationStation.processArrival(simulator,client,sourceStation);
   }
 
   /**
@@ -84,7 +84,7 @@ class ArrivalEvent extends Event {
 
   execute(simulator) {
     const station=this.station;
-    station.processArrival(simulator,null);
+    station.processArrival(simulator,null,null);
     ArrivalEvent.scheduleNext(simulator,station);
   }
 
@@ -200,7 +200,7 @@ class BatchRecheckEvent extends Event {
   }
 
   execute(simulator) {
-    this.batchStation.processArrival(simulator,null);
+    this.batchStation.processArrival(simulator,null,null);
   }
 }
 

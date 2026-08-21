@@ -394,6 +394,15 @@ templates.push({
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Separate",id,language.templates.separate+"<br>"+nr,language.templates.separateHint,"#F0F","#FAF",top,left,isTemplate)
 });
 templates.push({
+  type: 'Match',
+  color: "#B0B",
+  name: language.templates.match,
+  maxEdgesIn: 999,
+  maxEdgesOut: 1,
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Match",id,language.templates.match+"<br>"+nr,language.templates.matchHint,"#B0B","#D7D",top,left,isTemplate),
+  setup: {batchMode: 1}
+});
+templates.push({
   type: 'Signal',
   color: "#FB3",
   name: language.templates.signal,
