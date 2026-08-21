@@ -1089,7 +1089,7 @@ function addEditorElements(element, parent) {
     }
 
     if (name=="source") {
-      const sourceTypes=["Process","Delay","Batch","Barrier"];
+      const sourceTypes=["Process","Delay","Batch","Match","Barrier"];
       const select=document.createElement("select");
       div.appendChild(select);
       select.className="form-select";
