@@ -822,9 +822,10 @@ function deleteElement(element, index) {
 /**
  * Returns the description for a station parameter to be shown above the input field for the parameter.
  * @param {String} parameter Station parameter name
+ * @param {Object} element Station object to be edited
  * @returns Description for the parameter
  */
-function descriptionForParameter(parameter) {
+function descriptionForParameter(parameter, element) {
   if (parameter=="EI") return language.editor.EI;
   if (parameter=="CVI") return language.editor.CVI;
   if (parameter=="ES") return language.editor.ES;
@@ -834,7 +835,8 @@ function descriptionForParameter(parameter) {
   if (parameter=="ES2") return language.editor.ES2;
   if (parameter=="CVS2") return language.editor.CVS2;
   if (parameter=="c") return language.editor.c;
-  if (parameter=="b") return language.editor.b;
+  if (parameter=="b" && element.type!="Split") return language.editor.b;
+  if (parameter=="b" && element.type=="Split") return language.editor.bSplit;
   if (parameter=="delay") return language.editor.delay;
   if (parameter=="mode") return language.editor.mode;
   if (parameter=="policy") return language.editor.policy;
@@ -873,6 +875,7 @@ function tooltipForParameter(name, element) {
   if (name=="b" && element.type=="Source") return language.editor.bTooltipSource;
   if (name=="b" && element.type=="Process") return language.editor.bTooltipProcess;
   if (name=="b" && element.type=="Batch") return language.editor.bTooltipBatch;
+  if (name=="b" && element.type=="Split") return language.editor.bTooltipSplit;
   if (name=="delay") return language.editor.delayTooltip;
   if (name=="policy") return language.editor.policyTooltip;
   if (name=='batchMode') return language.editor.batchModeTooltip;
@@ -956,7 +959,7 @@ function addEditorElements(element, parent) {
     const info=document.createElement("div");
     span.appendChild(info);
     info.style.fontSize="90%";
-    info.innerHTML=descriptionForParameter(name);
+    info.innerHTML=descriptionForParameter(name, element);
 
     const div=document.createElement("div");
     span.appendChild(div);
@@ -976,7 +979,6 @@ function addEditorElements(element, parent) {
       info2.style.marginBottom="15px";
       info2.style.fontSize="80%";
       info2.innerHTML=language.editor.limitInfo;
-      continue;
     }
 
     if (name=="limited") {
