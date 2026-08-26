@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimThroughput, SimDispose, SimBatch, SimSeparate, SimMatch, SimSignal, SimBarrier, SimSignalSource, SimVertex};
+export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, SimThroughput, SimDispose, SimBatch, SimSeparate, SimMatch, SimSplit, SimSignal, SimBarrier, SimSignalSource, SimVertex};
 
 import {distributionBuilder} from "./SimulatorBuilder.js";
 import {statcore} from "./StatCore.js";
@@ -1349,6 +1349,100 @@ class SimMatch extends SimElement {
    */
   processLeave(simulator, client) {
     this.statistics.N.set(simulator.time,this.n);
+  }
+}
+
+
+
+/**
+ * Simulation split station
+ */
+class SimSplit extends SimElement {
+  /**
+   * Constructor
+   * @param {Object} editElement Corresponding editor model element
+   */
+  constructor(editElement) {
+    super(editElement);
+  }
+
+  /**
+   * Initializes this simulation station from the editor model station (specified in the constructor).
+   * @param {Object} globalStatistics Statistic object to be connected with this station
+   * @param {Array} allElements List of all editor stations
+   * @param {Object} builder SimModelBuilder builder object
+   * @returns Error message or null in case of success
+   */
+  build(globalStatistics, allElements, builder) {
+    const superError=super.build(globalStatistics,allElements,builder);
+    if (superError!=null) return superError;
+
+    if (this.nextSimElements.length!=1) return language.builderBatch.edge;
+
+   const setup=this.editElement.setup;
+    let b;
+    if (typeof(setup.b)=='number') {
+      b=[setup.b]; /* Is already a number. But test, if positive. */
+    } else {
+      b=setup.b.split(';');
+      if (b.length<1 || b.length>2) return language.builderBatch.b;
+    }
+    b=b.map(x=>getPositiveInt(x));
+    if (b.some(x=>x==null)) return language.builderBatch.b;
+    if (b.length==1) b.push(b[0]);
+    this.bmin=b[0];
+    this.bmax=b[1];
+    if (this.bmin>this.bmax) return language.builderBatch.b;
+
+    this._initStatistics(globalStatistics,1,{W: new statcore.Values(), S: new statcore.Values(), V: new statcore.Values(), n: new statcore.Counter()});
+
+    return null;
+  }
+
+  /**
+   * Records the data from a client object in statistics.
+   * @param {Object} client Client object
+   */
+  #processClientForStatistics(client) {
+    if (typeof(client.sub)!='undefined') {
+      for (let sub of client.sub) {
+        sub.w+=client.w;
+        sub.s+=client.s;
+        this.#processClientForStatistics(sub);
+      }
+    } else {
+      const statistics=this.statistics;
+      const w=client.w;
+      const s=client.s;
+      statistics.W.add(w);
+      statistics.S.add(s);
+      statistics.V.add(w+s);
+      statistics.n.add();
+    }
+  }
+
+  /**
+   * Processes a client arrival at this station.
+   * @param {Object} simulator Simulator object
+   * @param {Object} client Client object
+   * @param {Object} source Source station
+   */
+  processArrival(simulator, client, source) {
+    /* Dispose current customer */
+    this.#processClientForStatistics(client);
+    this.n=0;
+    if (simulator.withAnimation) simulator.animateStaticClients[this.id]=0;
+
+    /* Generate new customers */
+    const rnd=Math.random();
+    let b=this.bmin+Math.floor(rnd*(this.bmax-this.bmin+1));
+    this.n=b;
+    for (let i=1;i<=b;i++) {
+      this._sendClient(simulator,new Client(),this.nextSimElements[0]);
+    }
+    this.arrivalCount+=b;
+    simulator.arrivalCount+=b;
+    this.statistics.n.add(b);
   }
 }
 

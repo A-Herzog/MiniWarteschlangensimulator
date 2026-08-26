@@ -403,6 +403,15 @@ templates.push({
   setup: {batchMode: 1}
 });
 templates.push({
+  type: 'Split',
+  color: "red",
+  name: language.templates.split,
+  maxEdgesIn: 999,
+  maxEdgesOut: 1,
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Split",id,language.templates.split+"<br>"+nr,language.templates.splitHint,"red","#1C1",top,left,isTemplate),
+  setup: {b: 1}
+});
+templates.push({
   type: 'Signal',
   color: "#FB3",
   name: language.templates.signal,
