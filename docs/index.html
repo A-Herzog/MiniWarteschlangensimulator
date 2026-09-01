@@ -53,48 +53,7 @@
 <div id="infoLoading">Loading...<noscript><br><span style='color: red;'>This webapp requires Javascript to be executed.</span></noscript></div>
 <div class="wrapper" id="mainContent" style="display: none;">
 
-<div class="modal fade" id="modalMessage" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalMessageTitle">&nbsp;</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="modalMessageBody"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary bi-check" data-bs-dismiss="modal" id="modalMessageOkButton"></button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="modalConfirmation" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalConfirmationTitle">&nbsp;</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="modalConfirmationBody"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success bi-check" data-bs-dismiss="modal" id="modalConfirmationYesButton"></button>
-        <button type="button" class="btn btn-danger bi-x-circle" data-bs-dismiss="modal" id="modalConfirmationNoButton"></button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" data-bs-backdrop="static" id="modalArea" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header"><h5 class="modal-title" id="modalAreaTitle">&nbsp;</h5></div>
-      <div class="modal-body" id="modalAreaBody"></div>
-      <div class="modal-footer" id="modalAreaFooter"></div>
-    </div>
-  </div>
-</div>
-
-<nav id="sidebar" class="bg-success">
+<nav id="sidebar" class="bg-success" aria-label="Main navigation">
   <h1 class="rounded"><img src="data:image/webp;base64,UklGRoQDAABXRUJQVlA4WAoAAAAYAAAAIwAAIwAAVlA4TIgCAAAvI8AIENVIoq3t2Bbbtm3bNrNt27Zt27Zt27Y1d709bxpfw2y7D8N/rSe7oMYCgFB53xUYwV3moLpD5Yju0Eju0v6R3BIjMADZrRHdA261bc+SikNnfjsXoKP9rd4RTN8ELgAb/BMwgRNkneCrsKX6lyD/nfmaAFwjLqlexp0qN9226x6wt7JsqXdL/1bVqXf2jmWdjq6h9Ez6RYP+1/OccjSgNvNsJfkuXZMiC0S/aD0pMdPyAWwoyvyrjC8ZXSGve0/ol8A/mwsRZwHgRDx7tMuakXkb+cQjYp+eptlRayzA8orySeYMkW/u57sGvQmWD+fc3xD/kGrPR7Ddp2nJ/Vx9eATWN+e+5l2vbXoSV8sDso9sIJvICfKEZGe3aQMPWfDAHgf8yEUXD4c0LIx1kdqnHKH0YAFzaM5/ZWrpJzgF0EG6ooM+VAYJKNVGFHUoVUQMXagWnjRxmZ77/c1x3rYWZuSnpzFQQ9qQzV0FhROtV9RxOGW0d19xOCX0tnQ0q6Bk0drhTxDzzU4anu+4mOjDkiyWOzVIfisggPSWkirQQNozG6CBpRtrFcTL64JMMX+BCx50MNn6SXGFzK98gHFqmrFekFkKs34kUU6QiJZ2VDdiFuTyTUpBxBETwUxfBkPksx6TvTNrpibwnciv2jArTFWmCzLqrFWZrLE0Z2S4O+WIiB2cAMt+mgv1NnXw6acb5BzJbwWsBSypuD9B35QK24mgCKXS/kQR01MhOxNW8CqL/nBkeb5NoaWrz7fbVGCLcXe1pnrxfdUpjqZZ+PCzNS20aWQKOVStxdtUrDUH8ZNimNJTnx2OJd/4+emmW66cNCQHHHPaTDgIGaEhfEQnccQRrr5FWElG1gAAAElJKgAIAAAABgASAQMAAQAAAAEAAAAaAQUAAQAAAFYAAAAbAQUAAQAAAF4AAAAoAQMAAQAAAAIAAAAxAQIAEAAAAGYAAABphwQAAQAAAHYAAAAAAAAAYAAAAAEAAABgAAAAAQAAAHBhaW50Lm5ldCA1LjAuMgAFAACQBwAEAAAAMDIzMAGgAwABAAAAAQAAAAKgBAABAAAAJAAAAAOgBAABAAAAJAAAAAWgBAABAAAAuAAAAAAAAAACAAEAAgAEAAAAUjk4AAIABwAEAAAAMDEwMAAAAAA=" width="24" height="24" alt="Logo"> Mini Warte&shy;schlangen&shy;simu&shy;lator</h1>
 
   <div id="sidebar-file" style="display: none;">
@@ -214,7 +173,7 @@
 <div id="content" class="bg-success">
 
   <header>
-  <nav class="navbar navbar-expand-lg navbar-light bg-success" id="navbar">
+  <nav class="navbar navbar-expand-lg navbar-light bg-success" id="navbar" aria-label="Program functions">
     <div class="container-fluid d-flex justify-content-start gap-1">
       <button tabindex="0" type="button" class="btn btn-sm btn-outline-light border-0" id='file_button'><i class="bi bi-house-door" role="img" aria-hidden="true"></i><span class="menuButtonTitle"></span></button>
       <button tabindex="0" type="button" class="btn btn-sm btn-outline-light border-0" id='add_station'><i class="bi bi-plus-square" role="img" aria-hidden="true"></i><span class="menuButtonTitle"></span></button>
@@ -232,6 +191,47 @@
   </div>
   </main>
 
+</div>
+
+<div class="modal fade" id="modalMessage" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="h5 modal-title" id="modalMessageTitle">&nbsp;</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalMessageBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary bi-check" data-bs-dismiss="modal" id="modalMessageOkButton"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalConfirmation" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="h5 modal-title" id="modalConfirmationTitle">&nbsp;</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalConfirmationBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success bi-check" data-bs-dismiss="modal" id="modalConfirmationYesButton"></button>
+        <button type="button" class="btn btn-danger bi-x-circle" data-bs-dismiss="modal" id="modalConfirmationNoButton"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" data-bs-backdrop="static" id="modalArea" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header"><h3 class="h5 modal-title" id="modalAreaTitle">&nbsp;</h3></div>
+      <div class="modal-body" id="modalAreaBody"></div>
+      <div class="modal-footer" id="modalAreaFooter"></div>
+    </div>
+  </div>
 </div>
 
 </div>
