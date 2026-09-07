@@ -137,6 +137,7 @@ function addVertex(type, id, name, hint ,color1, color2, top, left, isTemplate) 
  * @returns Text line html element
  */
 function addText(type, id, text, fontSize, top, left, isTemplate) {
+  const isDark=document.documentElement.dataset.bsTheme=='dark';
   const box=document.createElement("span");
   box.className="draggable";
   box.id=id;
@@ -146,7 +147,7 @@ function addText(type, id, text, fontSize, top, left, isTemplate) {
   box.style.zIndex=1;
   box.style.top=top+"px";
   box.style.left=left+"px";
-  box.style.color="black";
+  box.style.color=isDark?"#EEE":"black";
   box.style.fontSize=fontSize+"pt";
   box.draggable=true;
   box.dataset.type=type;

@@ -21,6 +21,12 @@ import {startAnimation, animationPlayPause, animationSingleTimeStep, animationFa
 import {processSeries} from "./Series.js";
 import {isDesktopApp} from "./Tools.js";
 
+/* Select color mode */
+
+let selectedColorMode=localStorage.getItem('selectedColorMode');
+if (selectedColorMode==null) selectedColorMode=(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)?"dark":"light";
+document.documentElement.dataset.bsTheme=selectedColorMode;
+
 /* Language */
 
 modalMessageOkButton.innerHTML=" "+language.dialog.Ok;

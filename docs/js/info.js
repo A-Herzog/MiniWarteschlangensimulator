@@ -17,6 +17,10 @@ limitations under the License.
 import {language} from './Language.js';
 import {isDesktopApp} from "./Tools.js";
 
+let selectedColorMode=localStorage.getItem('selectedColorMode');
+if (selectedColorMode==null) selectedColorMode=(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)?"dark":"light";
+document.documentElement.dataset.bsTheme=selectedColorMode;
+
 closeButton.innerHTML=" "+language.dialog.CloseWindow;
 closeButton.onclick=()=>{
   localStorage.removeItem("results-html");

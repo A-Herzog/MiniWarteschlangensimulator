@@ -1462,9 +1462,10 @@ function addEdgeToCanvas(edge, index) {
   const sx=(Math.min(arrow1[0],arrow2[0])-20);
 
   /* Draw edge */
+  const isDark=document.documentElement.dataset.bsTheme=='dark';
   const ctx=edgeCanvas.getContext("2d");
   ctx.lineWidth=2;
-  ctx.strokeStyle=edge.select?"lime":"black";
+  ctx.strokeStyle=edge.select?"lime":(isDark?"#EEE":"black");
 
   const a={x: arrow1[0]-sx, y: arrow1[1]-sy};
   const b={x: arrow2[0]-sx, y: arrow2[1]-sy};
@@ -1513,18 +1514,18 @@ function updateModelOnCanvas() {
     infoText+='<span style="cursor: default;">'+language.canvasInfo+"</span>";
     if (language.canvasInfoLang!=null && language.canvasInfoLang!="") {
       infoText+="<br><br>";
-      infoText+="<span style='font-size: 90%; border: 1px solid #CCC; color: #111; background-color: #F5F5F5; padding: 5px 10px; border-radius: 3px; cursor: default;'>"
+      infoText+="<span class='canvas_language_info'>"
       infoText+=language.canvasInfoLang;
       infoText+="</span>";
     }
 
     const info=document.createElement("div");
     canvas.appendChild(info);
+    info.className="canvas_info";
     info.style.position="absolute";
     info.style.top="50px";
     info.style.left="50px";
     info.style.padding="15px";
-    info.style.color="#555";
     info.innerHTML=infoText;
     localStorage.removeItem("current_model");
     return;

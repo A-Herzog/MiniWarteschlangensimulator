@@ -73,6 +73,38 @@
   user-select: none;
 }
 
+[data-bs-theme="dark"] {
+  .canvas_area {
+    color: #E0E0E0;
+    background-color: #333;
+  }
+}
+
+.canvas_info {
+  color: #555;
+}
+
+.canvas_language_info {
+  font-size: 90%;
+  border: 1px solid #CCC;
+  color: #111;
+  background-color: #F5F5F5;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: default;
+}
+
+[data-bs-theme="dark"] {
+  .canvas_info{
+    color: #C0C0C0;
+  }
+  .canvas_language_info {
+    border: 1px solid #888;
+    color: #E0E0E0;
+    background-color: #555;
+  }
+}
+
 #sidebar {
   min-width: 250px;
   max-width: 250px;
@@ -102,6 +134,17 @@
   margin: 10px 20px;
   padding: 5px;
   cursor: pointer;
+}
+
+[data-bs-theme="dark"] {
+  #sidebar h1 {
+    color: white;
+    background-color: #777;
+  }
+  #sidebar h1 img {
+    background-color: #F0F0F0;
+    border-radius: 2px;
+  }
 }
 
 #sidebar .pageinner {
