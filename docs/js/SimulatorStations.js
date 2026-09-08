@@ -395,7 +395,7 @@ class SimProcess extends SimElement {
 
     this.nextSuccess=this.nextSimElements[0];
     if (this.nextSimElements.length==2) {
-      const EWT=getPositiveFloat(setup.EWT);
+      const EWT=getNotNegativeFloat(setup.EWT);
       if (EWT==null) return language.builderProcess.EWT;
       const CVWT=getNotNegativeFloat(setup.CVWT);
       if (CVWT==null) return language.builderProcess.CVWT;
