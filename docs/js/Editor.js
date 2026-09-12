@@ -360,6 +360,7 @@ function fileBrowserStorage() {
   button.dataset.bsDismiss="modal";
   button.innerHTML=" "+language.dialog.Cancel;
 
+  /* Start dialog */
   const browserDialog=new bootstrap.Modal(document.getElementById('modalArea'),{});
   browserDialog.show();
 }

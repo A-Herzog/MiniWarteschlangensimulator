@@ -50,14 +50,12 @@ tabHomeExtended.innerHTML=language.tabFile.extended;
 tabHomeParameterSeries.innerHTML=" "+language.tabFile.extendedParameterSeries;
 tabHomeHelp.innerHTML=language.tabFile.help;
 if (!isDesktopApp) {
-  tabHomeHelpDownloadExe.innerHTML=" "+language.tabFile.extendedDownloadAppExe;
-  tabHomeHelpDownloadExe.title=language.tabFile.extendedDownloadAppInfo;
-  tabHomeHelpDownloadZip.innerHTML=" "+language.tabFile.extendedDownloadAppZip;
-  tabHomeHelpDownloadZip.title=language.tabFile.extendedDownloadAppInfo;
+  tabHomeHelpDownload.innerHTML=" "+language.tabFile.extendedDownloadApp;
+  tabHomeHelpDownload.title=language.tabFile.extendedDownloadAppInfo;
 } else {
-  tabHomeHelpDownloadExe.style.display="none";
-  tabHomeHelpDownloadZip.style.display="none";
+  tabHomeHelpDownload.style.display="none";
 }
+tabHomeHelpSettings.innerHTML=" "+language.tabFile.settings;
 tabHomeHelpInfo.innerHTML=" "+language.tabFile.helpInfo;
 const infoPageUrl='info'+((document.documentElement.lang=='de')?'_de':'')+'.html';
 tabHomeHelpTutorial.innerHTML=" "+language.tabFile.helpTutorial;
@@ -149,6 +147,7 @@ tabHomeExamples3.onclick=()=>loadExample(3);
 tabHomeExamples4.onclick=()=>loadExample(4);
 tabHomeExamples5.onclick=()=>loadExample(5);
 tabHomeExamples6.onclick=()=>loadExample(6);
+tabHomeHelpSettings.onclick=()=>showSettingsDialog();
 
 animation_button.onclick=()=>startAnimation();
 animationPlayPauseButtonOuter.onclick=()=>animationPlayPause();
@@ -169,25 +168,7 @@ canvas_area.addEventListener("keydown",event=>{if (event.key=='Delete') deleteSe
 /* Online/Offline specific functions */
 
 if (isDesktopApp) HomepageLink.onclick=()=>{Neutralino.os.open(HomepageLink.href); return false;}
-
-tabHomeHelpDownloadExe.onclick=()=>{
-  const element = document.createElement('a');
-  element.setAttribute('href','https://github.com/A-Herzog/MiniWarteschlangensimulator/releases/latest/download/MiniWarteschlangensimulator.exe');
-  element.setAttribute('target','_blank');
-  element.style.display='none';
-  document.body.appendChild(element);
-  element.click();
-  document.body.removeChild(element);
-};
-tabHomeHelpDownloadZip.onclick=()=>{
-  const element = document.createElement('a');
-  element.setAttribute('href','https://github.com/A-Herzog/MiniWarteschlangensimulator/releases/latest/download/MiniWarteschlangensimulator_Linux_MacOS.zip');
-  element.setAttribute('target','_blank');
-  element.style.display='none';
-  document.body.appendChild(element);
-  element.click();
-  document.body.removeChild(element);
-};
+tabHomeHelpDownload.onclick=()=>fileDownloadApp();
 
 /* Load example via URL */
 
@@ -220,3 +201,199 @@ document.addEventListener('readystatechange',event=>{if (event.target.readyState
     showConfirmationMessage(language.restore.title,language.restore.question,()=>fileLodeJSON(lastModel));
   }
 }});
+
+
+/*
+* Menu function: File | Download app
+*/
+function fileDownloadApp() {
+  document.getElementById('modalAreaTitle').innerHTML=language.tabFile.extendedDownloadApp;
+  const body=document.getElementById('modalAreaBody');
+  const footer=document.getElementById('modalAreaFooter');
+  body.innerHTML="";
+  footer.innerHTML="";
+  let div, button;
+
+  /* Info text */
+  body.appendChild(div=document.createElement("div"));
+  div.innerHTML=language.tabFile.extendedDownloadAppInfo+":";
+
+  /* Buttons line */
+  body.appendChild(div=document.createElement("div"));
+  div.style.marginTop="10px";
+
+  /* Download exe */
+  div.appendChild(button=document.createElement("button"));
+  button.type="button";
+  button.className="btn btn-success bi-windows";
+  button.innerHTML=" "+language.tabFile.extendedDownloadAppExe;
+  button.style.marginRight="10px";
+  button.onclick=()=>{
+    const element = document.createElement('a');
+    element.setAttribute('href','https://github.com/A-Herzog/MiniWarteschlangensimulator/releases/latest/download/MiniWarteschlangensimulator.exe');
+    element.setAttribute('target','_blank');
+    element.style.display='none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+    /* Download zip */
+  div.appendChild(button=document.createElement("button"));
+  button.type="button";
+  button.className="btn btn-success bi-file-zip";
+  button.innerHTML=" "+language.tabFile.extendedDownloadAppZip;
+  button.onclick=()=>{
+    const element = document.createElement('a');
+    element.setAttribute('href','https://github.com/A-Herzog/MiniWarteschlangensimulator/releases/latest/download/MiniWarteschlangensimulator_Linux_MacOS.zip');
+    element.setAttribute('target','_blank');
+    element.style.display='none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  /* Close button */
+  footer.appendChild(button=document.createElement("button"));
+  button.type="button";
+  button.className="btn btn-danger bi-x-circle";
+  button.dataset.bsDismiss="modal";
+  button.innerHTML=" "+language.dialog.Close;
+
+  /* Start dialog */
+  const browserDialog=new bootstrap.Modal(document.getElementById('modalArea'),{});
+  browserDialog.show();
+}
+
+/*
+* Menu function: File | Settings
+*/
+function showSettingsDialog() {
+  document.getElementById('modalAreaTitle').innerHTML=language.tabFile.settings;
+  const body=document.getElementById('modalAreaBody');
+  const footer=document.getElementById('modalAreaFooter');
+  body.innerHTML="";
+  footer.innerHTML="";
+  let div, label, option, button;
+
+  /* Language */
+  body.appendChild(div=document.createElement("div"));
+  div.appendChild(label=document.createElement("label"));
+  label.className="form-label";
+  label.innerHTML=language.tabFile.settingsLanguage+":";
+  label.style.paddingRight="5px";
+  label.htmlFor="id-language-select";
+  const selectLanguage=document.createElement("select");
+  div.appendChild(selectLanguage);
+  selectLanguage.className="form-select";
+  selectLanguage.id="id-language-select";
+  label.style.marginBottom="0";
+  selectLanguage.appendChild(option=document.createElement("option"));
+  const selectLanguageOptionSystem=option;
+  option.value="0";
+  selectLanguage.appendChild(option=document.createElement("option"));
+  option.innerHTML=language.tabFile.settingsLanguageEnglish;
+  option.value="1";
+  selectLanguage.appendChild(option=document.createElement("option"));
+  option.innerHTML=language.tabFile.settingsLanguageGerman;
+  option.value="2";
+
+  /* Color theme */
+  body.appendChild(div=document.createElement("div"));
+  div.appendChild(label=document.createElement("label"));
+  label.className="form-label";
+  label.innerHTML=language.tabFile.settingsTheme+":";
+  label.style.paddingRight="5px";
+  label.htmlFor="id-theme-select";
+  label.style.marginTop="15px";
+  label.style.marginBottom="0";
+  const selectTheme=document.createElement("select");
+  div.appendChild(selectTheme);
+  selectTheme.className="form-select";
+  selectTheme.id="id-theme-select";
+  selectTheme.appendChild(option=document.createElement("option"));
+  option.innerHTML=language.tabFile.settingsSystemDefault;
+  const selectThemeOptionSystem=option;
+  option.value="0";
+  selectTheme.appendChild(option=document.createElement("option"));
+  option.innerHTML=language.tabFile.settingsColorLight;
+  option.value="1";
+  selectTheme.appendChild(option=document.createElement("option"));
+  option.innerHTML=language.tabFile.settingsColorDark;
+  option.value="2";
+
+  /* Load language settings */
+  const userLang=(navigator.language || navigator.userLanguage).toLocaleLowerCase();
+  const isSystemGerman=userLang=='de';
+  const systemLanguage=isSystemGerman?language.tabFile.settingsLanguageGerman:language.tabFile.settingsLanguageEnglish;
+  selectLanguageOptionSystem.innerHTML=language.tabFile.settingsSystemDefault+" ("+systemLanguage+")";
+  const selectedLanguage=localStorage.getItem('selectedLanguage');
+  if (selectedLanguage==null) {
+    selectLanguage.value=0;
+  } else {
+    selectLanguage.value=(selectedLanguage=='de')?2:1;
+  }
+
+  /* Load color theme settings */
+  const systemDarkMode=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const systemColorMode=systemDarkMode?language.tabFile.settingsColorDark:language.tabFile.settingsColorLight;
+  selectThemeOptionSystem.innerHTML=language.tabFile.settingsSystemDefault+" ("+systemColorMode+")";
+  let selectedColorMode=localStorage.getItem('selectedColorMode');
+  if (selectedColorMode==null) {
+    selectTheme.value=0;
+  } else {
+    selectTheme.value=(document.documentElement.dataset.bsTheme=='dark')?2:1;
+  }
+
+  /* Ok button */
+  footer.appendChild(button=document.createElement("button"));
+  button.type="button";
+  button.className="btn btn-primary bi-check";
+  button.dataset.bsDismiss="modal";
+  button.onclick=()=>{
+    /* Set language */
+    let newLanguage='';
+    switch (parseInt(selectLanguage.value)) {
+      case 0:
+        localStorage.removeItem('selectedLanguage');
+        newLanguage=isSystemGerman?'de':'en';
+        break;
+      case 1:
+        localStorage.setItem('selectedLanguage','default');
+        newLanguage='en';
+        break;
+      case 2:
+        localStorage.setItem('selectedLanguage','de');
+        newLanguage='de';
+        break;
+    }
+    if (newLanguage!=document.documentElement.lang) setTimeout(()=>window.location.reload(),1);
+    /* Set color mode */
+    switch (parseInt(selectTheme.value)) {
+      case 0:
+        localStorage.removeItem('selectedColorMode');
+        document.documentElement.dataset.bsTheme=systemDarkMode?'dark':'light';
+        break;
+      case 1:
+        localStorage.setItem('selectedColorMode','light');
+        document.documentElement.dataset.bsTheme='light';
+        break;
+      case 2:
+        localStorage.setItem('selectedColorMode','dark');
+        document.documentElement.dataset.bsTheme='dark';
+        break;
+    }
+  };
+  button.innerHTML=" "+language.dialog.Ok;
+
+  /* Cancel button */
+  footer.appendChild(button=document.createElement("button"));
+  button.type="button";
+  button.className="btn btn-danger bi-x-circle";
+  button.dataset.bsDismiss="modal";
+  button.innerHTML=" "+language.dialog.Cancel;
+
+  /* Start dialog */
+  const browserDialog=new bootstrap.Modal(document.getElementById('modalArea'),{});
+  browserDialog.show();
+}
