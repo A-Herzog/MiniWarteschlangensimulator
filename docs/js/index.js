@@ -253,6 +253,11 @@ function fileDownloadApp() {
     document.body.removeChild(element);
   };
 
+  /* GitHub link */
+  body.appendChild(div=document.createElement("div"));
+  div.style.marginTop="10px";
+  div.innerHTML=language.tabFile.extendedDownloadAppGitHub;
+
   /* Close button */
   footer.appendChild(button=document.createElement("button"));
   button.type="button";
@@ -323,7 +328,8 @@ function showSettingsDialog() {
   option.value="2";
 
   /* Load language settings */
-  const userLang=(navigator.language || navigator.userLanguage).toLocaleLowerCase();
+  let userLang=(navigator.language || navigator.userLanguage).toLocaleLowerCase();
+  if (userLang.indexOf('-')>0) userLang=userLang.substring(0,userLang.indexOf('-'));
   const isSystemGerman=userLang=='de';
   const systemLanguage=isSystemGerman?language.tabFile.settingsLanguageGerman:language.tabFile.settingsLanguageEnglish;
   selectLanguageOptionSystem.innerHTML=language.tabFile.settingsSystemDefault+" ("+systemLanguage+")";
