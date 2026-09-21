@@ -436,7 +436,7 @@ templates.push({
   name: language.templates.signalSource,
   maxEdgesIn: 0,
   maxEdgesOut: 1,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("SignalSource",id,language.templates.signalSource+"<br>"+nr,language.templates.signalSourceHint,"#FB3","#FD7",top,left,isTemplate),
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("SignalSource",id,language.templates.signalSource+"<br>"+nr,language.templates.signalSourceHint,"#FB3","#1C1",top,left,isTemplate),
   setup: {signal: '', b: 1}
 });
 templates.push({
