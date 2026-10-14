@@ -22,7 +22,7 @@ import {dragElement, dragElementProgress, dragTemplate} from "./Editor.js";
 
 
 function getReduceBoxFontSize() {
-  const longestStationName="Bedienstation";
+  const longestStationName="Bedienstation"; /* Longest station name in German language, which is the longest language supported by the simulator */
   try {
     const canvasArea=document.getElementById("canvas_area");
     const testCanvas=document.createElement("canvas");
@@ -131,12 +131,14 @@ function addVertex(type, id, name, hint ,color1, color2, top, left, isTemplate) 
  * @param {Number} id Element id
  * @param {String} text Text to be displayed
  * @param {Number} fontSize Font size
+ * @param {Boolean} bold Whether the text should be bold
+ * @param {Boolean} italic Whether the text should be italic
  * @param {Number} top Y coordinate of the upper left corner of the text line
  * @param {Number} left X coordinate of the upper left corner of the text line
  * @param {Boolean} isTemplate Is the text line to be added to the canvas (false) or to the templates bar (true)
  * @returns Text line html element
  */
-function addText(type, id, text, fontSize, top, left, isTemplate) {
+function addText(type, id, text, fontSize, bold, italic, top, left, isTemplate) {
   const isDark=document.documentElement.dataset.bsTheme=='dark';
   const box=document.createElement("span");
   box.className="draggable";
@@ -149,6 +151,8 @@ function addText(type, id, text, fontSize, top, left, isTemplate) {
   box.style.left=left+"px";
   box.style.color=isDark?"#EEE":"black";
   box.style.fontSize=fontSize+"pt";
+  box.style.fontWeight=bold?"bold":"normal";
+  box.style.fontStyle=italic?"italic":"normal";
   box.draggable=true;
   box.dataset.type=type;
   box.innerText=(typeof(text)=='undefined')?language.templates.text:text.replaceAll("\\n","\n");
@@ -452,8 +456,8 @@ templates.push({
   name: language.templates.text,
   maxEdgesIn: 0,
   maxEdgesOut: 0,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addText("Text",id,setup.text,setup.fontSize,top,left,isTemplate),
-  setup: {text: language.templates.text, fontSize: 12},
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addText("Text",id,setup.text,setup.fontSize,setup.bold,setup.italic,top,left,isTemplate),
+  setup: {text: language.templates.text, fontSize: 12, bold: false, italic: false},
   visibleSetup: true,
   visualOnly: true
 });

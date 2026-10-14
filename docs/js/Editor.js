@@ -844,6 +844,8 @@ function descriptionForParameter(parameter, element) {
   if (parameter=="rates") return language.editor.rates;
   if (parameter=="text") return language.editor.text;
   if (parameter=="fontSize") return language.editor.fontSize;
+  if (parameter=="bold") return language.editor.bold;
+  if (parameter=="italic") return language.editor.italic;
   if (parameter=="SuccessNextBox") return language.editor.SuccessNextBox;
   if (parameter=='release') return language.editor.release;
   if (parameter=='signal') return language.editor.signal;
@@ -903,6 +905,8 @@ function nameForParameter(parameter) {
   if (parameter=="rates") return "";
   if (parameter=="text") return "";
   if (parameter=="fontSize") return language.editor.fontSizeLabel;
+  if (parameter=="bold") return "";
+  if (parameter=="italic") return "";
   if (parameter=="SuccessNextBox") return "";
   if (parameter=='release') return language.editor.releaseLabel;
   if (parameter=='signal') return language.editor.signalLabel;
@@ -957,10 +961,12 @@ function addEditorElements(element, parent) {
     const tooltip=tooltipForParameter(name,element);
     if (typeof(tooltip)!='undefined' && tooltip!='') span.title=tooltip;;
 
-    const info=document.createElement("div");
-    span.appendChild(info);
-    info.style.fontSize="90%";
-    info.innerHTML=descriptionForParameter(name, element);
+    if (name!='bold' && name!='italic') {
+      const info=document.createElement("div");
+      span.appendChild(info);
+      info.style.fontSize="90%";
+      info.innerHTML=descriptionForParameter(name, element);
+    }
 
     const div=document.createElement("div");
     span.appendChild(div);
@@ -995,6 +1001,25 @@ function addEditorElements(element, parent) {
       div.appendChild(checkBoxLabel);
       checkBoxLabel.className="form-check-label";
       checkBoxLabel.innerHTML=language.editor.limitedLabel2;
+      checkBoxLabel.style.paddingLeft="10px";
+      checkBoxLabel.htmlFor=checkBox;
+      continue;
+    }
+
+    if (name=="bold" || name=="italic") {
+      div.classList.add("form-switch");
+      const checkBox=document.createElement("input");
+      div.appendChild(checkBox);
+      checkBox.type="checkbox";
+      checkBox.className="form-check-input";
+      checkBox.checked=element.setup[name];
+      checkBox.onchange=function(){element.setup[name]=checkBox.checked;}
+      checkBox.style.borderRadius=".25em";
+      const checkBoxLabel=document.createElement("label");
+      div.appendChild(checkBoxLabel);
+      checkBoxLabel.className="form-check-label";
+      if (name=="italic") checkBoxLabel.innerHTML=language.editor.italic;
+      if (name=="bold") checkBoxLabel.innerHTML=language.editor.bold;
       checkBoxLabel.style.paddingLeft="10px";
       checkBoxLabel.htmlFor=checkBox;
       continue;
