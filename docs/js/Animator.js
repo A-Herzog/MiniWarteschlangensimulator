@@ -441,7 +441,7 @@ function allowMultipleThreads() {
 function animationFastForwardStep2(arrivalMio) {
   stopAnimation();
 
-  let button, div, ul, li, a;
+  let button, div, ul, li, a, hr;
 
   const body=document.getElementById('modalAreaBody');
   const footer=document.getElementById('modalAreaFooter');
@@ -520,6 +520,10 @@ function animationFastForwardStep2(arrivalMio) {
     a.style.cursor='pointer';
     a.innerHTML=language.tabAnimation.exportCopyTable;
     a.onclick=()=>navigator.clipboard.writeText(getFullResultsTable(worker.full));
+
+    ul.appendChild(li=document.createElement('li'));
+    li.appendChild(hr=document.createElement('hr'));
+    hr.className="dropdown-divider";
 
     ul.appendChild(li=document.createElement('li'));
     li.appendChild(a=document.createElement('a'));
@@ -729,8 +733,11 @@ function getFullResultsTable(statistics) {
 function animationFastForwardShowFullData() {
   const statistics=worker.full;
   const results=getFullResultsText(statistics);
+  const table=getFullResultsTable(statistics);
   localStorage.setItem("results-html",results.html);
+  localStorage.setItem("results-short",worker.infoText);
   localStorage.setItem("results-text",results.text);
+  localStorage.setItem("results-table",table);
 
   const infoPageUrl='info'+((document.documentElement.lang=='de')?'_de':'')+'.html';
   if (isDesktopApp) Neutralino.window.create('/'+infoPageUrl+'?results'); else window.open(infoPageUrl+'?results');

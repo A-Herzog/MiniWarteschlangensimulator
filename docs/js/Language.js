@@ -165,7 +165,7 @@ lang.tabAnimation.eventsPerThreadPerSecond="Simulierte Ereignisse pro Thread pro
 lang.tabAnimation.count="Anzahl";
 lang.tabAnimation.threads="Genutzte Anzahl an Threads";
 lang.tabAnimation.runTime="Laufzeit";
-lang.tabAnimation.copy="In Zwischenablage kopieren";
+lang.tabAnimation.copy="Kopieren";
 lang.tabAnimation.save="Speichern";
 lang.tabAnimation.resultsFile="Ergebnisse.txt";
 
@@ -668,8 +668,8 @@ lang.tabAnimation.eventsPerThreadPerSecond="Simulated events per thread per seco
 lang.tabAnimation.count="Count";
 lang.tabAnimation.threads="Used number of threads";
 lang.tabAnimation.runTime="Runtime";
-lang.tabAnimation.copy="Copy to clipboard";
-lang.tabAnimation.save="Save to file";
+lang.tabAnimation.copy="Copy";
+lang.tabAnimation.save="Save";
 lang.tabAnimation.resultsFile="Results.txt";
 
 lang.canvasInfoLang="Eine <a href=\"index_de.html\" onclick=\"localStorage.setItem('selectedLanguage','de')\" style=\"color: blue;\">deutsche Version</a> dieses Simulators stehen ebenfalls zur Verfügung.";

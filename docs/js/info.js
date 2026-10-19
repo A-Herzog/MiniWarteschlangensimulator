@@ -56,17 +56,41 @@ if (id.startsWith('?')) {
   }
 }
 
+/**
+ * Downloads some string as a file.
+ * @param {String} content Content for the file download
+ * @param {String} filename Destination file name
+ */
+function downloadText(content, filename) {
+  const a=document.createElement('a');
+  const blob=new Blob([content], {type: 'text/plain'});
+  a.href=window.URL.createObjectURL(blob);
+  a.download=filename;
+  a.click();
+}
+
 function loadSimResults() {
   simResults.innerHTML=localStorage.getItem("results-html");
-  const text=localStorage.getItem("results-text");
-  copyButton.onclick=()=>navigator.clipboard.writeText(text);
+
+  const textShort=localStorage.getItem("results-short");
+  const textDetails=localStorage.getItem("results-text");
+  const textTable=localStorage.getItem("results-table");
+
   copyButton.innerHTML=" "+language.tabAnimation.copy;
-  saveButton.onclick=()=>{
-    const a=document.createElement('a');
-    const blob=new Blob([text], {type: 'text/plain'});
-    a.href=window.URL.createObjectURL(blob); a.download=language.tabAnimation.resultsFile;
-    a.click();
-  };
+  copyButton1.innerHTML=language.tabAnimation.exportCopyShort;
+  copyButton1.onclick=()=>navigator.clipboard.writeText(textShort);
+  copyButton2.innerHTML=language.tabAnimation.exportCopyLong;
+  copyButton2.onclick=()=>navigator.clipboard.writeText(textDetails);
+  copyButton3.innerHTML=language.tabAnimation.exportCopyTable;
+  copyButton3.onclick=()=>navigator.clipboard.writeText(textTable);
+
   saveButton.innerHTML=" "+language.tabAnimation.save;
+  saveButton1.innerHTML=language.tabAnimation.exportSaveShort;
+  saveButton1.onclick=()=>downloadText(textShort,language.tabAnimation.resultsFile);
+  saveButton2.innerHTML=language.tabAnimation.exportSaveLong;
+  saveButton2.onclick=()=>downloadText(textDetails,language.tabAnimation.resultsFile);
+  saveButton3.innerHTML=language.tabAnimation.exportSaveTable;
+  saveButton3.onclick=()=>downloadText(textTable,language.tabAnimation.resultsFile);
+
   infoColumn.innerHTML=language.statisticsInfo.infoColumn;
 }

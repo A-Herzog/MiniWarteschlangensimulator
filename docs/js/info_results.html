@@ -2,8 +2,22 @@
   <div class="col-lg-8"><div class="p-2">
     <div id="simResults"></div>
     <p style="margin-top: 20px;">
-      <button type="button" id="copyButton" class="btn btn-primary bi-clipboard" style="margin-left: 10px;"></button>
-      <button type="button" id="saveButton" class="btn btn-primary bi-download" style="margin-left: 10px;"></button>
+      <div class="dropdown" style="display: inline-block">
+        <button type="button" id="copyButton" class="btn btn-primary bi-clipboard dropdown-toggle" style="margin-left: 10px;" data-bs-toggle="dropdown" aria-expanded="false"></button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" style="cursor: pointer;" id="copyButton1"></a></li>
+          <li><a class="dropdown-item" style="cursor: pointer;" id="copyButton2"></a></li>
+          <li><a class="dropdown-item" style="cursor: pointer;" id="copyButton3"></a></li>
+        </ul>
+      </div>
+      <div class="dropdown" style="display: inline-block">
+        <button type="button" id="saveButton" class="btn btn-primary bi-download dropdown-toggle" style="margin-left: 10px;" data-bs-toggle="dropdown" aria-expanded="false"></button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" style="cursor: pointer;" id="saveButton1"></a></li>
+          <li><a class="dropdown-item" style="cursor: pointer;" id="saveButton2"></a></li>
+          <li><a class="dropdown-item" style="cursor: pointer;" id="saveButton3"></a></li>
+        </ul>
+      </div>
     </p>
   </div></div>
   <div class="col-lg-4" style="background-color: #E0E0E0;"><div class="p-2">
