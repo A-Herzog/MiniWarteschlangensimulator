@@ -266,10 +266,9 @@ function fileLoad() {
  * Menu function: File | Save
  */
 function fileSave() {
-  const model={elements: elements, edges: edges};
-  const json=JSON.stringify(model);
-
   if (isDesktopApp) {
+    const model={elements: elements, edges: edges};
+    const json=JSON.stringify(model);
     Neutralino.os.showSaveDialog(language.tabFile.modelSave, {defaultPath: 'model.json', filters: [
       {name: language.tabFile.modelFiles+' (*.json)', extensions: ['json']}
     ]}).then(file=>{
@@ -279,6 +278,12 @@ function fileSave() {
       Neutralino.filesystem.writeFile(file,json);
     });
   } else {
+    fileBrowserStorage();
+    // XXX:
+    /*
+    const model={elements: elements, edges: edges};
+    const json=JSON.stringify(model);
+
     const element=document.createElement('a');
     element.setAttribute('href','data:text/plain;charset=utf-8,'+encodeURIComponent(json));
     element.setAttribute('download','Model.json');
@@ -286,6 +291,7 @@ function fileSave() {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+    */
   }
 }
 
@@ -293,17 +299,40 @@ function fileSave() {
 * Menu function: File | Browser storage
 */
 function fileBrowserStorage() {
-  document.getElementById('modalAreaTitle').innerHTML=language.tabFile.modelBrowserStorage;
+  document.getElementById('modalAreaTitle').innerHTML=language.tabFile.modelSave;
   const body=document.getElementById('modalAreaBody');
   const footer=document.getElementById('modalAreaFooter');
   body.innerHTML="";
   footer.innerHTML="";
-  let button;
+  let div, button;
 
-  const div=document.createElement("div");
+  /* Download file */
+  body.appendChild(div=document.createElement("div"));
+  div.innerHTML=language.tabFile.modelSaveDownloadInfo;
+  div.className="mb-3";
+
+  body.appendChild(div=document.createElement("div"));
+  div.className="mb-3";
+  div.appendChild(button=document.createElement("button"));
+
+
+  body.appendChild(div=document.createElement("div"));
   div.innerHTML=language.tabFile.modelBrowserStorageInfo;
   div.className="mb-3";
-  body.appendChild(div);
+  button.type="button";
+  button.className="btn btn-sm btn-primary bi bi-save";
+  button.innerHTML=" "+language.tabFile.modelSaveDownloadButton;
+  button.onclick=()=>{
+    const model={elements: elements, edges: edges};
+    const json=JSON.stringify(model);
+    const element=document.createElement('a');
+    element.setAttribute('href','data:text/plain;charset=utf-8,'+encodeURIComponent(json));
+    element.setAttribute('download','Model.json');
+    element.style.display='none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
 
   /* Slots */
   const table=document.createElement("table");
@@ -342,7 +371,7 @@ function fileBrowserStorage() {
     }
     td.appendChild(button=document.createElement("button"));
     button.type="button";
-    button.className="btn btn-sm btn-primary bi bi-file-arrow-down ms-1";
+    button.className="btn btn-sm btn-primary bi bi-bookmark-plus ms-1";
     button.dataset.bsDismiss="modal";
     button.innerHTML=" "+language.tabFile.modelBrowserStorageSave;
     button.onclick=()=>{

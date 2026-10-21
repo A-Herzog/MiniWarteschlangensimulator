@@ -37,7 +37,6 @@ tabHome.innerHTML=" "+language.tabFile.title;
 tabHomeFileNew.innerHTML=" "+language.tabFile.modelNew;
 fileLoadDropTarget.innerHTML=" "+language.tabFile.modelLoad+"<br><small style='font-size: 9pt;'>"+language.tabFile.modelLoadDragDrop+"</small>";
 tabHomeFileSave.innerHTML=" "+language.tabFile.modelSave;
-if (typeof(tabHomeFileBrowser)!='undefined') tabHomeFileBrowser.innerHTML=" "+language.tabFile.modelBrowserStorage;
 tabHomeExamples.innerHTML=language.tabFile.examples;
 tabHomeExamples0.innerHTML=" "+language.tabFile.exampleSimple;
 tabHomeExamples1.innerHTML=" "+language.tabFile.exampleControl;
@@ -126,7 +125,6 @@ fileLoadDropTarget.ondragenter=e=>fileLoadDragEnter(e);
 fileLoadDropTarget.ondragleave=e=>fileLoadDragLeave(e);
 fileLoadDropTarget.ondrop=e=>fileLoadDrop(e);
 tabHomeFileSave.onclick=()=>fileSave();
-if (typeof(tabHomeFileBrowser)!='undefined') tabHomeFileBrowser.onclick=()=>fileBrowserStorage();
 
 file_button.onclick=()=>showFileSidebar();
 add_station.onclick=()=>showTemplatesSidebar();
