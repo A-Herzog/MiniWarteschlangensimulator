@@ -160,6 +160,7 @@ function loadExampleRetry() {
   getElementByBoxId(decideBoxId).setup.rates="3;1";
   const delayBoxId=addElementToModel("Delay",300,100);
   getElementByBoxId(delayBoxId).setup.ES="300";
+  const vertexBoxId=addElementToModel("Vertex",215,140);
   const disposeBoxId1=addElementToModel("Dispose",100,500);
   const disposeBoxId2=addElementToModel("Dispose",300,500);
 
@@ -170,7 +171,8 @@ function loadExampleRetry() {
   addEdgeToModel(processBoxId,decideBoxId);
   addEdgeToModel(decideBoxId,delayBoxId);
   addEdgeToModel(decideBoxId,disposeBoxId2);
-  addEdgeToModel(delayBoxId,processBoxId);
+  addEdgeToModel(delayBoxId,vertexBoxId);
+  addEdgeToModel(vertexBoxId,processBoxId);
 }
 
 /**
