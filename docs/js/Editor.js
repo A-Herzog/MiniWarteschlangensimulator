@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, fileBrowserStorage, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragElementProgress, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas, deleteSelectedElement};
+export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileLoadFromLocalStorage, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragElementProgress, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas, deleteSelectedElement, updateLoadFromBrowserVisible};
 
 import {language} from "./Language.js";
 import {animationActive} from "./Animator.js";
@@ -262,6 +262,19 @@ function fileLoad() {
   }
 }
 
+function updateLoadFromBrowserVisible() {
+  let modelInLocalStorage=false;
+  for (let i=0;i<5;i++) if (localStorage.getItem("model"+i)!=null) {modelInLocalStorage=true; break;}
+  fileLoadFromBrowser.style.display=modelInLocalStorage?"":"none";
+}
+
+/**
+ * Menu function: File | Load from browser storage
+ */
+function fileLoadFromLocalStorage() {
+  fileBrowserStorage(true);
+}
+
 /**
  * Menu function: File | Save
  */
@@ -279,60 +292,48 @@ function fileSave() {
     });
   } else {
     fileBrowserStorage();
-    // XXX:
-    /*
-    const model={elements: elements, edges: edges};
-    const json=JSON.stringify(model);
-
-    const element=document.createElement('a');
-    element.setAttribute('href','data:text/plain;charset=utf-8,'+encodeURIComponent(json));
-    element.setAttribute('download','Model.json');
-    element.style.display='none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-    */
   }
 }
 
 /*
 * Menu function: File | Browser storage
 */
-function fileBrowserStorage() {
-  document.getElementById('modalAreaTitle').innerHTML=language.tabFile.modelSave;
+function fileBrowserStorage(loadOnly=false) {
+  document.getElementById('modalAreaTitle').innerHTML=loadOnly?language.tabFile.modelLoad:language.tabFile.modelSave;
   const body=document.getElementById('modalAreaBody');
   const footer=document.getElementById('modalAreaFooter');
   body.innerHTML="";
   footer.innerHTML="";
   let div, button;
 
-  /* Download file */
-  body.appendChild(div=document.createElement("div"));
-  div.innerHTML=language.tabFile.modelSaveDownloadInfo;
-  div.className="mb-3";
+  if (!loadOnly) {
+    /* Download file */
+    body.appendChild(div=document.createElement("div"));
+    div.innerHTML=language.tabFile.modelSaveDownloadInfo;
+    div.className="mb-3";
 
-  body.appendChild(div=document.createElement("div"));
-  div.className="mb-3";
-  div.appendChild(button=document.createElement("button"));
+    body.appendChild(div=document.createElement("div"));
+    div.className="mb-3";
+    div.appendChild(button=document.createElement("button"));
 
-
-  body.appendChild(div=document.createElement("div"));
-  div.innerHTML=language.tabFile.modelBrowserStorageInfo;
-  div.className="mb-3";
-  button.type="button";
-  button.className="btn btn-sm btn-primary bi bi-save";
-  button.innerHTML=" "+language.tabFile.modelSaveDownloadButton;
-  button.onclick=()=>{
-    const model={elements: elements, edges: edges};
-    const json=JSON.stringify(model);
-    const element=document.createElement('a');
-    element.setAttribute('href','data:text/plain;charset=utf-8,'+encodeURIComponent(json));
-    element.setAttribute('download','Model.json');
-    element.style.display='none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
+    body.appendChild(div=document.createElement("div"));
+    div.innerHTML=language.tabFile.modelBrowserStorageInfo;
+    div.className="mb-3";
+    button.type="button";
+    button.className="btn btn-sm btn-primary bi bi-save";
+    button.innerHTML=" "+language.tabFile.modelSaveDownloadButton;
+    button.onclick=()=>{
+      const model={elements: elements, edges: edges};
+      const json=JSON.stringify(model);
+      const element=document.createElement('a');
+      element.setAttribute('href','data:text/plain;charset=utf-8,'+encodeURIComponent(json));
+      element.setAttribute('download','Model.json');
+      element.style.display='none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    };
+  }
 
   /* Slots */
   const table=document.createElement("table");
@@ -359,27 +360,33 @@ function fileBrowserStorage() {
       button.onclick=()=>{
         showConfirmationMessage(language.restore.title,language.restore.questionBrowserStorage,()=>fileLodeJSON(localStorage.getItem("model"+nr)));
       };
+      if (!loadOnly) {
+        td.appendChild(button=document.createElement("button"));
+        button.type="button";
+        button.className="btn btn-sm btn-danger bi-x-circle ms-1";
+        button.dataset.bsDismiss="modal";
+        button.innerHTML=" "+language.tabFile.modelBrowserStorageDelete;
+        button.onclick=()=>{
+          localStorage.removeItem("model"+nr);
+          localStorage.removeItem("date"+nr);
+          updateLoadFromBrowserVisible();
+        };
+      }
+    }
+    if (!loadOnly) {
       td.appendChild(button=document.createElement("button"));
       button.type="button";
-      button.className="btn btn-sm btn-danger bi-x-circle ms-1";
+      button.className="btn btn-sm btn-primary bi bi-bookmark-plus ms-1";
       button.dataset.bsDismiss="modal";
-      button.innerHTML=" "+language.tabFile.modelBrowserStorageDelete;
+      button.innerHTML=" "+language.tabFile.modelBrowserStorageSave;
       button.onclick=()=>{
-        localStorage.removeItem("model"+nr);
-        localStorage.removeItem("date"+nr);
+        const model={elements: elements, edges: edges};
+        const json=JSON.stringify(model);
+        localStorage.setItem("model"+nr,json);
+        localStorage.setItem("date"+nr,new Date().toLocaleString());
+        updateLoadFromBrowserVisible();
       };
     }
-    td.appendChild(button=document.createElement("button"));
-    button.type="button";
-    button.className="btn btn-sm btn-primary bi bi-bookmark-plus ms-1";
-    button.dataset.bsDismiss="modal";
-    button.innerHTML=" "+language.tabFile.modelBrowserStorageSave;
-    button.onclick=()=>{
-      const model={elements: elements, edges: edges};
-      const json=JSON.stringify(model);
-      localStorage.setItem("model"+nr,json);
-      localStorage.setItem("date"+nr,new Date().toLocaleString());
-    };
   }
 
   /* Cancel button */

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import {language} from './Language.js';
-import {zoomIn, zoomOut, showConfirmationMessage, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileSave, fileBrowserStorage, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick, deleteSelectedElement} from "./Editor.js";
+import {zoomIn, zoomOut, showConfirmationMessage, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileLoadFromLocalStorage, fileSave, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick, deleteSelectedElement, updateLoadFromBrowserVisible} from "./Editor.js";
 import {loadExample} from "./Example.js";
 import {startAnimation, animationPlayPause, animationSingleTimeStep, animationFastForward} from "./Animator.js";
 import {processSeries} from "./Series.js";
@@ -36,6 +36,7 @@ modalConfirmationNoButton.innerHTML=" "+language.dialog.No;
 tabHome.innerHTML=" "+language.tabFile.title;
 tabHomeFileNew.innerHTML=" "+language.tabFile.modelNew;
 fileLoadDropTarget.innerHTML=" "+language.tabFile.modelLoad+"<br><small style='font-size: 9pt;'>"+language.tabFile.modelLoadDragDrop+"</small>";
+fileLoadFromBrowser.innerHTML=" "+language.tabFile.modelLoadFromBrowser;
 tabHomeFileSave.innerHTML=" "+language.tabFile.modelSave;
 tabHomeExamples.innerHTML=language.tabFile.examples;
 tabHomeExamples0.innerHTML=" "+language.tabFile.exampleSimple;
@@ -124,6 +125,7 @@ fileLoadDropTarget.ondragover=e=>fileLoadDrag(e);
 fileLoadDropTarget.ondragenter=e=>fileLoadDragEnter(e);
 fileLoadDropTarget.ondragleave=e=>fileLoadDragLeave(e);
 fileLoadDropTarget.ondrop=e=>fileLoadDrop(e);
+fileLoadFromBrowser.onclick=()=>fileLoadFromLocalStorage();
 tabHomeFileSave.onclick=()=>fileSave();
 
 file_button.onclick=()=>showFileSidebar();
@@ -167,6 +169,10 @@ canvas_area.addEventListener("keydown",event=>{if (event.key=='Delete') deleteSe
 
 if (isDesktopApp) HomepageLink.onclick=()=>{Neutralino.os.open(HomepageLink.href); return false;}
 tabHomeHelpDownload.onclick=()=>fileDownloadApp();
+
+/* Show or hide browser storage load button */
+
+updateLoadFromBrowserVisible();
 
 /* Load example via URL */
 
