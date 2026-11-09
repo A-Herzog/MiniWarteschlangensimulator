@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent, SignalEvent, BatchRecheckEvent, BatchProcessRecheckEvent};
+export {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent, SignalEvent, BatchRecheckEvent, BatchProcessRecheckEvent, DelayDoneEvent};
 
 import {Event} from "./SimCore.js";
 
@@ -221,5 +221,26 @@ class BatchProcessRecheckEvent extends Event {
 
   execute(simulator) {
     this.processStation.processBatchRecheck(simulator);
+  }
+}
+
+/**
+ * Delay done event
+ */
+class DelayDoneEvent extends Event {
+  /**
+   * Constructor
+   * @param {Number} time Simulation time at which the event is to be executed
+   * @param {Object} delayStation Delay station to notify
+   * @param {Object} client Delayed client
+   */
+  constructor(time, delayStation, client) {
+    super(time);
+    this.delayStation=delayStation;
+    this.client=client;
+  }
+
+  execute(simulator) {
+    this.delayStation.delayDone(simulator,this.client);
   }
 }

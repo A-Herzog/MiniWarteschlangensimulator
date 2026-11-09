@@ -18,7 +18,7 @@ export {SimSource, SimDelay, SimProcess, SimDecide, SimDuplicate, SimCounter, Si
 
 import {distributionBuilder} from "./SimulatorBuilder.js";
 import {statcore} from "./StatCore.js";
-import {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent, SignalEvent, BatchRecheckEvent, BatchProcessRecheckEvent} from "./Events.js";
+import {SendEvent, ArrivalEvent, ServiceDoneEvent, PostProcessingDoneEvent, WaitingCancelEvent, SignalEvent, BatchRecheckEvent, BatchProcessRecheckEvent, DelayDoneEvent} from "./Events.js";
 import {getPositiveFloat, getNotNegativeFloat, getPositiveInt, getNotNegativeInt} from './Tools.js';
 import {language} from "./Language.js";
 import {complileCondition} from "./MathTools.js";
@@ -276,7 +276,7 @@ class SimDelay extends SimElement {
     const superError=super.build(globalStatistics,allElements,builder);
     if (superError!=null) return superError;
 
-    if (this.nextSimElements.length!=1) return language.builderSource.edge;
+    if (this.nextSimElements.length<1 || this.nextSimElements.length>2) return language.builderProcess.edge;
 
     const setup=this.editElement.setup;
 
@@ -285,6 +285,21 @@ class SimDelay extends SimElement {
     const CVS=getNotNegativeFloat(setup.CVS);
     if (CVS==null) return language.builderDelay.CVS;
     this.distS=distributionBuilder(ES,CVS);
+
+    if (this.nextSimElements.length==1) {
+      this.nextSuccess=this.nextSimElements[0];
+      this.nextCancel=null;
+    } else {
+      if (this.editElement.setup.SuccessNextBox==this.nextSimElements[1].id) {
+        this.nextSuccess=this.nextSimElements[1];
+        this.nextCancel=this.nextSimElements[0];
+      } else {
+        this.nextSuccess=this.nextSimElements[0];
+        this.nextCancel=this.nextSimElements[1];
+      }
+    }
+
+    this.collisionState=false;
 
     this._initStatistics(globalStatistics,2,{S: new statcore.Values(), N: new statcore.States(), n: new statcore.Counter()});
     this.statistics.N.set(0,0);
@@ -310,13 +325,23 @@ class SimDelay extends SimElement {
     const statistics=this.statistics;
     statistics.n.add();
 
+    this.collisionState=(this.n>1);
+
     const delta=this.distS();
     client.s+=delta;
 
     statistics.S.add(delta);
     statistics.N.set(simulator.time,this.n);
 
-    this._sendClient(simulator,client,this.nextSimElements[0],delta);
+    if (this.nextCancel==null) {
+      this._sendClient(simulator,client,this.nextSimElements[0],delta);
+    } else {
+      simulator.addEvent(new DelayDoneEvent(simulator.time+delta,this,client));
+    }
+  }
+
+  delayDone(simulator, client) {
+    this._sendClient(simulator,client,this.collisionState?this.nextCancel:this.nextSuccess,0);
   }
 
   /**

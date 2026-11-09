@@ -327,9 +327,9 @@ templates.push({
   color: "#55F",
   name: language.templates.delay,
   maxEdgesIn: 999,
-  maxEdgesOut: 1,
+  maxEdgesOut: 2,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Delay",id,language.templates.delay+"<br>"+nr,language.templates.delayHint,"#55F","#99F",top,left,isTemplate),
-  setup: {ES: 80, CVS: 1}
+  setup: {ES: 80, CVS: 1, SuccessNextBox: ''}
 });
 templates.push({
   type: 'Process',
