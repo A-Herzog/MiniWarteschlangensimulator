@@ -130,6 +130,7 @@ function addVertex(type, id, name, hint ,color1, color2, top, left, isTemplate) 
  * @param {String} type Element type
  * @param {Number} id Element id
  * @param {String} text Text to be displayed
+ * @param {String} hint Content of option tooltip for the template (can be null)
  * @param {Number} fontSize Font size
  * @param {Boolean} bold Whether the text should be bold
  * @param {Boolean} italic Whether the text should be italic
@@ -138,7 +139,7 @@ function addVertex(type, id, name, hint ,color1, color2, top, left, isTemplate) 
  * @param {Boolean} isTemplate Is the text line to be added to the canvas (false) or to the templates bar (true)
  * @returns Text line html element
  */
-function addText(type, id, text, fontSize, bold, italic, top, left, isTemplate) {
+function addText(type, id, text, hint, fontSize, bold, italic, top, left, isTemplate) {
   const isDark=document.documentElement.dataset.bsTheme=='dark';
   const box=document.createElement("span");
   box.className="draggable";
@@ -164,6 +165,7 @@ function addText(type, id, text, fontSize, bold, italic, top, left, isTemplate) 
     box.ondragstart=dragElement;
     box.ondrag=dragElementProgress;
   }
+  if (hint) box.title=hint;
   return box;
 }
 
@@ -202,6 +204,7 @@ function addDiagram(type, id, top, left, sourceName, isTemplate) {
     box.ondragstart=dragElement;
     box.ondrag=dragElementProgress;
   }
+  box.title=language.templates.diagramHint;
   return box;
 }
 
@@ -317,6 +320,8 @@ templates.push({
   type: 'Source',
   color: "green",
   name: language.templates.source,
+  hint: language.templates.sourceHint,
+  help: language.templates.sourceHelp,
   maxEdgesIn: 0,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Source",id,language.templates.source+"<br>"+nr,language.templates.sourceHint,"green","#1C1",top,left,isTemplate),
@@ -326,6 +331,8 @@ templates.push({
   type: 'Delay',
   color: "#55F",
   name: language.templates.delay,
+  hint: language.templates.delayHint,
+  help: language.templates.delayHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 2,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Delay",id,language.templates.delay+"<br>"+nr,language.templates.delayHint,"#55F","#99F",top,left,isTemplate),
@@ -335,6 +342,8 @@ templates.push({
   type: 'Process',
   color: "#00C",
   name: language.templates.process,
+  hint: language.templates.processHint,
+  help: language.templates.processHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 2,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Process",id,language.templates.process+"<br>"+nr,language.templates.processHint,"#00C","#33F",top,left,isTemplate),
@@ -344,6 +353,8 @@ templates.push({
   type: 'Decide',
   color: "#DD0",
   name: language.templates.decide,
+  hint: language.templates.decideHint,
+  help: language.templates.decideHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 999,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Decide",id,language.templates.decide+"<br>"+nr,language.templates.decideHint,"#DD0","#DD7",top,left,isTemplate),
@@ -353,6 +364,8 @@ templates.push({
   type: 'Duplicate',
   color: "#900",
   name: language.templates.duplicate,
+  hint: language.templates.duplicateHint,
+  help: language.templates.duplicateHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 999,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Duplicate",id,language.templates.duplicate+"<br>"+nr,language.templates.duplicateHint,"#900","#955",top,left,isTemplate)
@@ -361,6 +374,8 @@ templates.push({
   type: 'Counter',
   color: "#BBB",
   name: language.templates.counter,
+  hint: language.templates.counterHint,
+  help: language.templates.counterHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Counter",id,language.templates.counter+"<br>"+nr,language.templates.counterHint,"#BBB","#DDD",top,left,isTemplate)
@@ -369,6 +384,8 @@ templates.push({
   type: 'Throughput',
   color: "#BBB",
   name: language.templates.throughput,
+  hint: language.templates.throughputHint,
+  help: language.templates.throughputHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Throughput",id,language.templates.throughput+"<br>"+nr,language.templates.throughputHint,"#BBB","#DDD",top,left,isTemplate)
@@ -377,6 +394,8 @@ templates.push({
   type: 'Dispose',
   color: "red",
   name: language.templates.dispose,
+  hint: language.templates.disposeHint,
+  help: language.templates.disposeHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 0,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Dispose",id,language.templates.dispose+"<br>"+nr,language.templates.disposeHint,"red","#F33",top,left,isTemplate)
@@ -385,6 +404,8 @@ templates.push({
   type: 'Batch',
   color: "#F0F",
   name: language.templates.batch,
+  hint: language.templates.batchHint,
+  help: language.templates.batchHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Batch",id,language.templates.batch+"<br>"+nr,language.templates.batchHint,"#F0F","#FAF",top,left,isTemplate),
@@ -394,6 +415,8 @@ templates.push({
   type: 'Separate',
   color: "#F0F",
   name: language.templates.separate,
+  hint: language.templates.separateHint,
+  help: language.templates.separateHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Separate",id,language.templates.separate+"<br>"+nr,language.templates.separateHint,"#F0F","#FAF",top,left,isTemplate)
@@ -402,6 +425,8 @@ templates.push({
   type: 'Match',
   color: "#B0B",
   name: language.templates.match,
+  hint: language.templates.matchHint,
+  help: language.templates.matchHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Match",id,language.templates.match+"<br>"+nr,language.templates.matchHint,"#B0B","#D7D",top,left,isTemplate),
@@ -411,6 +436,8 @@ templates.push({
   type: 'Split',
   color: "red",
   name: language.templates.split,
+  hint: language.templates.splitHint,
+  help: language.templates.splitHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Split",id,language.templates.split+"<br>"+nr,language.templates.splitHint,"red","#1C1",top,left,isTemplate),
@@ -420,6 +447,8 @@ templates.push({
   type: 'Signal',
   color: "#FB3",
   name: language.templates.signal,
+  hint: language.templates.signalHint,
+  help: language.templates.signalHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Signal",id,language.templates.signal+"<br>"+nr,language.templates.signalHint,"#FB3","#FD7",top,left,isTemplate),
@@ -429,6 +458,8 @@ templates.push({
   type: 'Barrier',
   color: "#FB3",
   name: language.templates.barrier,
+  hint: language.templates.barrierHint,
+  help: language.templates.barrierHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("Barrier",id,language.templates.barrier+"<br>"+nr,language.templates.barrierHint,"#FB3","#FD7",top,left,isTemplate),
@@ -438,6 +469,8 @@ templates.push({
   type: 'SignalSource',
   color: "#FB3",
   name: language.templates.signalSource,
+  hint: language.templates.signalSourceHint,
+  help: language.templates.signalSourceHelp,
   maxEdgesIn: 0,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addBox("SignalSource",id,language.templates.signalSource+"<br>"+nr,language.templates.signalSourceHint,"#FB3","#1C1",top,left,isTemplate),
@@ -447,6 +480,8 @@ templates.push({
   type: 'Vertex',
   color: "#CCC",
   name: language.templates.vertex,
+  hint: language.templates.vertexHint,
+  help: language.templates.vertexHelp,
   maxEdgesIn: 999,
   maxEdgesOut: 1,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addVertex("Vertex",id,"",language.templates.vertexHint,"#CCC","#CCC",top,left,isTemplate),
@@ -454,9 +489,11 @@ templates.push({
 templates.push({
   type: 'Text',
   name: language.templates.text,
+  hint: language.templates.textHint,
+  help: language.templates.textHelp,
   maxEdgesIn: 0,
   maxEdgesOut: 0,
-  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addText("Text",id,setup.text,setup.fontSize,setup.bold,setup.italic,top,left,isTemplate),
+  addFunc: (id, nr, top, left, setup, isTemplate, elements)=>addText("Text",id,setup.text,language.templates.textHint,setup.fontSize,setup.bold,setup.italic,top,left,isTemplate),
   setup: {text: language.templates.text, fontSize: 12, bold: false, italic: false},
   visibleSetup: true,
   visualOnly: true
@@ -464,6 +501,8 @@ templates.push({
 templates.push({
   type: 'Diagram',
   name: language.templates.diagram,
+  hint: language.templates.diagramHint,
+  help: language.templates.diagramHelp,
   maxEdgesIn: 0,
   maxEdgesOut: 0,
   addFunc: (id, nr, top, left, setup, isTemplate, elements)=>{

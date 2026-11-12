@@ -193,38 +193,133 @@ Nach dem Erstellen oder Laden eines Modells kann dieses über<br>die <b><i class
 lang.templates={};
 lang.templates.source="Quelle";
 lang.templates.sourceHint="Generiert eintreffende Kunden und stellt damit den Startpunkt für jedes Modell dar.";
+lang.templates.sourceHelp=`
+<p>Eine oder mehrere Quellen stellen den Startpunkt für jedes Modell dar. An der Quelle werden die Kunden generiert, die dann durch das Modell geleitet werden. Die Ankunftszeiten der Kunden an der Quelle können über die mittlere Zwischenankunftszeit E[I] und den Variationskoeffizienten CV[I] eingestellt werden.</p>
+<ul>
+<li>Die <b>mittlere Zwischenankunftszeit E[I]</b> gibt an, wie viel Zeit im Mittel zwischen zwei Kundenankünften an der Quelle vergeht. Kürzere Zwischenankunftszeiten führen zu mehr Kundenankünften pro Zeiteinheit, längere Zwischenankunftszeiten zu weniger Kundenankünften pro Zeiteinheit.</li>
+<li>Der <b>Variationskoeffizient CV[I]</b> der Zwischenankunftszeiten gibt an, wie stark die Ankunftszeiten der Kunden an der Quelle schwanken. Ein Variationskoeffizient von 0 bedeutet, dass die Zwischenankunftszeiten konstant sind. Je höher der Variationskoeffizient, desto stärker schwanken die Zwischenankunftszeiten.</li>
+<li>Die <b>Batch-Größe b</b> gibt an, wie viele Kunden pro Schritt jeweils gemeinsam eintreffen. Es kann entweder eine einzelne positive Ganzzahl angegeben werden, oder aber zwei durch Semikolon getrennte positive Ganzzahlen für Minimum und Maximum. Im zweiten Fall wird gleichverteilt eine zufällige Ankunfts-Batch-Größe gewählt.</li>
+<li>Im Normalfall generiert eine Quelle unbegrenzt viele Kunden. Über die <b>Begrenzen</b>-Option kann jedoch eingestellt werden, dass die Quelle nur eine bestimmte Anzahl an Kundenankünften generiert. Sobald diese Anzahl erreicht ist, werden keine weiteren Kunden mehr generiert.</li>
+</ul>`;
 lang.templates.delay="Verzögerung";
 lang.templates.delayHint="Verzögert an der Station eintreffende Kunden für eine einstellbare Zeitdauer."
+lang.templates.delayHelp=`
+<p>Kunden, die an einer Verzögerungsstation eintreffen, werden für eine einstellbare Zeitdauer verzögert, bevor sie weitergeleitet werden. Eine Verzögerungsstation kann eine oder zwei auslaufende Kanten besitzen. Die mittlere Verzögerungsdauer E[S] und der Variationskoeffizient CV[S] der Verzögerungsdauern können eingestellt werden.</p>
+<ul>
+<li>Die <b>mittlere Verzögerungsdauer E[S]</b> gibt an, wie viel Zeit im Mittel ein Kunde an der Station verzögert wird. Kürzere Verzögerungsdauern führen zu mehr Kunden, die pro Zeiteinheit die Station passieren, längere Verzögerungsdauern zu weniger Kunden, die pro Zeiteinheit die Station passieren.</li>
+<li>Der <b>Variationskoeffizient CV[S]</b> der Verzögerungsdauern gibt an, wie stark die Verzögerungsdauern schwanken. Ein Variationskoeffizient von 0 bedeutet, dass die Verzögerungsdauern konstant sind. Je höher der Variationskoeffizient, desto stärker schwanken die Verzögerungsdauern.</li>
+<li>Besitzt eine Verzögerungsstation <b>zwei auslaufende Kanten</b>, so arbeitet die Stations im <b>Kollisions-Modus</b>. Befinden sich zu einem Zeitpunkt mehrere Kunden an der Station, so gelten diese als in Kollision und werden nach Ende ihrer jeweiligen Verzögerungszeit über die zweite Kante ausgeleitet. Nur wenn ein Kunde ungestört alleine die Station durchläuft, gilt er als erfolgreich.</li>
+</ul>`;
 lang.templates.process="Bedienstation";
 lang.templates.processHint="An dieser Station werden Kunden durch ein einstellbare Anzahl an Bedienern bedient. Steht kein Bediener zur Verfügung, wenn ein Kunde eintrifft, so entsteht eine Warteschlange.";
+lang.templates.processHelp=`
+<p>An einer Bedienstation werden Kunden durch eine einstellbare Anzahl an Bedienern bedient. Steht kein Bediener zur Verfügung, wenn ein Kunde eintrifft, so entsteht eine Warteschlange. Die mittlere Bediendauer E[S] und der Variationskoeffizient CV[S] der Bediendauern können eingestellt werden.</p>
+<ul>
+<li>Die <b>mittlere Bediendauer E[S]</b> gibt an, wie viel Zeit im Mittel ein Bediener benötigt, um einen Kunden zu bedienen. Kürzere Bediendauern führen zu mehr bedienten Kunden pro Zeiteinheit, längere Bediendauern zu weniger bedienten Kunden pro Zeiteinheit.</li>
+<li>Der <b>Variationskoeffizient CV[S]</b> der Bediendauern gibt an, wie stark die Bediendauern schwanken. Ein Variationskoeffizient von 0 bedeutet, dass die Bediendauern konstant sind. Je höher der Variationskoeffizient, desto stärker schwanken die Bediendauern.</li>
+<li>Die <b>Anzahl an Bedienern c</b> gibt an, wie viele Bediener an der Station zur Verfügung stehen. Mehr Bediener führen zu mehr bedienten Kunden pro Zeiteinheit, weniger Bediener zu weniger bedienten Kunden pro Zeiteinheit.</li>
+<li>Die <b>Batch-Größe b</b> gilt an, wie viele Kunden durch einen Bediener jeweils gleichzeitig bedient werden. Befinden sich weniger Kunden in der Warteschlange als die Batch-Größe vorgibt, so müssen diese warten, auch wenn sich ein oder mehrere Bediener im Leerlauf befinden. Es kann entweder eine einzelne positive Ganzzahl angegeben werden, oder aber zwei durch Semikolon getrennte positive Ganzzahlen für Minimum und Maximum.</li>
+<li>Die <b>mittlere Nachbearbeitungszeit E[S2]</b> gibt an, wie viel Zeit im Mittel ein Bediener nach dem Abschluss der Kundenbedienung weiter als belegt gilt, bevor er den nächsten Kunden annehmen kann. Kürzere Nachbearbeitungszeiten führen zu mehr bedienten Kunden pro Zeiteinheit, längere Nachbearbeitungszeiten zu weniger bedienten Kunden pro Zeiteinheit.</li>
+<li>Der <b>Variationskoeffizient CV[S2]</b> der Nachbearbeitungszeiten gibt an, wie stark die Nachbearbeitungszeiten schwanken. Ein Variationskoeffizient von 0 bedeutet, dass die Nachbearbeitungszeiten konstant sind. Je höher der Variationskoeffizient, desto stärker schwanken die Nachbearbeitungszeiten.</li>
+<li>Die <b>Bedienreihenfolge</b> gibt an, nach welcher Regel der jeweils als nächstes zu bedienende Kunde aus der Warteschlange entnommen werden soll. Es stehen die Modi FIFO (First in first out; Bedienung in Ankunftsreihenfolge), Zufällig, LIFO (Last in first out; Bedienung in umgekehrter Ankunftsreihenfolge, Shortest job first und Longest job first zur Auswahl.</li>
+<li>Besitzt eine Bedienstation <b>zwei auslaufende Kanten</b>, so besitzen die Kunden nur eine begrenzte Wartezeittoleranz. Wird diese überschritten, so verlassen Sie die Bedienstation ohne bedient zu werden über die zweite auslaufende Kante. Besitzt die Bedienstation zwei auslaufende Kanten, so stehen die zusätzlichen Eingabefelder für die <b>mittlere Warteezeittoleranz E[WT]</b> und den <b>Variationskoeffizient der Wartezeittoleranzen CV[WT]</b> zur Verfügung.</li>
+</ul>`;
 lang.templates.decide="Verzweigen";
 lang.templates.decideHint="Diese Station kann mehrere auslaufende Kanten besitzen. Eintreffende Kunden werden gemäß einstellbarer Regeln in die verschiedenen Richtungen aufgeteilt."
+lang.templates.decideHelp=`
+<p>An einer Verzweigenstation können eintreffende Kunden über mehrere auslaufende Kanten in verschiedene Richtung weitergeleitet werden. Die Verzweigung kann dabei auf Basis von verschiedenen, einstellbaren Kriterien erfolgen.</p>
+<ul>
+<li>Als <b>Modi</b> stehen zufällig (mit einstellbaren Raten s.u.), gemäß der kürzesten oder längsten Warteschlange (NQ) oder den wenigsten oder meisten Kunden (N) an der folgenden Station sowie reihum zur Verfügung.</li>
+<li>Im Modus <b>zufällig</b> kann die <b>Rate</b>, mit der jede der verfügbaren auslaufenden Kanten gewählt wird, eingestellt werden. Die Raten sind unnormierte Wahrscheinlichkeiten, d.h. alle Raten müssen größer oder gleich 0 sein; müssen sich aber nicht zu 1 aufsummieren.</li>
+</ul>`;
 lang.templates.duplicate="Duplizieren";
 lang.templates.duplicateHint="Diese Station kann mehrere auslaufende Kanten besitzen. Jeder eintreffende Kunde wird inkl. seiner Eigenschaften vervielfältigt und entlang jeder Ausgangskante weitergeleitet.";
+lang.templates.duplicateHelp=`
+<p>Eine Duplizierenstation kann beliebig viele auslaufende Kanten besitzen. Jeder Kunde, der ander Station eintrifft, wird gemäß der Anzahl der auslaufenden Kanten vervielfacht und über jede auslaufende Kante wird zeitgleich eine identische Kopie weitergeleitet. Die neu generierten Kundenobjekte übernehmen dabei die bisherigen Statistikwerte von dem an der Station eingetroffenen Kunden.</p>
+<p>Duplizierenstation besitzen keine Einstellungen.</p>`;
 lang.templates.counter="Zähler";
 lang.templates.counterHint="Zählt alle Kunden, die diese Station passieren."
+lang.templates.counterHelp=`
+<p>An einer Zählerstation erfolgt keine Verarbeitung. Die Kunden, die diese Station passieren, werden lediglich für die Statistik gezählt.</p>
+<p>Zählerstation besitzen keine Einstellungen.</p>`;
 lang.templates.throughput="Durchsatz";
 lang.templates.throughputHint="Erfasst den Durchsatz in Kunden pro Zeiteinheit an der Station."
+lang.templates.throughputHelp=`
+<p>An einer Durchsatzstation erfolgt keine Verarbeitung. Es wird lediglich für die Statistik erfasst, wie viele Kunden diese Station pro Zeiteinheit passieren.</p>
+<p>Durchsatzstation besitzen keine Einstellungen.</p>`;
 lang.templates.dispose="Ausgang";
 lang.templates.disposeHint="Endpunkt der Kunden in einem Modell. Alle Kunden müssen am Ende zu einer Ausgangsstation geleitet werden.";
+lang.templates.disposeHelp=`
+<p>Eine Ausgangsstation stellt den Endpunkt der Kunden in einem Modell dar. Alle Kunden müssen am Ende zu einer Ausgangsstation geleitet werden. In der Statistik werden die Daten der Kunden, die das System verlassen, über die jeweiligen Ausgangsstationen aggregiert.</p>
+<p>Ausgangstationen besitzen keine Einstellungen.</p>`;
 lang.templates.batch="Batch";
 lang.templates.batchHint="Fasst Kunden zu Gruppen einer einstellbaren Größe zusammen. Diese Gruppen bewegen sich danach, bis sie an einer \"Trennen\"-Station wieder aufgelöst werden, wie ein einziger Kunde durch das System.";
+lang.templates.batchHelp=`
+<p>An einer Batch-Station können Kunden zu temporären Batchen zusammengefasst werden. Ein Batch bewegt sich wie ein einzelner Kunde durch das folgende System. Beim Verlassen des Systems werden Batche wieder aufgelöst und die Kunden in der Statistik einzeln gezählt.</p>
+<ul>
+<li>Die <b>Batch-Größe b</b> gibt an, wie viele Kunden jeweils zusammengefasst werden sollen. Es kann entweder eine einzelne positive Ganzzahl angegeben werden, oder aber zwei durch Semikolon getrennte positive Ganzzahlen für Minimum und Maximum.</li>
+<li>Der <b>Modus</b> gibt an, ob lediglich die eingestellte Anzahl an Kunden an der Station gesammelt und diese danach weiterhin einzeln gleichzeitig weitergeleitet werden sollen oder aber ob eine tatsächliche Batch-Bildung erfolgen soll.</li>
+</ul>`;
 lang.templates.match="Match";
 lang.templates.matchHint="Führt Kunden, die über die verschiedenen Eingänge bei der Station eintreffen, zusammen.";
+lang.templates.matchHelp=`
+<p>Eine Match-Station verfügt über mehrere einlaufende Kanten. Wenn über jede dieser Kanten ein Kunde eingetroffen ist (und an der Station wartet) werden diese entweder gemeinsam weitergeleitet oder zu einem temporären Batch kombiniert.</p>
+<ul>
+<li>Der <b>Modus</b> gibt an, ob lediglich die eingestellte Anzahl an Kunden an der Station gesammelt und diese danach weiterhin einzeln gleichzeitig weitergeleitet werden sollen oder aber ob eine tatsächliche Batch-Bildung erfolgen soll.</li>
+</ul>`;
 lang.templates.separate="Trennen";
 lang.templates.separateHint="Löst Kundengruppen, die an einer \"Batch\"-Station gebildet wurden, wieder auf.";
+lang.templates.separateHelp=`
+<p>Trifft ein temporärer Batch an dieser Station ein, so wird dieser aufgelöst und die darin enthaltenen Kunden bewegen sich ab hier wieder als individuelle Objekte durch das System. Trifft ein einzelner Kunde an der Station ein, so passiert er diese ohne weitere Verarbeitung.</p>
+<p>Trennenstationen besitzen keine Einstellungen.</p>`;
 lang.templates.split="Split";
 lang.templates.splitHint="Teil ein Kundenobjekt in mehrere Kundenobjekte auf.";
+lang.templates.splitHelp=`
+<p>An einer Split-Station wird ein eintreffendes Kundenobjekt in mehrere neue Objekte aufgeteilt. Die neuen Kundenobjekte übernehmen dabei die Statistikwerte des eintreffenden Kunden.</p>
+<ul>
+<li>Über die <b>Anzahl an neuen Kunden</b> kann eingestellt werden, wie viele Kundenobjekte pro an der Station eintreffendem Kunden die Station wieder verlassen sollen.</li>
+</ul>`;
 lang.templates.signal="Signal";
 lang.templates.signalHint="Passiert ein Kunde diese Station, so wird ein Signal ausgelöst auf dessen Basis Kunden, die an einer \"Schranke\"-Station warten, freigegeben werden können.";
+lang.templates.signalHelp=`
+<p>Trifft ein Kunden an einer Signalstation ein, so wird ein Signal mit dem Namen der Station ausgelöst. Schranken und Signalquellen können auf solche Signale reagieren.</p>
+<ul>
+<li>Über die <b>Verzögerung t&Delta;</b> kann eingestellt werden, wie viel Zeit zwischen dem Eintreffen eines Kunden an der Station und der Auslösung des Signals vergehen soll.</li>
+</ul>`;
 lang.templates.barrier="Schranke";
 lang.templates.barrierHint="Verzögert eintreffende Kunden so lange, bis an einer verknüpften \"Signal\"-Station ein Signal zur Freigabe der wartenden Kunden ausgelöst wird.";
+lang.templates.barrierHelp=`
+<p>An einer Schrankestation werden Kunden aufgehalten, bis bedingt durch ein Signal eine Freigabe erfolgt.</p>
+<ul>
+<li>Es kann eine bestimmte Anzahl an Kunden <b>initial freigegeben werden</b>. Für diese Anzahl an Kunden ist dann noch kein Signal erforderlich. Erst nachdem diese Anzahl an Kunden die Station passiert hat, setzt die Wirkung der Schranke ein.</li>
+<li>Über die Einstellung <b>Auf Signal reagieren</b> muss eingestellt werden, auf welches Signal die Schranke reagieren soll.</li>
+<li>Weiter kann eingestellt werden, wie viele wartende Kunden jeweils <b>pro Signal freigegeben</b> werden sollen.</li>
+<li>Ist die Option <b>Signal speichern</b> aktiv, so werden noch nicht verbrauchte Kundenfreigaben gespeichert, so dass später eintreffende Kunden ggf. sofort freigegeben werden.</li>
+</ul>`;
 lang.templates.signalSource="Signalquelle";
 lang.templates.signalSourceHint="Generiert auf ein Signal hin eintreffende Kunden.";
+lang.templates.signalSourceHelp=`
+<p>Eine Signalquelle generiert immer dann eine oder mehrere Kundenankünfte, wenn ein Signal ausgelöst wird.</p>
+<ul>
+<li>Über die Einstellung <b>Auf Signal reagieren</b> muss eingestellt werden, auf welches Signal die Schranke reagieren soll.</li>
+<li>Die <b>Batch-Größe b</b> gibt an, wie viele Kunden pro Schritt jeweils gemeinsam eintreffen. Es kann entweder eine einzelne positive Ganzzahl angegeben werden, oder aber zwei durch Semikolon getrennte positive Ganzzahlen für Minimum und Maximum. Im zweiten Fall wird gleichverteilt eine zufällige Ankunfts-Batch-Größe gewählt.</li>
+</ul>`;
 lang.templates.vertex="Verbindungsecke";
 lang.templates.vertexHint="Dient als Verbindungspunkt für Kanten, um die Darstellung des Modells zu strukturieren.";
+lang.templates.vertexHelp=`
+<p>Eine Verbindungsecke dient lediglich dazu, ein Modell optisch zu strukturien. Eine Verbindungsecke kann beliebig viele einlaufende Kanten besitzen und muss eine auslaufende Kante besitzen. Es erfolgt keine Verarbeitung an einer Verbindungsecke.</p>
+<p>Verbindungsecken besitzen keine Einstellungen.</p>`;
 lang.templates.text="Text";
+lang.templates.textHint="Stellt einen statischen, nutzerdefinierten Text auf der Zeichenfläche dar.";
+lang.templates.textHelp=`<p>Texte besitzen einen rein dekorativen Charakter. Mit Hilfe von Texten können Modelle oder Stationen annotiert werden.</p>`;
 lang.templates.diagram="Diagramm";
+lang.templates.diagramHint="In einem Diagramm wird der zeitliche Verlauf der Anzahl an Kunden an einer Station grafisch dargestellt.";
+lang.templates.diagramHelp=`
+<p>Diagramme dienen dazu, den Verlauf der Anzahl an Kunden an bestimmten Stationen während einer Animation direkt auf der Zeichenfläche darzustellen.</p>
+<ul>
+<li>Über das <b>Datenquelle</b>-Feld kann ausgewählt werden, von welcher Station die Daten angezeigt werden sollen.</li>
+<li>Der <b>darzustellende Zeitbereich</b> gibt an, wie weit die Darstellung in dem Diagramm in die Vergangenheit reichen soll.</li>
+</ul>`;
 lang.templates.diagramSource="Datenquelle";
 lang.templates.diagramSourceClients="aktuelle Anzahl an Kunden an der Station";
 
@@ -293,6 +388,8 @@ lang.editor.source="Datenquelle";
 lang.editor.sourceLabel=""; /* intended to be empty */
 lang.editor.noSettings="Die Station besitzt keine Einstellungen.";
 lang.editor.deleteStation="Station löschen";
+lang.editor.helpStation="Hilfe";
+lang.editor.helpStationHint="Hilfe zu dieser Station und den Parametern anzeigen.";
 lang.editor.xrange="Darzustellender Zeitbereich (in Stunden)";
 lang.editor.xrangeLabel=""; /* intended to be empty */
 lang.editor.limited="Anzahl an Ankünften";
@@ -698,38 +795,132 @@ After creating or loading a model, it can be simulated using the<br><b><i class=
 lang.templates={};
 lang.templates.source="Source";
 lang.templates.sourceHint="Generates arriving customers and thus represents the starting point for each model.";
+lang.templates.sourceHelp=`
+<p>One or more sources represent the starting point for each model. At the source, customers are generated and then routed through the model. The arrival times of customers at the source can be set using the average inter-arrival time E[I] and the coefficient of variation CV[I].</p>
+<ul>
+<li>The <b>average inter-arrival time E[I]</b> indicates how much time on average passes between two customer arrivals at the source. Shorter inter-arrival times lead to more customer arrivals per unit of time, while longer inter-arrival times lead to fewer customer arrivals per unit of time.</li>
+<li>The <b>coefficient of variation CV[I]</b> of the inter-arrival times indicates how much the arrival times of customers at the source fluctuate. A coefficient of variation of 0 means that the inter-arrival times are constant. The higher the coefficient of variation, the more the inter-arrival times fluctuate.</li>
+<li>The <b>batch size b</b> indicates how many customers arrive together in each step. It can either be a single positive integer or two positive integers separated by a semicolon for minimum and maximum. In the second case, a random arrival batch size is chosen uniformly.</li>
+<li>By default, a source generates an unlimited number of customers. However, using the <b>Limit</b> option, it can be set that the source only generates a certain number of customer arrivals. Once this number is reached, no further customers will be generated.</li>
+</ul>`;
 lang.templates.delay="Delay";
+lang.templates.delayHelp=`
+<p>Customers arriving at a delay station are delayed for an adjustable period of time before being forwarded. A delay station can have one or two outgoing edges. The average delay duration E[S] and the coefficient of variation CV[S] of the delay durations can be set.</p>
+<ul>
+<li>The <b>average delay duration E[S]</b> indicates how much time on average a customer is delayed at the station. Shorter delay durations lead to more customers passing through the station per unit of time, while longer delay durations lead to fewer customers passing through the station per unit of time.</li>
+<li>The <b>coefficient of variation CV[S]</b> of the delay durations indicates how much the delay durations fluctuate. A coefficient of variation of 0 means that the delay durations are constant. The higher the coefficient of variation, the more the delay durations fluctuate.</li>
+<li>If a delay station has <b>two outgoing edges</b>, it operates in <b>collision mode</b>. If multiple customers are present at the station at the same time, they are considered to be in collision and will be forwarded via the second edge after their respective delay times have elapsed. Only if a customer passes through the station alone without interference is it considered successful.</li>
+</ul>`;
 lang.templates.delayHint="Delays customers arriving at the station for an adjustable period of time."
 lang.templates.process="Process";
 lang.templates.processHint="At this station, customers are served by an adjustable number of operators. If no operator is available when a customer arrives, a queue is created.";
+
+lang.templates.processHelp=`<p>At a process station, customers are served by an adjustable number of operators. If no operator is available when a customer arrives, a queue is created. The average service time E[S] and the coefficient of variation CV[S] of the service times can be set.</p>
+<ul>
+<li>The <b>average service time E[S]</b> indicates how much time on average an operator needs to serve a customer. Shorter service times lead to more customers being served per unit of time, while longer service times lead to fewer customers being served per unit of time.</li>
+<li>The <b>coefficient of variation CV[S]</b> of the service times indicates how much the service times fluctuate. A coefficient of variation of 0 means that the service times are constant. The higher the coefficient of variation, the more the service times fluctuate.</li>
+<li>The <b>number of operators c</b> indicates how many operators are available at the station. More operators lead to more customers being served per unit of time, while fewer operators lead to fewer customers being served per unit of time.</li>
+<li>The <b>batch size b</b> indicates how many customers are served simultaneously by an operator. If there are fewer customers in the queue than the batch size specifies, they must wait, even if one or more operators are idle. It can either be a single positive integer or two positive integers separated by a semicolon for minimum and maximum.</li>
+<li>The <b>average post-processing time E[S2]</b> indicates how much time on average an operator is considered busy after completing the service of a customer before they can take the next customer. Shorter post-processing times lead to more customers being served per unit of time, while longer post-processing times lead to fewer customers being served per unit of time.</li>
+<li>The <b>coefficient of variation CV[S2]</b> of the post-processing times indicates how much the post-processing times fluctuate. A coefficient of variation of 0 means that the post-processing times are constant. The higher the coefficient of variation, the more the post-processing times fluctuate.</li>
+<li>The <b>service order</b> indicates according to which rule the next customer to be served is taken from the queue. The modes FIFO (First in first out; service in order of arrival), Random, LIFO (Last in first out; service in reverse order of arrival), Shortest job first, and Longest job first are available for selection.</li>
+<li>If a process station has <b>two outgoing edges</b>, the customers have only a limited waiting time tolerance. If this is exceeded, they leave the process station without being served via the second outgoing edge. If the process station has two outgoing edges, the additional input fields for the <b>average waiting time tolerance E[WT]</b> and the <b>coefficient of variation of the waiting time tolerances CV[WT]</b> are available.</li>
+</ul>`;
 lang.templates.decide="Decide";
 lang.templates.decideHint="This station can have several outgoing edges. Incoming customers are divided into the different directions according to adjustable rules."
+lang.templates.decideHelp=`
+<p>At a decision station, incoming customers can be forwarded in different directions via several outgoing edges. The branching can be based on various adjustable criteria.</p>
+<ul>
+<li>The <b>modes</b> available are random (with adjustable rates, see below), according to the shortest or longest queue (NQ), or the fewest or most customers (N) at the following station, as well as round-robin.</li>
+<li>In <b>random mode</b>, the <b>rate</b> at which each of the available outgoing edges is chosen can be set. The rates are unnormalized probabilities, i.e., all rates must be greater than or equal to 0; however, they do not have to sum to 1.</li>
+</ul>`;
 lang.templates.duplicate="Duplicate";
 lang.templates.duplicateHint="This station can have several outgoing edges. Each incoming customer is duplicated, including its properties, and forwarded along each outgoing edge.";
+lang.templates.duplicateHelp=`
+<p>A duplication station can have any number of outgoing edges. Each customer arriving at the station is duplicated according to the number of outgoing edges, and an identical copy is forwarded along each outgoing edge simultaneously. The newly generated customer objects inherit the previous statistical values from the customer that arrived at the station.</p>
+<p>Duplication station have no settings.</p>`;
 lang.templates.counter="Counter";
 lang.templates.counterHint="Counts all customers passing this station."
+lang.templates.counterHelp=`
+<p>A counter station does not perform any processing. The customers passing through this station are simply counted for statistical purposes.</p>
+<p>Counter stations have no settings.</p>`;
 lang.templates.throughput="Throughput";
 lang.templates.throughputHint="Records the throughput of customers per unit of time at the station."
+lang.templates.throughputHelp=`
+<p>A throughput station does not perform any processing. It simply records for statistical purposes how many customers pass through this station per unit of time.</p>
+<p>Throughput stations have no settings.</p>`;
 lang.templates.dispose="Exit";
 lang.templates.disposeHint="End point of the customers in a model. All customers must be routed to an exit station at the end.";
+lang.templates.disposeHelp=`
+<p>An exit station represents the endpoint of customers in a model. All customers must be routed to an exit station at the end. In the statistics, the data of the customers leaving the system are aggregated over the respective exit stations.</p>
+<p>Exit stations have no settings.</p>`;
 lang.templates.batch="Batch";
-lang.templates.batchHint="Combines customers into groups of an adjustable size. These groups then move through the system as a single customer until they are dissolved again at a \Separate\” station.";
-lang.templates.separate="Separate";
+lang.templates.batchHint="Combines customers into groups of an adjustable size. These groups then move through the system as a single customer until they are dissolved again at a \"Separate\" station.";
+lang.templates.batchHelp=`
+<ul>
+<li>The <b>batch size b</b> indicates how many customers are to be combined together. It can either be a single positive integer or two positive integers separated by a semicolon for minimum and maximum.</li>
+<li>The <b>mode</b> indicates whether only the set number of customers should be collected at the station and then forwarded individually simultaneously, or whether an actual batch formation should take place.</li>
+</ul>`;
 lang.templates.match="Match";
 lang.templates.matchHint="Combines customers arriving at the station through the various inputs."
-lang.templates.separateHint="Dissolves customer groups that were formed at a \“Batch\” station.";
+lang.templates.matchHelp=`
+<p>A match station has multiple incoming edges. Once a customer has arrived via each of these edges (and is waiting at the station), they are either forwarded together or combined into a temporary batch.</p>
+<ul>
+<li>The <b>mode</b> indicates whether only the set number of customers should be collected at the station and then forwarded individually simultaneously, or whether an actual batch formation should take place.</li>
+</ul>`;
+lang.templates.separate="Separate";
+lang.templates.separateHint="Dissolves customer groups that were formed at a \"Batch\" station.";
+lang.templates.separateHelp=`
+<p>When a temporary batch arrives at this station, it is separated, and the customers it contains continue through the system as individual objects from this point on. When a single customer arrives at the station, they pass through it without further processing.</p>
+<p>Separate stations have no settings.</p>`;
 lang.templates.split="Split";
 lang.templates.splitHint="Splits single customer into multiple customers.";
+lang.templates.splitHelp=`
+<p>A split station splits a single customer into multiple customers.</p>
+<ul>
+<li>The <b>number of new customers</b> indicates how many customer objects should be created from each incoming customer.</li>
+</ul>`;
 lang.templates.signal="Signal";
-lang.templates.signalHint="If a customer passes this station, a signal is triggered on the basis of which customers waiting at a \“barrier\” station can be released.";
+lang.templates.signalHint="If a customer passes this station, a signal is triggered on the basis of which customers waiting at a \"barrier\" station can be released.";
+lang.templates.signalHelp=`
+<p>When a customer arrives at a signal station, a signal with the name of the station is triggered. Barriers and signal sources can can respond to such signals.</p>
+<ul>
+<li>The <b>delay t&Delta;</b> can be used to set the amount of time that should elapse between a customer's arrival at the station and the triggering of the signal.</li>
+</ul>`;
 lang.templates.barrier="Barrier";
 lang.templates.barrierHint="Delays incoming customers until a signal is triggered at a linked \“Signal\” station to release the waiting customers.";
+lang.templates.barrierHelp=`
+<p>At a barrier, customers are held until they are released by a signal. The signal can be triggered by a linked signal station.</p>
+<ul>
+<li>A certain number of customers can be <b>initially released</b>. For this number of customers, no signal is required. Only after this number of customers has passed through the station does the effect of the barrier take place.</li>
+<li>Using the <b>Respond to signal</b> setting, it must be specified which signal the barrier should respond to.</li>
+<li>Furthermore, it can be set how many waiting customers should be <b>released per signal</b>.</li>
+<li>If the <b>Store signals</b> option is active, unused customer releases are stored so that later arriving customers can be released immediately if applicable.</li>
+</ul>`;
 lang.templates.signalSource="Signal source";
 lang.templates.signalSourceHint="Generates arriving customers on signals.";
+lang.templates.signalSourceHelp=`
+<p>A signal source always generates one or more customer arrivals whenever a signal is triggered.</p>
+<ul>
+<li>Using the <b>Respond to signal</b> setting, it must be specified which signal the barrier should respond to.</li>
+<li>The <b>batch size b</b> indicates how many customers arrive together on each signal. It can either be a single positive integer or two positive integers separated by a semicolon for minimum and maximum. In the second case, a random arrival batch size is chosen uniformly.</li>
+</ul>`;
 lang.templates.vertex="Vertex";
 lang.templates.vertexHint="Serves as a connection point for edges to structure the representation of the model.";
+lang.templates.vertexHelp=`
+<p>A connecting vertex serves solely to visually structure a model. A connecting vertex can have any number of incoming edges and must have one outgoing edge. No operations are performed on a connecting vertex.</p>
+<p>Vertices have no settings.</p>`;
 lang.templates.text="Text";
+lang.templates.textHint="Displays a static, user-defined text on the drawing surface.";
+lang.templates.textHelp=`<p>Texts are purely decorative. Texts can be used to annotate models or stations.</p>`;
 lang.templates.diagram="Diagram";
+lang.templates.diagramHint="A diagram graphically illustrates the change over time in the number of customers at a station.";
+lang.templates.diagramHelp=`
+<p>Diagrams are used to graphically illustrate the change over time in the number of customers at a station directly on the drawing surface during an animation.</p>
+<ul>
+<li>The <b>data source</b> field allows you to select from which station the data should be displayed.</li>
+<li>The <b>time range to be displayed</b> indicates how far back in time the representation in the diagram should extend.</li>
+</ul>`;
 lang.templates.diagramSource="data source";
 lang.templates.diagramSourceClients="current number of customers at the station";
 
@@ -784,8 +975,8 @@ lang.editor.release="Release initial";
 lang.editor.releaseLabel="Count";
 lang.editor.signal="Respond to signal";
 lang.editor.signalLabel=""; /* intended to be empty */
-lang.editor.release="Release per signal";
-lang.editor.releaseLabel="Count";
+lang.editor.signalRelease="Release per signal";
+lang.editor.signalReleaseLabel="Count";
 lang.editor.storeSignals="If station is empty";
 lang.editor.storeSignalsLabel=""; /* intended to be empty */
 lang.editor.storeSignalsLabel2="Store signals";
@@ -793,6 +984,8 @@ lang.editor.source="Data source";
 lang.editor.sourceLabel=""; /* intended to be empty */
 lang.editor.noSettings="The station does not have any settings.";
 lang.editor.deleteStation="Delete station";
+lang.editor.helpStation="Help";
+lang.editor.helpStationHint="Help about this station and its parameters.";
 lang.editor.xrange="Time range to be displayed (in hours)";
 lang.editor.xrangeLabel=""; /* intended to be empty */
 lang.editor.limited="Number of arrivals";

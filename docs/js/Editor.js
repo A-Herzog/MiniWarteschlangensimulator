@@ -113,16 +113,31 @@ function updateCanvasScale(newScale) {
 
 /* === Messages === */
 
+let addedModalCloseListener=false;
+
 /**
  * Shows a message box with an "Ok" button.
  * @param {String} title Message box title
  * @param {String} msg Message box content
+ * @param {Boolean} large Show large message box (default: false)
  */
-function showMessage(title, msg) {
+function showMessage(title, msg, large=false) {
   document.getElementById('modalMessageTitle').innerHTML=title;
   document.getElementById('modalMessageBody').innerHTML=msg;
-  const dialog=new bootstrap.Modal(document.getElementById('modalMessage'),{});
+  const element=document.getElementById('modalMessage');
+  const subElement=element.getElementsByClassName("modal-dialog")[0];
+  if (large) subElement.classList.add("modal-xl");
+  const dialog=new bootstrap.Modal(element,{});
   document.getElementById('modalMessage').onkeyup=event=>{if (event.key=="Enter" || event.key=="Escape") dialog.hide();}
+
+  if (!addedModalCloseListener) {
+    addedModalCloseListener=true;
+    element.addEventListener('hidden.bs.modal',_=>{
+      const element=document.getElementById('modalMessage');
+      const subElement=element.getElementsByClassName("modal-dialog")[0];
+      subElement.classList.remove("modal-xl");
+    });}
+
   dialog.show();
 }
 
@@ -836,10 +851,19 @@ function showElementEditor(element, index) {
   menu.className="sidebarmenu";
   editor.appendChild(menu);
 
-  const item=document.createElement("li");
-  menu.appendChild(item);
-  item.innerHTML="<i class='bi bi-trash'></i> "+language.editor.deleteStation;
-  item.onclick=e=>deleteElement(element,index);
+  const itemDelete=document.createElement("li");
+  menu.appendChild(itemDelete);
+  itemDelete.innerHTML="<i class='bi bi-trash'></i> "+language.editor.deleteStation;
+  itemDelete.onclick=_=>deleteElement(element,index);
+
+  const record=getRecordByType(element.type);
+  if (record.help) {
+    const itemHelp=document.createElement("li");
+    menu.appendChild(itemHelp);
+    itemHelp.innerHTML="<i class='bi bi-question-circle'></i> "+language.editor.helpStation;
+    itemHelp.title=language.editor.helpStationHint;
+    itemHelp.onclick=_=>showElementHelp(element.name,record.hint,record.help);
+  }
 
   updateModelOnCanvas();
 }
@@ -854,6 +878,16 @@ function deleteElement(element, index) {
   elements.splice(index,1);
   updateModelOnCanvas();
   showTemplatesSidebar();
+}
+
+/**
+ * Shows a help page for an element type.
+ * @param {String} elementName Name of the element for which to show help
+ * @param {String} elementHint Hint text for the element
+ * @param {String} elementHelp Help text for the element
+ */
+function showElementHelp(elementName, elementHint, elementHelp) {
+  showMessage(elementName,"<p><b>"+elementHint+"</b></p>"+elementHelp,true);
 }
 
 /**
