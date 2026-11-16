@@ -310,3 +310,14 @@ math {
   text-align: center;
   color: white;
 }
+
+.results-info-column {
+  background-color: #E0E0E0;
+}
+
+
+[data-bs-theme="dark"] {
+  .results-info-column {
+    background-color: #555;
+  }
+}
