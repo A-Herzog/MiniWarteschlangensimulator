@@ -605,6 +605,11 @@ function canvasDrop(ev) {
       elements[index].top=top;
       elements[index].left=left;
     }
+    if (ev.shiftKey) {
+      const GRID_SIZE=20;
+      elements[index].top=Math.round(elements[index].top/GRID_SIZE)*GRID_SIZE;
+      elements[index].left=Math.round(elements[index].left/GRID_SIZE)*GRID_SIZE;
+    }
     updateModelOnCanvas();
   }
 }
