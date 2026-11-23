@@ -336,6 +336,7 @@ function fileBrowserStorage(loadOnly=false) {
     div.className="mb-3";
     button.type="button";
     button.className="btn btn-sm btn-primary bi bi-save";
+    button.dataset.bsDismiss="modal";
     button.innerHTML=" "+language.tabFile.modelSaveDownloadButton;
     button.onclick=()=>{
       const model={elements: elements, edges: edges};
