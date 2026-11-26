@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import {language} from './Language.js';
-import {zoomIn, zoomOut, showConfirmationMessage, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileLoadFromLocalStorage, fileSave, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick, deleteSelectedElement, updateLoadFromBrowserVisible} from "./Editor.js";
+import {zoomIn, zoomOut, showConfirmationMessage, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileLoadFromLocalStorage, fileSave, showFileSidebar, showTemplatesSidebar, showMoreSidebar, allowDrop, canvasDrop, addEdgeClick, canvasClick, deleteSelectedElement, updateLoadFromBrowserVisible, generalAllowDrop, generalDrop} from "./Editor.js";
 import {loadExample} from "./Example.js";
 import {startAnimation, animationPlayPause, animationSingleTimeStep, animationFastForward} from "./Animator.js";
 import {processSeries} from "./Series.js";
@@ -132,6 +132,11 @@ file_button.onclick=()=>showFileSidebar();
 add_station.onclick=()=>showTemplatesSidebar();
 
 tabHomeHelpInfo.onclick=()=>showMoreSidebar();
+
+navbar.ondragover=e=>generalAllowDrop(e);
+navbar.ondrop=e=>generalDrop(e);
+sidebar.ondragover=e=>generalAllowDrop(e);
+sidebar.ondrop=e=>generalDrop(e);
 
 canvas_area.ondrop=e=>canvasDrop(e);
 canvas_area.ondragover=e=>allowDrop(e);

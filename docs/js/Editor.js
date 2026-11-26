@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileLoadFromLocalStorage, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragElementProgress, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas, deleteSelectedElement, updateLoadFromBrowserVisible};
+export {zoomIn, zoomOut, showMessage, showConfirmationMessage, discardModel, fileNew, fileLoad, fileLodeJSON, fileLoadDrag, fileLoadDragEnter, fileLoadDragLeave, fileLoadDrop, fileLoadFromLocalStorage, fileSave, showFileSidebar, showTemplatesSidebar, showAnimationSidebar, showMoreSidebar, allowDrop, dragElement, dragElementProgress, dragTemplate, canvasDrop, addEdgeActive, addEdgeClick, canvasClick, elements, edges, addElementToModel, addTextToModel, addDiagramToModel, getElementByBoxId, addEdgeToModel, updateModelOnCanvas, deleteSelectedElement, updateLoadFromBrowserVisible, generalAllowDrop, generalDrop};
 
 import {language} from "./Language.js";
 import {animationActive} from "./Animator.js";
@@ -577,6 +577,16 @@ function canvasDrop(ev) {
   ev.preventDefault();
   const data=ev.dataTransfer;
 
+  if (data.files.length>0) {
+    /* Load model from file */
+    if (data.files.length!=1) return;
+    const file=data.files[0];
+    if (!file.name.toLowerCase().endsWith(".json")) return;
+    const reader=new FileReader();
+    reader.onload=e=>fileLodeJSON(e.target.result);
+    reader.readAsText(file);
+  }
+
   const templateType=data.getData("templateType");
   const x=ev.offsetX;
   const y=ev.offsetY;
@@ -615,6 +625,31 @@ function canvasDrop(ev) {
   }
 }
 
+/* === File drag & drop operations === */
+
+function generalAllowDrop(ev) {
+  if (animationActive) return false;
+  const data=ev.dataTransfer;
+  if (data.files.length!=1) return false;
+  const file=data.files[0];
+  if (!file.name.toLowerCase().endsWith(".json")) return false;
+  ev.preventDefault();
+}
+
+function generalDrop(ev) {
+  if (animationActive) return;
+
+  ev.preventDefault();
+  const data=ev.dataTransfer;
+
+  if (data.files.length!=1) return;
+  const file=data.files[0];
+  if (!file.name.toLowerCase().endsWith(".json")) return;
+
+  const reader=new FileReader();
+  reader.onload=e=>fileLodeJSON(e.target.result);
+  reader.readAsText(file);
+}
 
 /* === Translate touch operation to drag & drop === */
 
